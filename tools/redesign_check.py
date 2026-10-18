@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 BASE = sys.argv[1].rstrip("/") + "/"
 args = sys.argv[2:]
 SHOTS = args[args.index("--shots") + 1] if "--shots" in args else None
-ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3, 4]   # 0 = the main site (v4 at the root)
+ONLY = [int(x) if x.isdigit() else x for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3, 4]   # 0 = main site at the root; a name = /bg/<name>/ preview
 ENGINES = args[args.index("--engines") + 1].split(",") if "--engines" in args else ["chromium", "webkit"]
 s = open("assets/js/catalog.js").read(); CAT = json.loads(s[s.index("{"): s.rstrip().rstrip(";").rindex("}") + 1])
 HANDLES = sorted(p["handle"] for p in CAT["products"].values())
@@ -34,12 +34,13 @@ async def visible(pg, sel="#shop .rd-card, [data-rd-grid] .rd-card"):
     return await pg.evaluate(f"[...document.querySelectorAll('[data-rd-grid] .rd-card')].filter(c=>!c.hidden).length")
 
 async def run_variant(p, engine, mobile, n):
-    tag = f"{engine}/{'390' if mobile else '1280'}/" + ("root" if n == 0 else f"v{n}")
+    tag = f"{engine}/{'390' if mobile else '1280'}/" + ("root" if n == 0 else f"bg-{n}" if isinstance(n, str) else f"v{n}")
     b, ctx = await context(p, engine, mobile)
     pg = await ctx.new_page(); errs = []; bad = []
     pg.on("pageerror", lambda e: errs.append(str(e)))
     pg.on("response", lambda r: bad.append(f"{r.status} {r.url}") if r.status >= 400 else None)
-    root = BASE if n == 0 else f"{BASE}redesign/v{n}/"; prod = "/tresora-clone/products/" if n == 0 else f"/tresora-clone/redesign/v{n}/products/"
+    sub = "" if n == 0 else f"bg/{n}/" if isinstance(n, str) else f"redesign/v{n}/"
+    root = BASE + sub; prod = f"/tresora-clone/{sub}products/"
     problems, links = [], set()
     await pg.goto(root, wait_until="load"); await pg.evaluate("localStorage.clear()")
     for path in PAGES + (["success.html", "cancel.html"] if n == 0 else []):
@@ -150,7 +151,7 @@ async def run_variant(p, engine, mobile, n):
     for k, v in exp.items():
         if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
     if "slides" in t:
-        sx = {"slides": 7, "slide_cycle": "0,1,2,3,4,5,6", "slide_names": "Paris|Gothic Romance|Barcelona|Caravaggio|New York|Rococo Reverie|Amalfi", "slide_wrap": "0", "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
+        sx = {"slides": 6, "slide_cycle": "0,1,2,3,4,5", "slide_names": "Paris|Gothic Romance|Barcelona|Caravaggio|New York|Amalfi", "slide_wrap": "0", "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
         if not mobile: sx["slide_hold"] = "2"
         for k, v in sx.items():
             if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")

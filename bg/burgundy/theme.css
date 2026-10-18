@@ -1,0 +1,9 @@
+/* background preview "burgundy": Deep wine / burgundy with warm ivory type. Loaded after redesign/v4/style.css; only colours change. */
+:root{--bg:#3a1219;--surface:#47181f;--ink:#f4ebe6;--muted:#cdb1ae;--field-line:rgba(244,235,230,0.24);--btn-line:rgba(244,235,230,0.4);
+  --accent:#f4ebe6;--accent-ink:#3a1219;--header-bg:#3a1219;--eyebrow:#e3cdca;--star:#f4ebe6;--trust-icon:#e3cdca;--lead:#e3cdca;
+  --foot-bg:#2a0c12;--foot-ink:#e0ccc8;--field-bg:rgba(244,235,230,0.04);--ok-ink:#bfe0c9;--err:#ffc2b8;
+  --count-bg:#f4ebe6;--count-ink:#3a1219;--focus:#f4ebe6}
+.tc-drawer{--tc-btn:#3a1219;--tc-btn-ink:#f4ebe6}
+.rd-v4.rd-page--home .rd-header.is-scrolled{background:rgba(58,18,25,0.95)}
+.rd-v4 .rd-card__media{background:#47181f}
+.rd-v4 .rd-card__buy .rd-btn.is-added{color:var(--ok-ink)}

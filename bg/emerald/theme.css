@@ -1,0 +1,9 @@
+/* background preview "emerald": Deep forest green with ivory type. Loaded after redesign/v4/style.css; only colours change. */
+:root{--bg:#10261d;--surface:#173226;--ink:#eef0e8;--muted:#a9b9ad;--field-line:rgba(238,240,232,0.24);--btn-line:rgba(238,240,232,0.4);
+  --accent:#eef0e8;--accent-ink:#10261d;--header-bg:#10261d;--eyebrow:#ccd8cf;--star:#eef0e8;--trust-icon:#ccd8cf;--lead:#ccd8cf;
+  --foot-bg:#0a1b14;--foot-ink:#cdd8d0;--field-bg:rgba(238,240,232,0.04);--ok-ink:#bfe0c9;--err:#ffb4a8;
+  --count-bg:#eef0e8;--count-ink:#10261d;--focus:#eef0e8}
+.tc-drawer{--tc-btn:#10261d;--tc-btn-ink:#eef0e8}
+.rd-v4.rd-page--home .rd-header.is-scrolled{background:rgba(16,38,29,0.95)}
+.rd-v4 .rd-card__media{background:#173226}
+.rd-v4 .rd-card__buy .rd-btn.is-added{color:var(--ok-ink)}

@@ -1,0 +1,9 @@
+/* background preview "black": Deep charcoal-black with ivory type. Loaded after redesign/v4/style.css; only colours change. */
+:root{--bg:#121212;--surface:#1c1c1c;--ink:#eeebe5;--muted:#a6a29b;--field-line:rgba(238,235,229,0.24);--btn-line:rgba(238,235,229,0.4);
+  --accent:#eeebe5;--accent-ink:#121212;--header-bg:#121212;--eyebrow:#cbc8c2;--star:#eeebe5;--trust-icon:#cbc8c2;--lead:#cbc8c2;
+  --foot-bg:#0a0a0a;--foot-ink:#cfccc6;--field-bg:rgba(238,235,229,0.04);--ok-ink:#a9cfc0;--err:#ffb4a8;
+  --count-bg:#eeebe5;--count-ink:#121212;--focus:#eeebe5}
+.tc-drawer{--tc-btn:#121212;--tc-btn-ink:#eeebe5}
+.rd-v4.rd-page--home .rd-header.is-scrolled{background:rgba(18,18,18,0.95)}
+.rd-v4 .rd-card__media{background:#1c1c1c}
+.rd-v4 .rd-card__buy .rd-btn.is-added{color:var(--ok-ink)}

@@ -12,7 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
-STYLE = ""; ROOT_BUILD = False         # root build: v4 published at the site root
+STYLE = ""; ROOT_BUILD = False; THEME = None         # root build: v4 published at the site root
 N = 0
 CATS = {
   "art":  {"name": "Inspired by Art", "short": "Art", "img": SH + "img/cat-art.jpg",
@@ -197,13 +197,13 @@ def footer():
 </footer>'''
 
 def page(title, body, kind, active="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
-    tc = {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
+    tc = THEME["bg"] if THEME else {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
     return f'''<!doctype html>
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 <meta name="theme-color" content="{tc}">{"" if ROOT_BUILD else '<meta name="robots" content="noindex">'}
 <link rel="icon" href="{IMG}favicon.png">
-<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{STYLE or V + "style.css"}">
+<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{STYLE or V + "style.css"}">{f'<link rel="stylesheet" href="{V}theme.css">' if THEME else ""}
 </head><body>
 <a class="rd-skip" href="#main">Skip to content</a>
 {header(active)}
@@ -450,7 +450,7 @@ SLIDE_BY["caravaggio"] = ("caravaggio", "Caravaggio", "caravaggio-bacchus-wine-g
     "Open Caravaggio Bacchus wine set: Bacchus red cable-knit throw, two wine glasses, wine opener set, candle, reed diffuser and framed Bacchus print",
     "50% 50%", "port", "Inspired by Art", "--fit-top:13%;--fit-h:46%")
 # hero order: cities alternate with Atelier Home and Art
-ALL_SLIDES = [SLIDE_BY[k] for k in ("paris", "gothic", "barcelona", "caravaggio", "new-york", "rococo", "amalfi")]
+ALL_SLIDES = [SLIDE_BY[k] for k in ("paris", "gothic", "barcelona", "caravaggio", "new-york", "amalfi")]
 def slide_v4(i, key, name, h, alt, pos, fit, kicker, fitvars=""):
     vs = variants(BY_HANDLE[h]); avail = any(v["available"] for v in vs); tab = "" if i == 0 else ' tabindex="-1"'
     src = f"{SH}img/slide-{key}.jpg"; long = " rd-slide__city--long" if len(name) > 10 else ""
@@ -498,4 +498,46 @@ for N in (1, 2, 3, 4):
 # the main site: v4 at the root (index, shop, cart, account, products/, Stripe success/cancel pages)
 N, V, STYLE, ROOT_BUILD = 4, R, R + "redesign/v4/style.css", True
 build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
-print(f"built {count} pages (redesign/v1..v4 + site root)")
+# background-colour previews of the main site at /bg/<name>/ (same pages, only background/surface/text colours change)
+BG_THEMES = {
+  "ivory":    dict(light=True,  bg="#f5f0e6", surface="#ebe4d6", ink="#23211e", muted="#655f56", eyebrow="#55504a", foot="#23211e", foot_ink="#d9d2c5", ok="#2f6b4f", err="#a3362a",
+                   desc="Warm ivory / cream with charcoal type"),
+  "black":    dict(light=False, bg="#121212", surface="#1c1c1c", ink="#eeebe5", muted="#a6a29b", eyebrow="#cbc8c2", foot="#0a0a0a", foot_ink="#cfccc6", ok="#a9cfc0", err="#ffb4a8",
+                   desc="Deep charcoal-black with ivory type"),
+  "burgundy": dict(light=False, bg="#3a1219", surface="#47181f", ink="#f4ebe6", muted="#cdb1ae", eyebrow="#e3cdca", foot="#2a0c12", foot_ink="#e0ccc8", ok="#bfe0c9", err="#ffc2b8",
+                   desc="Deep wine / burgundy with warm ivory type"),
+  "emerald":  dict(light=False, bg="#10261d", surface="#173226", ink="#eef0e8", muted="#a9b9ad", eyebrow="#ccd8cf", foot="#0a1b14", foot_ink="#cdd8d0", ok="#bfe0c9", err="#ffb4a8",
+                   desc="Deep forest green with ivory type"),
+  "taupe":    dict(light=True,  bg="#dcd4c8", surface="#d0c7b9", ink="#26221e", muted="#574f46", eyebrow="#4a433b", foot="#2a2622", foot_ink="#dcd4c8", ok="#2f5f47", err="#8f2d22",
+                   desc="Warm greige / stone with charcoal type"),
+}
+def hexrgb(h): h = h.lstrip("#"); return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+def rgba(h, a): return "rgba(%d,%d,%d,%s)" % (*hexrgb(h), a)
+def theme_css(name, t):
+    bg, sf, ink = t["bg"], t["surface"], t["ink"]
+    css = f"""/* background preview "{name}": {t['desc']}. Loaded after redesign/v4/style.css; only colours change. */
+:root{{--bg:{bg};--surface:{sf};--ink:{ink};--muted:{t['muted']};--field-line:{rgba(ink, .24)};--btn-line:{rgba(ink, .4)};
+  --accent:{ink};--accent-ink:{bg};--header-bg:{bg};--eyebrow:{t['eyebrow']};--star:{ink};--trust-icon:{t['eyebrow']};--lead:{t['eyebrow']};
+  --foot-bg:{t['foot']};--foot-ink:{t['foot_ink']};--field-bg:{rgba(ink, .04)};--ok-ink:{t['ok']};--err:{t['err']};
+  --count-bg:{ink};--count-ink:{bg};--focus:{ink}}}
+.tc-drawer{{--tc-btn:{ink if t['light'] else bg};--tc-btn-ink:{bg if t['light'] else ink}}}
+.rd-v4.rd-page--home .rd-header.is-scrolled{{background:{rgba(bg, .95)}}}
+.rd-v4 .rd-card__media{{background:{sf}}}
+.rd-v4 .rd-card__buy .rd-btn.is-added{{color:var(--ok-ink)}}
+"""
+    if t["light"]:
+        css += f"""/* light backgrounds: header floats light-on-photo over the slideshow, turns dark-on-{name} once scrolled (logo darkened to match) */
+html:not(.rd-menu-open).rd-page--home .rd-header:not(.is-scrolled){{--ink:#f1ece2;--muted:#e2ddd3;--field-line:rgba(255,255,255,.5);color:#f1ece2}}
+.rd-menu-open.rd-page--home .rd-header{{background:var(--header-bg)}}
+.rd-v4:not(.rd-page--home) .rd-logo img,.rd-page--home .rd-header.is-scrolled .rd-logo img,.rd-menu-open .rd-logo img{{filter:brightness(.16)}}
+.rd-v4.rd-page--home .rd-header.is-scrolled .rd-search{{border-bottom-color:var(--field-line)}}
+.rd-v4.rd-page--home .rd-header.is-scrolled .rd-search input::placeholder{{color:var(--muted)}}
+.rd-footer{{--ink:{t['foot_ink']};--muted:{rgba(t['foot_ink'], .72)};--field-line:{rgba(t['foot_ink'], .3)}}}
+"""
+    return css
+for name, t in BG_THEMES.items():
+    V, STYLE, ROOT_BUILD, THEME = f"{R}bg/{name}/", R + "redesign/v4/style.css", False, t
+    d = f"bg/{name}"; os.makedirs(d, exist_ok=True); open(f"{d}/theme.css", "w").write(theme_css(name, t))
+    build(d, f"TRESORA · Background preview · {name}")
+THEME = None
+print(f"built {count} pages (redesign/v1..v4 + site root + bg previews)")
