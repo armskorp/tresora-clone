@@ -21,7 +21,7 @@ function mockStripe() {
 
 test("creates a session using SERVER prices, ignoring client prices", async () => {
   const calls = mockStripe();
-  const res = await worker.fetch(req({ items: [{ variant_id: Number(KLIMT), quantity: 2, price: 1, unit_amount: 1 }, { variant_id: Number(CARAVAGGIO_RED), product_id: 7813867307121, quantity: 1 }] }), ENV);
+  const res = await worker.fetch(req({ items: [{ variant_id: Number(KLIMT), quantity: 2, price: 1, unit_amount: 1 }, { variant_id: Number(CARAVAGGIO_RED), product_id: 7813867307121, quantity: 1 }] }), { ...ENV, USE_STRIPE_PRICE_IDS: "false" });
   assert.equal(res.status, 200);
   assert.equal((await res.json()).url, "https://checkout.stripe.com/c/pay/cs_test_1");
   assert.equal(res.headers.get("Access-Control-Allow-Origin"), ORIGIN);
@@ -71,4 +71,13 @@ test("Stripe failure returns 502 without leaking details", async () => {
   globalThis.fetch = async () => new Response(JSON.stringify({ error: { message: "Invalid API Key provided: sk_test_***" } }), { status: 401 });
   const res = await worker.fetch(req({ items: [{ variant_id: KLIMT, quantity: 1 }] }), ENV);
   assert.equal(res.status, 502); assert.deepEqual(await res.json(), { error: "Payment provider error" });
+});
+
+test("uses the synced Stripe Price IDs for the key's mode", async () => {
+  const calls = mockStripe();
+  const res = await worker.fetch(req({ items: [{ variant_id: KLIMT, quantity: 2, price: 1 }] }), ENV);
+  assert.equal(res.status, 200);
+  const p = calls[0].params, expected = catalog.variants[KLIMT].stripe_price && catalog.variants[KLIMT].stripe_price.test;
+  if (expected) { assert.equal(p.get("line_items[0][price]"), expected); assert.equal(p.get("line_items[0][price_data][unit_amount]"), null); }
+  assert.equal(p.get("line_items[0][quantity]"), "2");
 });

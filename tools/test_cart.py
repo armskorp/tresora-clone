@@ -56,7 +56,8 @@ async def desktop(b):
     await pg.click("[data-cart-open]"); await pg.wait_for_timeout(400)
     await pg.click("[data-tc-checkout]"); await pg.wait_for_timeout(300)
     m = await pg.text_content("[data-tc-msg]")
-    check("desktop: checkout without CHECKOUT_URL shows 'coming soon'", "coming soon" in m.lower(), m)
+    check("desktop: checkout without CHECKOUT_URL shows 'coming soon' or interim per-item Stripe links",
+          "coming soon" in m.lower() or ("paid separately" in m.lower() and await pg.locator(".tc-paylink").count() == 2), m)
     await pg.screenshot(path=f"{SHOT}-desktop-coming-soon.png")
     await pg.locator(".tc-item", has_text="Klimt").locator("[data-tc-remove]").click(); await pg.wait_for_timeout(200)
     s = await state(pg); check("desktop: remove deletes line", s["count"] == 3 and len(s["items"]) == 1, s)

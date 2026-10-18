@@ -10,6 +10,9 @@
   var CAT = window.TRESORA_CATALOG || { products: {}, variants: {} };
   var CFG = window.TRESORA_CONFIG || {};
   var MAX = Number(CFG.MAX_QTY_PER_LINE) || 20;
+  var PLMODE = (CFG.PAYMENT_LINKS || '').trim();
+  var PL = PLMODE && window.TRESORA_PAYMENT_LINKS && window.TRESORA_PAYMENT_LINKS[PLMODE];
+  if (PL && !Object.keys(PL).length) PL = null;
   var BASE = document.documentElement.getAttribute('data-base') || '';
   var fmt = function (c) { return '$' + (c / 100).toFixed(2) + ' ' + (CFG.CURRENCY || 'USD'); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); };
@@ -194,6 +197,15 @@
       if (price) price.textContent = fmt(v.price);
       if (img && v.image) img.src = BASE + v.image;
       var btn = form.querySelector('.tp-add'); btn.disabled = !v.available; btn.textContent = v.available ? 'Add to cart' : 'Sold out';
+      var bn = form.querySelector('[data-buy-now]');
+      if (bn) {
+        var link = !CFG.CHECKOUT_URL && PL && v.available && PL[v.id];
+        bn.hidden = !link;
+        if (link) {
+          bn.querySelector('[data-buy-now-link]').href = link;
+          bn.querySelector('[data-test-note]').textContent = 'Opens secure Stripe checkout for this item.' + testNote();
+        }
+      }
     };
     form.addEventListener('change', function (e) { if (e.target.name === 'variant') sync(); if (e.target === qty) qty.value = clamp(qty.value); });
     form.addEventListener('click', function (e) {
@@ -213,10 +225,34 @@
 
   /* ---------- checkout ---------- */
   var busy = false;
+  function testNote() { return PLMODE === 'test' ? ' (Stripe test mode: no real charge. Use card 4242 4242 4242 4242.)' : ''; }
+  // interim Payment Links can only pay for one product at a time: list one link per cart line
+  function showLinks(ls) {
+    var m = $('[data-tc-msg]');
+    m.innerHTML = '<span>Each item is paid separately for now:</span>' + ls.map(function (l) {
+      var v = CAT.variants[l.variant_id];
+      return PL[l.variant_id] ? '<a class="tc-paylink" href="' + esc(PL[l.variant_id]) + '">Pay for ' + esc(v.title + (v.variant_title ? ' – ' + v.variant_title : '')) + ' × ' + l.quantity + '</a>' : '';
+    }).join('') + (PLMODE === 'test' ? '<small>Stripe test mode: no real charge. Use card 4242 4242 4242 4242.</small>' : '');
+    m.hidden = false;
+  }
   function checkout() {
     if (busy || !lines().length) return;
     var url = (CFG.CHECKOUT_URL || '').trim();
-    if (!url) { msg('Payments are coming soon. Online checkout isn\'t open yet, but your cart is saved on this device.'); return; }
+    if (!url) {
+      var ls = lines();
+      if (PL) {
+        if (ls.length === 1 && PL[ls[0].variant_id]) {
+          var only = CAT.variants[ls[0].variant_id];
+          if (ls[0].quantity > 1) {
+            msg('Opening secure Stripe checkout. Please set the quantity to ' + ls[0].quantity + ' on the next page.' + testNote());
+            setTimeout(function () { location.href = PL[ls[0].variant_id]; }, 1600);
+          } else { location.href = PL[ls[0].variant_id]; }
+          return;
+        }
+        showLinks(ls); return;
+      }
+      msg('Payments are coming soon. Online checkout isn\'t open yet, but your cart is saved on this device.'); return;
+    }
     var btn = $('[data-tc-checkout]');
     busy = true; btn.disabled = true; btn.textContent = 'Redirecting…'; msg('');
     var items = lines().map(function (l) { return { product_id: CAT.variants[l.variant_id].product_id, variant_id: l.variant_id, quantity: l.quantity }; });

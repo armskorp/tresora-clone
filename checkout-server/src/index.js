@@ -60,9 +60,15 @@ export function sessionParams(lines, env, currency = catalog.currency || "usd") 
   p.set("shipping_address_collection[allowed_countries][0]", "US"); // "Free US shipping on all orders"
   p.set("billing_address_collection", "auto");
   if (env.STRIPE_AUTOMATIC_TAX === "true") p.set("automatic_tax[enabled]", "true");
+  const mode = String(env.STRIPE_SECRET_KEY || "").includes("_live_") ? "live" : "test";
   lines.forEach((l, i) => {
     const k = `line_items[${i}]`;
     p.set(`${k}[quantity]`, String(l.quantity));
+    // Prefer the Stripe Price created by tools/stripe_sync.py (same amount, verified at build time).
+    // Variants with an option such as a blanket color are sent inline so the color appears on the Stripe page.
+    // Either way the amount comes from the server catalog.
+    const priceId = !l.variant && l.stripe_price && l.stripe_price[mode];
+    if (priceId && env.USE_STRIPE_PRICE_IDS !== "false") { p.set(`${k}[price]`, priceId); return; }
     p.set(`${k}[price_data][currency]`, currency);
     p.set(`${k}[price_data][unit_amount]`, String(l.unit_amount));
     p.set(`${k}[price_data][product_data][name]`, l.name);
@@ -70,6 +76,7 @@ export function sessionParams(lines, env, currency = catalog.currency || "usd") 
     p.set(`${k}[price_data][product_data][metadata][variant_id]`, l.id);
     p.set(`${k}[price_data][product_data][metadata][product_id]`, String(l.product_id));
   });
+  p.set("payment_intent_data[metadata][cart]", lines.map((l) => `${l.id}x${l.quantity}`).join(",").slice(0, 500));
   p.set("metadata[cart]", lines.map((l) => `${l.id}x${l.quantity}`).join(",").slice(0, 500));
   return p;
 }

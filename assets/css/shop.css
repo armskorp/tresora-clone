@@ -91,3 +91,10 @@ body.tp{margin:0;background:var(--tc-bg);color:var(--tc-ink);font:400 17px/1.55 
   .tc-item{grid-template-columns:72px 1fr auto;gap:12px}.tc-item img{width:72px;height:72px}
 }
 @media (prefers-reduced-motion:reduce){.tc-drawer,.tc-overlay,.tc-toast{transition:none}}
+/* interim Stripe Payment Links */
+.tc-button--outline{background:transparent;color:var(--tc-ink);border:1px solid var(--tc-ink);width:100%;box-sizing:border-box}
+.tp-buynow{display:flex;flex-direction:column;gap:8px}.tp-buynow[hidden]{display:none}
+.tc-testnote{margin:0;font-size:13px;color:var(--tc-muted)}
+.tc-msg{display:flex;flex-direction:column;gap:8px}.tc-msg small{font-size:13px;color:var(--tc-muted)}
+.tc-paylink{display:block;padding:10px 12px;border-radius:10px;background:var(--tc-btn);color:var(--tc-btn-ink)!important;text-decoration:none;font-size:15px}
+.tc-paylink:hover{opacity:.9}

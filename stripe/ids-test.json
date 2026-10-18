@@ -1,0 +1,165 @@
+{
+ "mode": "test",
+ "products": {
+  "9052964946033": {
+   "stripe_product": "prod_VSkTRrEOrG2YMk",
+   "title": "New York Gift Box"
+  },
+  "7837183606897": {
+   "stripe_product": "prod_VSkTmnh1xSkW2R",
+   "title": "Handcrafted Artisan Glass Bottle \u2013 Rococo Reverie Collection"
+  },
+  "7829856780401": {
+   "stripe_product": "prod_VSkTL9fl0MJ2h0",
+   "title": "Amalfi Gift Box"
+  },
+  "7827771064433": {
+   "stripe_product": "prod_VSkUJujvHIRcdE",
+   "title": "Barcelona Gift Box"
+  },
+  "7827552403569": {
+   "stripe_product": "prod_VSkUzAkCuBGohK",
+   "title": "Gothic Romance Handcrafted Decorative Glass Bottle"
+  },
+  "7827039060081": {
+   "stripe_product": "prod_VSkUl0IYZNFQ1u",
+   "title": "Paris Gift Box"
+  },
+  "7813924683889": {
+   "stripe_product": "prod_VSkU7gf5eNHclt",
+   "title": "Elegant Girl Pearl Earring Gift Box"
+  },
+  "7813897126001": {
+   "stripe_product": "prod_VSkUD95u36lqhs",
+   "title": "John Sargent The Wineglasses Gift Box"
+  },
+  "7813885100145": {
+   "stripe_product": "prod_VSkUJ1f3s7sn3d",
+   "title": "Van Gogh Almond Blossom Gift Box"
+  },
+  "7813867307121": {
+   "stripe_product": "prod_VSkUuhAeuUeT6d",
+   "title": "Caravaggio Bacchus Wine Gift Box"
+  },
+  "7813793415281": {
+   "stripe_product": "prod_VSkURkrRFzB7iH",
+   "title": "Vermeer Girl with a Pearl Earring Gift Box"
+  },
+  "7813787385969": {
+   "stripe_product": "prod_VSkUY7uFQLAbVv",
+   "title": "Klimt The Kiss Gift Box"
+  }
+ },
+ "variants": {
+  "48949484060785": {
+   "stripe_price": "price_1URoyxBtPv0P7LG1jJmEKTJp",
+   "amount": 4900,
+   "available": true,
+   "name": "New York Gift Box",
+   "payment_link": "plink_1URoyyBtPv0P7LG1FUORJFvr",
+   "payment_link_url": "https://buy.stripe.com/test_aFacN463Q2jdgEB8eJ2cg00"
+  },
+  "44570067337329": {
+   "stripe_price": "price_1URoz0BtPv0P7LG1q9ewytlA",
+   "amount": 3600,
+   "available": false,
+   "name": "Handcrafted Artisan Glass Bottle \u2013 Rococo Reverie Collection"
+  },
+  "44541176447089": {
+   "stripe_price": "price_1URoz1BtPv0P7LG1LmML4jrb",
+   "amount": 4900,
+   "available": true,
+   "name": "Amalfi Gift Box",
+   "payment_link": "plink_1URoz2BtPv0P7LG1AZG6csI6",
+   "payment_link_url": "https://buy.stripe.com/test_00w3cuboa1f94VT9iN2cg01"
+  },
+  "44516210016369": {
+   "stripe_price": "price_1URoz4BtPv0P7LG1fPahI4qH",
+   "amount": 5900,
+   "available": true,
+   "name": "Barcelona Gift Box",
+   "payment_link": "plink_1URoz4BtPv0P7LG1mLbWn6FC",
+   "payment_link_url": "https://buy.stripe.com/test_14AaEWeAmf5Z7417aF2cg02"
+  },
+  "44514428649585": {
+   "stripe_price": "price_1URoz6BtPv0P7LG19lwd6XQp",
+   "amount": 6500,
+   "available": true,
+   "name": "Gothic Romance Handcrafted Decorative Glass Bottle",
+   "payment_link": "plink_1URoz7BtPv0P7LG1GPxOyMqO",
+   "payment_link_url": "https://buy.stripe.com/test_9B6fZg4ZM1f95ZXbqV2cg03"
+  },
+  "44512196821105": {
+   "stripe_price": "price_1URoz8BtPv0P7LG1TECAqhlv",
+   "amount": 5900,
+   "available": true,
+   "name": "Paris Gift Box",
+   "payment_link": "plink_1URoz9BtPv0P7LG13zn9Yugo",
+   "payment_link_url": "https://buy.stripe.com/test_aFa7sK2RE9LFgEBamR2cg04"
+  },
+  "44325569495153": {
+   "stripe_price": "price_1URozBBtPv0P7LG16mvXfkfU",
+   "amount": 5900,
+   "available": true,
+   "name": "Elegant Girl Pearl Earring Gift Box",
+   "payment_link": "plink_1URozBBtPv0P7LG1ov8AiXts",
+   "payment_link_url": "https://buy.stripe.com/test_9B6eVc63Q8HBewt0Mh2cg05"
+  },
+  "44325484134513": {
+   "stripe_price": "price_1URozDBtPv0P7LG1f04BrK5W",
+   "amount": 5900,
+   "available": true,
+   "name": "John Sargent The Wineglasses Gift Box",
+   "payment_link": "plink_1URozEBtPv0P7LG1YixBUy8s",
+   "payment_link_url": "https://buy.stripe.com/test_5kQ00i77U4rl4VT0Mh2cg06"
+  },
+  "44325426823281": {
+   "stripe_price": "price_1URozFBtPv0P7LG1aYpP6qxz",
+   "amount": 5400,
+   "available": true,
+   "name": "Van Gogh Almond Blossom Gift Box",
+   "payment_link": "plink_1URozGBtPv0P7LG1Q4Cvrdo7",
+   "payment_link_url": "https://buy.stripe.com/test_3cIaEW8bY3nh1JH0Mh2cg07"
+  },
+  "44325380391025": {
+   "stripe_price": "price_1URozIBtPv0P7LG1LYn3FxqU",
+   "amount": 6900,
+   "available": true,
+   "name": "Caravaggio Bacchus Wine Gift Box \u2013 Green",
+   "payment_link": "plink_1URozIBtPv0P7LG1rycILKJT",
+   "payment_link_url": "https://buy.stripe.com/test_7sY6oGcse7Dx1JHamR2cg08"
+  },
+  "44325380423793": {
+   "stripe_price": "price_1URozJBtPv0P7LG1X2uoKR3g",
+   "amount": 6900,
+   "available": true,
+   "name": "Caravaggio Bacchus Wine Gift Box \u2013 Red",
+   "payment_link": "plink_1URozKBtPv0P7LG1fUM6CEnn",
+   "payment_link_url": "https://buy.stripe.com/test_4gM28qdwi9LF1JH66B2cg09"
+  },
+  "44325326454897": {
+   "stripe_price": "price_1URozLBtPv0P7LG1BZAPWEtg",
+   "amount": 6500,
+   "available": true,
+   "name": "Vermeer Girl with a Pearl Earring Gift Box \u2013 Light Blue",
+   "payment_link": "plink_1URozMBtPv0P7LG1hRJmw7Oi",
+   "payment_link_url": "https://buy.stripe.com/test_cNibJ077U0b59c97aF2cg0a"
+  },
+  "44325355978865": {
+   "stripe_price": "price_1URozNBtPv0P7LG1kNORg3Qo",
+   "amount": 6500,
+   "available": true,
+   "name": "Vermeer Girl with a Pearl Earring Gift Box \u2013 White",
+   "payment_link": "plink_1URozNBtPv0P7LG1A2OOnarA",
+   "payment_link_url": "https://buy.stripe.com/test_cNiaEW4ZMf5Z5ZX9iN2cg0b"
+  },
+  "44325276582001": {
+   "stripe_price": "price_1URozPBtPv0P7LG1o24K36uT",
+   "amount": 5900,
+   "available": true,
+   "name": "Klimt The Kiss Gift Box",
+   "payment_link": "plink_1URozQBtPv0P7LG1kL5FIOL1",
+   "payment_link_url": "https://buy.stripe.com/test_fZu8wOcsega33RP66B2cg0c"
+  }
+ }
+}
