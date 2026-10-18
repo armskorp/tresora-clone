@@ -1,0 +1,5 @@
+body{margin:0;background:#dcc9bf;color:#2b2224;font-family:Georgia,serif}
+.pp{max-width:720px;margin:0 auto;padding:40px 20px;line-height:1.5}
+.pp img{width:100%;height:auto;display:block;margin:20px 0}
+.pp h1{font-weight:400;font-size:40px;margin:0 0 8px}
+.pp__back{color:inherit}.pp__price{font-size:18px}.pp__note{opacity:.6;font-size:14px;margin-top:40px}
