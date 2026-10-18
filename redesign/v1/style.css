@@ -28,7 +28,7 @@
 .rd-pagehead h1 em{font-style:italic}
 @media (max-width:749px){
   .rd-hero{grid-template-columns:1fr;min-height:0}
-  .rd-hero__media{order:-1;aspect-ratio:4/3.2;border-left:0;border-bottom:1px solid var(--line)}
+  
   .rd-hero__text{padding:44px var(--pad) 56px}
   .rd-hero h1{font-size:46px}
   .rd-trust--band{padding:24px var(--pad)}

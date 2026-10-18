@@ -15,6 +15,8 @@
   var money = function (c) { return '$' + (c / 100).toFixed(2); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); };
   var purl = function (h) { return ROOT + 'products/' + h + '.html'; };
+  var LEADS = window.RD_LEADS || {};   // product-first photos (the items, not the packaging) per variant: [large, thumb]
+  var leadImg = function (vid, small) { var l = LEADS[String(vid)]; return l ? l[small ? 1 : 0] : null; };
   var openCart = function () { if (Cart && Cart.open) Cart.open(); };
 
   /* ---- buying: cards and product pages share [data-rd-buy] ---- */
@@ -60,7 +62,7 @@
   var gridEl = $('[data-rd-grid]'), cards = $$('.rd-card', gridEl || document.createElement('div'));
   var tabs = $$('[data-rd-filter]'), result = $('[data-rd-result]'), none = $('[data-rd-noresult]');
   var sortEl = $('[data-rd-sort]'), stockEl = $('[data-rd-instock]'), titleEl = $('[data-rd-shoptitle]');
-  var NAMES = { all: 'All gift boxes & objects', art: 'Inspired by Art', city: 'Inspired by City', home: 'Atelier Home' };
+  var NAMES = { all: 'All gifts', art: 'Inspired by Art', city: 'Inspired by City', home: 'Atelier Home' };
   var state = { cat: 'all', q: '' };
   if (params.get('cat') && NAMES[params.get('cat')]) state.cat = params.get('cat');
   if (params.get('q')) state.q = params.get('q');
@@ -104,7 +106,7 @@
     var hits = products.filter(function (p) { return p.title.toLowerCase().indexOf(q) > -1 || p.handle.indexOf(q.replace(/\s+/g, '-')) > -1; }).slice(0, 6);
     sug.innerHTML = hits.length ? hits.map(function (p) {
       var v = CAT.variants[p.variants[0]];
-      return '<a role="option" href="' + purl(p.handle) + '"><img src="' + BASE + v.thumb + '" alt="" width="44" height="44"><span>' +
+      return '<a role="option" href="' + purl(p.handle) + '"><img src="' + (leadImg(v.id, true) || BASE + v.thumb) + '" alt="" width="44" height="44"><span>' +
         esc(p.title) + '</span><b>' + money(v.price) + '</b></a>';
     }).join('') + '<button type="button" data-rd-all>See all results</button>' : '<p>No matches. Try “Paris”, “Klimt” or “bottle”.</p>';
     sug.hidden = false; qi.setAttribute('aria-expanded', 'true');
@@ -144,6 +146,10 @@
       var m = a.getAttribute('href').match(/products\/([a-z0-9-]+)\.html$/);
       if (m && a.getAttribute('href') !== purl(m[1])) a.setAttribute('href', purl(m[1]));
     });
+    $$('.tc-item').forEach(function (li) {
+      var img = $('img', li), src = leadImg(li.getAttribute('data-variant'), true);
+      if (img && src && img.getAttribute('src') !== src) img.setAttribute('src', src);
+    });
   }
   if (items) { new MutationObserver(fixDrawer).observe(items, { childList: true, subtree: true }); fixDrawer(); }
   var foot = $('[data-tc-foot]');
@@ -156,7 +162,7 @@
     var ls = Cart.items(), list = $('[data-rd-cartlines]');
     list.innerHTML = ls.map(function (l) {
       var v = CAT.variants[l.variant_id];
-      return '<li class="rd-line" data-variant="' + v.id + '"><a class="rd-line__img" href="' + purl(v.handle) + '"><img src="' + BASE + esc(v.image) + '" alt="" width="160" height="120"></a>' +
+      return '<li class="rd-line" data-variant="' + v.id + '"><a class="rd-line__img" href="' + purl(v.handle) + '"><img src="' + (leadImg(v.id) || BASE + esc(v.image)) + '" alt="" width="160" height="120"></a>' +
         '<div class="rd-line__info"><a href="' + purl(v.handle) + '">' + esc(v.title) + '</a>' + (v.variant_title ? '<span>' + esc(v.variant_title) + '</span>' : '') + '<span>' + money(v.price) + '</span></div>' +
         '<div class="rd-qty"><button type="button" data-rd-dec aria-label="Decrease quantity"' + (l.quantity <= 1 ? ' disabled' : '') + '>−</button><output>' + l.quantity + '</output><button type="button" data-rd-inc aria-label="Increase quantity"' + (l.quantity >= 10 ? ' disabled' : '') + '>+</button></div>' +
         '<div class="rd-line__total"><b>' + money(v.price * l.quantity) + '</b><button type="button" class="rd-linkbtn" data-rd-remove>Remove</button></div></li>';
