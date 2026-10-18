@@ -1,0 +1,71 @@
+/* Concept 3 · Modern clean shop: white, cobalt as the single brand colour, dense marketplace grid (no gold) */
+:root{--bg:#fff;--surface:#f3f4f7;--ink:#14161c;--muted:#5e6472;--line:#e3e5ea;--accent:#2340c8;--accent-ink:#fff;
+  --head:"GT Standard",system-ui,sans-serif;--body:"GT Standard",system-ui,sans-serif;--radius:14px;--btn-radius:10px;--field-radius:10px;
+  --bar-bg:#2340c8;--bar-ink:#fff;--eyebrow:#2340c8;--star:#2340c8;--trust-icon:#2340c8;--card-title:16px;--card-pad:12px 14px 14px;--card-bg:#fff;--card-border:1px solid #e3e5ea;
+  --review-bg:#f6f7fa;--news-bg:#eef1fd;--field-bg:#f3f4f7;--foot-bg:#14161c;--foot-ink:#d6d9e0;--logo-foot-filter:brightness(0) invert(.92);--drawer-bg:#fff;--ok:#1b8a52}
+h1,h2,h3{font-weight:600;letter-spacing:-.02em}
+.rd-search{border-color:transparent}
+.rd-nav a{font-weight:500}
+.rd-btn{font-weight:600}
+.rd-head h2{font-size:clamp(24px,2.6vw,32px)}
+.rd-head{margin-bottom:22px}
+.rd-section{padding:48px 24px}
+/* hero: banner + 2 promos */
+.rd-hero{max-width:var(--wrap);margin:20px auto 0;padding:0 24px;display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.rd-hero__main{position:relative;display:grid;grid-template-columns:1.25fr 1fr;background:#eef1fd;border-radius:var(--radius);overflow:hidden;min-height:440px}
+.rd-hero__text{padding:48px 44px;align-self:center}
+.rd-pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#2340c8;color:#fff;font-size:13px;font-weight:600;margin-bottom:18px}
+.rd-hero h1{font-size:clamp(34px,3.6vw,50px);line-height:1.05;margin-bottom:16px}
+.rd-lead{font-size:17px;color:#3c4250}
+.rd-hero__img{width:100%;height:100%;object-fit:cover;object-position:50% 65%}
+.rd-hero__proof{display:flex;align-items:center;gap:8px;margin-top:22px;font-size:14px;color:var(--muted)}
+.rd-hero__side{display:grid;gap:16px}
+.rd-promo{position:relative;display:block;border-radius:var(--radius);overflow:hidden;text-decoration:none;min-height:212px}
+.rd-promo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rd-promo span{position:absolute;left:12px;bottom:12px;right:12px;display:flex;flex-direction:column;padding:12px 14px;background:#fff;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.rd-promo strong{font-size:16px}.rd-promo small{color:var(--muted);font-size:13px}
+.rd-btn--outline{border-color:#c7cff3;color:#2340c8;background:#fff}
+/* trust */
+.rd-section--trust{padding-block:24px}
+.rd-trust{border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px}
+/* categories: compact */
+.rd-cats{gap:16px}
+.rd-cat{aspect-ratio:16/10}
+.rd-cat__text strong{font:600 22px var(--body)}
+/* shop: dense 4-col */
+.rd-grid{--cols:4;--gap:16px}
+.rd-tab{border-radius:10px;font-weight:500}
+.rd-tab[aria-pressed=true]{background:#2340c8;border-color:#2340c8;color:#fff}
+.rd-card{transition:box-shadow .2s,transform .2s}
+.rd-card:hover{box-shadow:0 10px 30px rgba(20,22,28,.1);transform:translateY(-2px)}
+.rd-card__media{background:#f3f4f7}
+.rd-card__cat{font-size:11px;color:#2340c8;font-weight:600}
+.rd-card__title{font-weight:500;min-height:2.4em}
+.rd-card__price{font-size:18px}
+.rd-card__buy .rd-btn{min-height:40px}
+.rd-badge{background:#14161c}
+/* reviews */
+.rd-score b{font:600 40px var(--body)}
+.rd-review{border:1px solid var(--line)}
+/* why */
+.rd-why strong{font:600 18px var(--body)}
+.rd-why li{padding:20px;border:1px solid var(--line);border-radius:var(--radius)}
+.rd-why li::before{color:#2340c8;font-weight:600}
+/* news */
+.rd-news{border:1px solid #d6ddfb}
+.rd-news h2{font-size:clamp(24px,2.6vw,32px)}
+.rd-news__form input{border-radius:10px;border-color:#c7cff3}
+@media (max-width:1100px){.rd-hero{grid-template-columns:1fr}.rd-hero__side{grid-template-columns:1fr 1fr}.rd-grid{--cols:3}}
+@media (max-width:749px){
+  .rd-hero{margin-top:12px;padding:0 12px;gap:10px}
+  .rd-hero__main{grid-template-columns:1fr;min-height:0}
+  .rd-hero__img{order:-1;height:240px}
+  .rd-hero__text{padding:24px 20px 28px}
+  .rd-hero h1{font-size:32px}
+  .rd-hero__side{gap:10px}.rd-promo{min-height:150px}
+  .rd-promo span{left:8px;right:8px;bottom:8px;padding:8px 10px}.rd-promo strong{font-size:14px}
+  .rd-section{padding:32px 12px}
+  .rd-grid{--cols:2;--gap:10px}
+  .rd-card__title{font-size:14px}
+  .rd-why li{padding:14px}
+}

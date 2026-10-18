@@ -1,0 +1,66 @@
+/* Concept 1 · Luxury dark: midnight navy + emerald, ivory & soft-silver accents (no gold) */
+:root{--bg:#0d1726;--surface:#14223a;--ink:#f3eee4;--muted:#aab3c2;--line:rgba(243,238,228,.14);
+  --accent:#f3eee4;--accent-ink:#0d1726;--accent-strong:#0f5a47;--accent-strong-ink:#f3eee4;--emerald:#0f4d3f;--silver:#c9ced6;
+  --head:"Cormorant",Georgia,serif;--body:"GT Standard",system-ui,sans-serif;--radius:4px;--btn-radius:2px;--field-radius:2px;
+  --bar-bg:#0f4d3f;--bar-ink:#e9efe9;--header-bg:rgba(13,23,38,.96);--eyebrow:#9fd3bf;--star:#e8e3d6;--trust-icon:#9fd3bf;
+  --card-title:24px;--review-bg:#14223a;--news-bg:#0f4d3f;--news-ink:#f3eee4;--news-line:rgba(243,238,228,.35);--news-field:rgba(255,255,255,.08);--news-field-ink:#f3eee4;
+  --foot-bg:#08101c;--foot-ink:#d8dce3;--logo-foot-filter:brightness(0) invert(.92);--pop-bg:#f6f3ec;--pop-ink:#0d1726;
+  --modal-bg:#f6f3ec;--modal-ink:#0d1726;--drawer-bg:#f6f3ec;--drawer-ink:#0d1726;--ok:#0f5a47;--ok-ink:#9fd3bf;--err:#ffb4a8}
+.rd-logo img{filter:brightness(0) invert(.94)}
+.rd-search{--field-bg:rgba(255,255,255,.05)}
+.rd-nav a{letter-spacing:.04em}
+h1,h2{letter-spacing:.005em}
+/* hero */
+.rd-hero{display:grid;grid-template-columns:1.05fr .95fr;min-height:min(720px,calc(100vh - 110px));background:radial-gradient(120% 90% at 0% 100%,#0f4d3f 0%,rgba(15,77,63,0) 55%),var(--bg)}
+.rd-hero__text{align-self:center;padding:64px clamp(24px,6vw,96px);max-width:680px;justify-self:end}
+.rd-hero h1{font-size:clamp(44px,5.2vw,74px);font-weight:500;margin-bottom:22px}
+.rd-hero h1 em{font-style:italic;color:#cfe7dc}
+.rd-hero__media{order:2;position:relative;overflow:hidden}
+.rd-hero__media img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.rd-hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(13,23,38,0) 30%)}
+.rd-btn--light{background:#f3eee4;color:#0d1726;border-color:#f3eee4}
+.rd-btn--ghost{color:#f3eee4;border-color:rgba(243,238,228,.5)}
+.rd-hero__proof{display:flex;align-items:center;gap:10px;margin-top:28px;color:var(--muted);font-size:14px}
+/* trust band */
+.rd-trust--band{max-width:none;padding:28px max(24px,calc((100vw - var(--wrap))/2 + 24px));background:#111f33;border-block:1px solid var(--line)}
+.rd-trust span{color:#aab3c2}
+/* categories */
+.rd-cat{aspect-ratio:3/4;border:1px solid var(--line)}
+.rd-cat__text{background:linear-gradient(transparent,rgba(8,16,28,.9));padding:28px}
+.rd-cat__text strong{font-size:32px}
+/* shop */
+.rd-section--shop{max-width:none;background:#0a1320;padding-inline:max(24px,calc((100vw - var(--wrap))/2 + 24px))}
+.rd-grid{--cols:3;--gap:32px}
+.rd-tab{border-color:rgba(243,238,228,.25);color:var(--ink)}
+.rd-tab[aria-pressed=true]{background:#f3eee4;color:#0d1726;border-color:#f3eee4}
+.rd-card__media{border:1px solid var(--line)}
+.rd-card__cat{color:#9fd3bf}
+.rd-card__price{font:500 22px/1 var(--head);letter-spacing:.02em;color:#f3eee4}
+.rd-card .rd-btn--add{background:transparent;color:#f3eee4;border-color:rgba(243,238,228,.55)}
+.rd-card .rd-btn--add:hover{background:#f3eee4;color:#0d1726;opacity:1}
+.rd-badge{background:#c9ced6;color:#0d1726}
+/* story */
+.rd-story{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:center}
+.rd-story__img img{border-radius:var(--radius);aspect-ratio:4/5;object-fit:cover;width:100%;filter:saturate(.9)}
+.rd-story h2{font-size:clamp(34px,4vw,52px);margin-bottom:32px}
+.rd-story .rd-why{grid-template-columns:1fr 1fr;gap:28px}
+.rd-why li::before{color:#9fd3bf}
+/* reviews */
+.rd-review{border:1px solid var(--line)}
+.rd-review blockquote{font:400 21px/1.35 var(--head)}
+/* newsletter */
+.rd-news{background:linear-gradient(135deg,#0f4d3f,#0b3a30)}
+.rd-news .rd-btn{background:#f3eee4;color:#0d1726;border-color:#f3eee4}
+.rd-news__form input::placeholder{color:rgba(243,238,228,.6)}
+@media (max-width:749px){
+  .rd-hero{grid-template-columns:1fr;min-height:0}
+  .rd-hero__media{order:0;height:58vh;max-height:480px}
+  .rd-hero__media::after{background:linear-gradient(0deg,var(--bg) 0%,rgba(13,23,38,0) 40%)}
+  .rd-hero__text{padding:8px 20px 44px;justify-self:stretch}
+  .rd-hero h1{font-size:48px}
+  .rd-trust--band{padding:24px 16px}
+  .rd-section--shop{padding-inline:16px}
+  .rd-grid{--cols:2;--gap:16px}
+  .rd-story{grid-template-columns:1fr;gap:28px}
+  .rd-review blockquote{font-size:19px}
+}

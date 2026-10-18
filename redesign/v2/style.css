@@ -1,0 +1,62 @@
+/* Concept 2 · Warm gallery: deep burgundy + terracotta on cream, museum labels (no gold) */
+:root{--bg:#f6efe4;--surface:#efe4d4;--ink:#2a1517;--muted:#6f5a55;--line:rgba(42,21,23,.15);
+  --accent:#6b1f2a;--accent-ink:#fbf6ee;--terracotta:#b85c3c;--head:"Cormorant",Georgia,serif;--body:"Josefin Slab",Georgia,serif;
+  --radius:0px;--btn-radius:0px;--field-radius:0px;--bar-bg:#6b1f2a;--bar-ink:#f6efe4;--header-bg:#fbf6ee;--eyebrow:#b85c3c;--star:#b85c3c;--trust-icon:#b85c3c;
+  --card-title:25px;--card-bg:#fbf6ee;--card-pad:18px 20px 22px;--review-bg:#fbf6ee;--news-bg:#6b1f2a;--news-ink:#f6efe4;--news-line:rgba(246,239,228,.4);
+  --foot-bg:#2a1517;--foot-ink:#efe4d4;--logo-foot-filter:brightness(0) invert(.9);--modal-bg:#fbf6ee;--drawer-bg:#fbf6ee;--drawer-ink:#2a1517;--ok:#4f6b3a;--ok-ink:#4f6b3a}
+body{font-size:17px}
+.rd-header__in{grid-template-columns:auto auto 1fr minmax(220px,320px) auto}
+.rd-nav{font-size:16px;letter-spacing:.03em}
+.rd-btn{font-family:var(--body);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;min-height:50px;padding:0 28px}
+.rd-label{font-family:var(--body);font-weight:700;letter-spacing:.24em}
+/* hero: gallery wall */
+.rd-hero{max-width:var(--wrap);margin:0 auto;padding:64px 24px 72px;display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
+.rd-hero h1{font-size:clamp(50px,6vw,84px);color:#6b1f2a;margin-bottom:22px;font-weight:500}
+.rd-hero__frame{margin:0;padding:22px;background:#fbf6ee;border:1px solid #d9c6ae;box-shadow:0 0 0 10px #6b1f2a,0 0 0 11px #4a1119,0 30px 60px rgba(42,21,23,.25);max-width:440px;justify-self:center}
+.rd-hero__frame img{aspect-ratio:4/5;object-fit:cover;width:100%}
+.rd-hero__frame figcaption{display:flex;flex-direction:column;gap:2px;padding-top:14px;font-size:14px;color:var(--muted)}
+.rd-hero__frame figcaption strong{font:600 18px var(--head);color:var(--ink)}
+.rd-btn--outline{border-color:#6b1f2a;color:#6b1f2a}
+/* trust: museum plaque strip */
+.rd-section--trust{padding-block:0 24px}
+.rd-trust{background:#fbf6ee;border-top:3px solid #6b1f2a;padding:26px 30px;box-shadow:0 1px 0 var(--line)}
+/* category tiles: framed artworks */
+.rd-cat{aspect-ratio:auto;background:#fbf6ee;padding:16px 16px 0;border:1px solid #e1d2bf}
+.rd-cat img{aspect-ratio:1;height:auto}
+.rd-cat__text{position:static;background:none;color:var(--ink);padding:16px 4px 22px;border-top:0}
+.rd-cat__text strong{font-size:28px;color:#6b1f2a}.rd-cat__text em{color:var(--muted);opacity:1}.rd-cat__text small{color:#b85c3c;opacity:1;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+/* shop */
+.rd-section--shop{max-width:none;background:#efe4d4;padding-inline:max(24px,calc((100vw - var(--wrap))/2 + 24px))}
+.rd-grid{--cols:3;--gap:28px}
+.rd-tab{border-radius:0;border-color:#c9b49b;font-family:var(--body);font-weight:700;letter-spacing:.06em}
+.rd-tab[aria-pressed=true]{background:#6b1f2a;border-color:#6b1f2a;color:#fbf6ee}
+.rd-card{border:1px solid #e1d2bf}
+.rd-card__media{margin:14px 14px 0;aspect-ratio:1}
+.rd-card__cat{color:#b85c3c;font-weight:700}
+.rd-card__title{color:#2a1517}
+.rd-card__price{font:700 18px var(--body);color:#6b1f2a}
+.rd-badge{background:#2a1517}
+.rd-card .rd-btn--add{font-size:12px}
+/* why: curator note */
+.rd-why-wrap .rd-why{background:#fbf6ee;padding:36px;border-left:3px solid #b85c3c}
+.rd-why strong{color:#6b1f2a}
+/* reviews */
+.rd-review{border:1px solid #e1d2bf}
+.rd-review blockquote{font:italic 400 21px/1.4 var(--head)}
+.rd-score b{color:#6b1f2a}
+/* newsletter */
+.rd-news{border-radius:0}
+.rd-news .rd-btn{background:#b85c3c;border-color:#b85c3c}
+.rd-news__form input{border-radius:0}
+@media (max-width:1100px){.rd-grid{--cols:3}}
+@media (max-width:749px){
+  .rd-hero{grid-template-columns:1fr;gap:40px;padding:36px 20px 48px}
+  .rd-hero h1{font-size:46px}
+  .rd-hero__frame{max-width:300px;padding:14px;box-shadow:0 0 0 7px #6b1f2a,0 0 0 8px #4a1119,0 20px 40px rgba(42,21,23,.25)}
+  .rd-section--trust{padding:0 16px 8px}
+  .rd-trust{padding:20px}
+  .rd-section--shop{padding-inline:16px}
+  .rd-grid{--cols:2;--gap:12px}
+  .rd-card{--card-pad:12px 12px 14px}.rd-card__media{margin:8px 8px 0}
+  .rd-why-wrap .rd-why{padding:22px}
+}
