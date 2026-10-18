@@ -107,7 +107,7 @@ for p in products:
     open(f"products/{p['handle']}.html", "w").write(page(f"{p['title']} – TRESORA", body))
 
 open("success.html", "w").write(page("Thank you – TRESORA", """
-<section class="tp-return" data-checkout-success><h1>Thank you!</h1><p>Your order has been placed. A confirmation email is on its way.</p>
+<section class="tp-return" data-checkout-success><h1>Thank you!</h1><p>Your order has been placed. Thank you for shopping with TRESORA.</p>
 <a class="tc-button" href="index.html">Continue shopping</a></section>""", base=""))
 open("cancel.html", "w").write(page("Checkout canceled – TRESORA", """
 <section class="tp-return"><h1>Checkout canceled</h1><p>No payment was taken. Your cart is still saved.</p>

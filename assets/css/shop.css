@@ -57,6 +57,7 @@ html.tc-open,html.tc-open body{overflow:hidden}
 /* ---- standalone pages (product, success, cancel) ---- */
 body.tp{margin:0;background:var(--tc-bg);color:var(--tc-ink);font:400 17px/1.55 var(--tc-body);min-height:100vh;display:flex;flex-direction:column}
 .tp a{color:inherit}
+.tp a.tc-button{color:var(--tc-btn-ink)}.tp a.tc-button--outline{color:var(--tc-ink)}
 .tp-announce{text-align:center;font:400 11px/1 "Times New Roman",serif;letter-spacing:.04em;padding:14px 10px;border-bottom:1px solid var(--tc-line)}
 .tp-header{display:flex;justify-content:center;align-items:center;position:relative;padding:12px 24px}
 .tp-logo img{display:block;height:62px;width:auto}
