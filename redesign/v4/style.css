@@ -54,7 +54,7 @@
 .rd-zhead a{margin-left:auto;font:500 10.5px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;text-decoration:none;color:var(--ink);padding-bottom:5px;border-bottom:1px solid currentColor}
 .rd-zgrid{--cols:3;gap:56px var(--gap)}
 .rd-zgrid--2{--cols:2}
-.rd-v4 .rd-card__media{aspect-ratio:4/5;background:#122035}
+.rd-v4 .rd-card__media{aspect-ratio:5/4;background:#122035}
 .rd-v4 .rd-card__body{padding-top:14px}
 .rd-v4 .rd-card__cat{display:none}
 .rd-v4 .rd-card__title{font:500 12px/1.5 var(--body);letter-spacing:.08em;text-transform:uppercase;min-height:3em}
@@ -91,7 +91,7 @@
 .rd-v4 .rd-pdp__glance,.rd-v4 .rd-summary{background:var(--surface)}
 .rd-v4 .rd-grid--shop{--cols:4;gap:56px var(--gap)}
 .rd-v4 .rd-grid--related{gap:48px var(--gap)}
-.rd-v4 .rd-pdp__main{aspect-ratio:4/5}
+.rd-v4 .rd-pdp__main{aspect-ratio:5/4}
 .rd-v4 .rd-pdp__main img{object-position:50% 50%}
 @media (max-width:1100px){.rd-v4 .rd-grid--shop{--cols:3}.rd-zreviews{grid-template-columns:1fr 1fr!important}}
 @media (max-width:749px){
@@ -107,3 +107,7 @@
   .rd-v4 .rd-card__title{font-size:11px;letter-spacing:.05em}
   .rd-v4 .rd-card__buy{flex-direction:column;align-items:flex-start}
 }
+
+/* full-set photos: keep the whole contents visible in small thumbnails too */
+.rd-v4 .tc-item img{height:66px}.rd-v4 .rd-suggest img{width:52px;height:41px}
+@media (max-width:749px){.rd-v4 .tc-item img{height:57px}}

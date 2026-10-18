@@ -34,11 +34,11 @@ def money(c): return f"${c/100:.2f}"
 def from_price(key): return money(min(v["price"] for h in CATS[key]["handles"] for v in variants(BY_HANDLE[h])))
 def purl(h): return f"{V}products/{h}.html"
 VKEY = {"caravaggio-bacchus-wine-gift-box": {"Green": "green", "Red": "red"}, "vermeer-girl-with-a-pearl-earring-gift-box": {"Light Blue": "light-blue", "White": "white"}}
-V4_LEAD = {"amalfi-gift-box": 4, "barcelona-gift-box": 4, "new-york-gift-box": 4, "paris-gift-box": 3, "klimt-the-kiss-gift-box": 0,
-           "elegant-pearl-earring-table-gift-box": 0, "van-gogh-almond-blossom-gift-box": 0, "sargent-the-wineglasses-wine-gift-box": 0,
-           "gothic-romance-decorative-glass-bottle": 0, "rococo-reverie-decorative-glass-bottle": 0}
+V4_LEAD = {h: 0 for h in ("amalfi-gift-box", "barcelona-gift-box", "new-york-gift-box", "paris-gift-box", "klimt-the-kiss-gift-box",
+           "elegant-pearl-earring-table-gift-box", "van-gogh-almond-blossom-gift-box", "sargent-the-wineglasses-wine-gift-box",
+           "gothic-romance-decorative-glass-bottle", "rococo-reverie-decorative-glass-bottle")}   # v4: the photo showing the whole set together
 V4_VLEAD = {("caravaggio-bacchus-wine-gift-box", "Green"): 0, ("caravaggio-bacchus-wine-gift-box", "Red"): 3,
-            ("vermeer-girl-with-a-pearl-earring-gift-box", "Light Blue"): 2, ("vermeer-girl-with-a-pearl-earring-gift-box", "White"): 1}
+            ("vermeer-girl-with-a-pearl-earring-gift-box", "Light Blue"): 5, ("vermeer-girl-with-a-pearl-earring-gift-box", "White"): 0}
 def lead(h, v=None):
     if N == 4:
         vt = (v or variants(BY_HANDLE[h])[0])["variant_title"]
