@@ -40,7 +40,8 @@ save(crop(src("klimt-the-kiss-gift-box-1").convert("RGB"), .42, .5, 1, 4/5), IMG
 print("ok")
 # v4 city slideshow: full-bleed styled photos of each city set's items (native resolution, no packaging in frame)
 SLIDES = {"paris": "paris-gift-box-2", "barcelona": "barcelona-gift-box-2", "new-york": "new-york-gift-box-1", "amalfi": "amalfi-gift-box-1",
-          "rococo": "rococo-reverie-decorative-glass-bottle-1", "gothic": "gothic-romance-decorative-glass-bottle-0"}
+          "rococo": "rococo-reverie-decorative-glass-bottle-1", "gothic": "gothic-romance-decorative-glass-bottle-0",
+          "caravaggio": "caravaggio-bacchus-wine-gift-box-3"}
 for city, name in SLIDES.items():
     im = src(name).convert("RGB"); save(im, f"{IMG}slide-{city}.jpg", 2000, 86)
 print("slides ok")

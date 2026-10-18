@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 BASE = sys.argv[1].rstrip("/") + "/"
 args = sys.argv[2:]
 SHOTS = args[args.index("--shots") + 1] if "--shots" in args else None
-ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3, 4]
+ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3, 4]   # 0 = the main site (v4 at the root)
 ENGINES = args[args.index("--engines") + 1].split(",") if "--engines" in args else ["chromium", "webkit"]
 s = open("assets/js/catalog.js").read(); CAT = json.loads(s[s.index("{"): s.rstrip().rstrip(";").rindex("}") + 1])
 HANDLES = sorted(p["handle"] for p in CAT["products"].values())
@@ -34,25 +34,25 @@ async def visible(pg, sel="#shop .rd-card, [data-rd-grid] .rd-card"):
     return await pg.evaluate(f"[...document.querySelectorAll('[data-rd-grid] .rd-card')].filter(c=>!c.hidden).length")
 
 async def run_variant(p, engine, mobile, n):
-    tag = f"{engine}/{'390' if mobile else '1280'}/v{n}"
+    tag = f"{engine}/{'390' if mobile else '1280'}/" + ("root" if n == 0 else f"v{n}")
     b, ctx = await context(p, engine, mobile)
     pg = await ctx.new_page(); errs = []; bad = []
     pg.on("pageerror", lambda e: errs.append(str(e)))
     pg.on("response", lambda r: bad.append(f"{r.status} {r.url}") if r.status >= 400 else None)
-    root = f"{BASE}redesign/v{n}/"
+    root = BASE if n == 0 else f"{BASE}redesign/v{n}/"; prod = "/tresora-clone/products/" if n == 0 else f"/tresora-clone/redesign/v{n}/products/"
     problems, links = [], set()
     await pg.goto(root, wait_until="load"); await pg.evaluate("localStorage.clear()")
-    for path in PAGES:
+    for path in PAGES + (["success.html", "cancel.html"] if n == 0 else []):
         resp = await pg.goto(root + path, wait_until="load", timeout=60000)
         if resp.status != 200: problems.append(f"{path}: HTTP {resp.status}")
         await load_all(pg)
         r = await pg.evaluate("""()=>({broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.getAttribute('src')),
           overflow:document.documentElement.scrollWidth-innerWidth, links:[...document.querySelectorAll('a[href]')].map(a=>a.href),
-          stray:[...document.querySelectorAll('a[href*="/products/"]')].map(a=>a.getAttribute('href')).filter(h=>!h.includes('/redesign/v'))})""")
+          stray:[...document.querySelectorAll('a[href*="/products/"]')].map(a=>a.getAttribute('href')).filter(h=>!h.startsWith(PROD))})""".replace("PROD", repr(prod)))
         if r["broken"]: problems.append(f"{path}: broken images {r['broken']}")
         if r["overflow"] > 0: problems.append(f"{path}: horizontal overflow {r['overflow']}px")
         if r["stray"]: problems.append(f"{path}: links leave the concept {r['stray'][:3]}")
-        links.update(l.split("#")[0] for l in r["links"] if "/redesign/" in l)
+        links.update(l.split("#")[0] for l in r["links"] if l.startswith(root) or "/redesign/" in l)
         if SHOTS and engine == "chromium" and path in ("", "shop.html", "products/klimt-the-kiss-gift-box.html", "account.html"):
             nm = (path.replace("products/", "p-").replace(".html", "") or "home")
             await pg.screenshot(path=f"{SHOTS}/v{n}-{nm}-{'m' if mobile else 'd'}.png", full_page=(path == ""))
@@ -66,6 +66,7 @@ async def run_variant(p, engine, mobile, n):
     else: t["home_city"] = await pg.evaluate("document.querySelectorAll('.rd-card[data-cat=city]').length")
     if await pg.locator("[data-rd-slides]").count():   # v4 slideshow: autoplay, progress, swipe, hover pause
         t["slides"] = await pg.evaluate("document.querySelectorAll('[data-rd-slide]').length")
+        t["slide_names"] = await pg.evaluate("[...document.querySelectorAll('[data-rd-slide] .rd-slide__city')].map(e=>e.textContent).join('|')")
         t["slide0"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
         t["slide_imgs_ok"] = await pg.evaluate("[...document.querySelectorAll('[data-rd-slide] img')].every(i=>i.complete&&i.naturalWidth>=1000)")
         t["slide_full"] = await pg.evaluate("(()=>{const r=document.querySelector('[data-rd-slides]').getBoundingClientRect();return Math.abs(r.width-innerWidth)<2&&Math.abs(r.height-innerHeight)<2})()")
@@ -81,20 +82,20 @@ async def run_variant(p, engine, mobile, n):
         if SHOTS and engine == "chromium": await pg.screenshot(path=f"{SHOTS}/v{n}-slide2-{'m' if mobile else 'd'}.png")
         # full autoplay cycle from a fresh load: every slide shows in order and it wraps back to the first
         await pg.reload(wait_until="load"); await pg.mouse.move(640, 400) if not mobile else None; seen = []
-        for _ in range(64):
+        for _ in range(90):
             c = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
             if not seen or seen[-1] != c:
                 seen.append(c)
-                if SHOTS and engine == "chromium" and c in ("4", "5"):
+                if SHOTS and engine == "chromium" and c in ("1", "3", "5"):
                     await pg.wait_for_timeout(2000); await pg.screenshot(path=f"{SHOTS}/v{n}-slide{c}-{'m' if mobile else 'd'}.png")
-            if len(seen) > 6: break
+            if len(seen) > t["slides"]: break
             await pg.wait_for_timeout(500)
-        t["slide_cycle"] = ",".join(seen[:6]); t["slide_wrap"] = seen[6] if len(seen) > 6 else None
+        n_s = t["slides"]; t["slide_cycle"] = ",".join(seen[:n_s]); t["slide_wrap"] = seen[n_s] if len(seen) > n_s else None
     btn = pg.locator(".rd-card[data-cat=city] [data-rd-add]").first
     await btn.scroll_into_view_if_needed(); await btn.click(); await pg.wait_for_timeout(500)
     t["count"] = await pg.text_content("[data-cart-count]")
     t["drawer"] = await pg.evaluate("document.documentElement.classList.contains('tc-open')")
-    t["drawer_link_ok"] = await pg.evaluate(f"[...document.querySelectorAll('.tc-items a')].every(a=>a.getAttribute('href').startsWith('/tresora-clone/redesign/v{n}/products/'))")
+    t["drawer_link_ok"] = await pg.evaluate(f"[...document.querySelectorAll('.tc-items a')].every(a=>a.getAttribute('href').startsWith('{prod}'))")
     await pg.keyboard.press("Escape"); await pg.wait_for_timeout(300)
     # search from a product page navigates to the shop page with results
     await pg.goto(root + "products/paris-gift-box.html", wait_until="load")
@@ -125,6 +126,14 @@ async def run_variant(p, engine, mobile, n):
     if SHOTS and engine == "chromium": await pg.screenshot(path=f"{SHOTS}/v{n}-cart-{'m' if mobile else 'd'}.png")
     await pg.click(".rd-line:first-child [data-rd-remove]"); await pg.wait_for_timeout(150)
     t["cart_lines_after_remove"] = await pg.evaluate("document.querySelectorAll('.rd-line').length")
+    # checkout: one product left, so Checkout must hand over to its Stripe (test mode) Payment Link
+    n_err = len(errs)
+    try:
+        async with pg.expect_navigation(url=lambda u: "stripe.com" in u, timeout=20000, wait_until="commit"):
+            await pg.click("[data-rd-checkout]")
+        t["checkout_host"] = pg.url.split("/")[2]
+    except Exception as e: t["checkout_host"] = f"none ({str(e)[:60]})"
+    del errs[n_err:]; await pg.goto(root + "cart.html", wait_until="load"); bad[:] = [b for b in bad if "stripe" not in b]
     # account page
     await pg.goto(root + "account.html?mode=signup", wait_until="load")
     t["signup_mode"] = await pg.get_attribute("[data-rd-accountpage]", "data-mode")
@@ -137,17 +146,17 @@ async def run_variant(p, engine, mobile, n):
         if r.status != 200: problems.append(f"dead link {l} -> {r.status}")
     await b.close()
     exp = {"home_city": 4, "count": "1", "drawer": True, "drawer_link_ok": True, "search_shop": (True, 1), "shop_city": 4, "sorted": True, "instock": 11,
-           "count_after_pdp": "3", "cart_lines": 2, "cart_count_inc": "4", "cart_lines_after_remove": 1, "signup_mode": "signup", "signin_title": "Welcome back"}
+           "count_after_pdp": "3", "cart_lines": 2, "cart_count_inc": "4", "cart_lines_after_remove": 1, "signup_mode": "signup", "signin_title": "Welcome back", "checkout_host": "buy.stripe.com"}
     for k, v in exp.items():
         if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
     if "slides" in t:
-        sx = {"slides": 6, "slide_cycle": "0,1,2,3,4,5", "slide_wrap": "0", "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
+        sx = {"slides": 7, "slide_cycle": "0,1,2,3,4,5,6", "slide_names": "Paris|Gothic Romance|Barcelona|Caravaggio|New York|Rococo Reverie|Amalfi", "slide_wrap": "0", "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
         if not mobile: sx["slide_hold"] = "2"
         for k, v in sx.items():
             if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
     if t.get("suggest", 0) < 1: problems.append("no search suggestions")
     if not t.get("signup_msg", "").startswith("Looks good"): problems.append(f"signup msg {t.get('signup_msg')}")
-    problems += [f"js error {e}" for e in errs] + [f"http {x}" for x in bad]
+    problems += [f"js error {e}" for e in errs if "stripe" not in e] + [f"http {x}" for x in bad]
     print(("PASS " if not problems else "FAIL ") + tag + f"  pages={len(PAGES)} links={len(links)}" + ("" if not problems else "\n   " + "\n   ".join(problems[:15])), flush=True)
     return {"tag": tag, "problems": problems, **{k: str(v) for k, v in t.items()}}
 

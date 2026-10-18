@@ -12,6 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
+STYLE = ""; ROOT_BUILD = False         # root build: v4 published at the site root
 N = 0
 CATS = {
   "art":  {"name": "Inspired by Art", "short": "Art", "img": SH + "img/cat-art.jpg",
@@ -200,9 +201,9 @@ def page(title, body, kind, active="", desc="Art-inspired and city-inspired gift
     return f'''<!doctype html>
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
-<meta name="theme-color" content="{tc}"><meta name="robots" content="noindex">
+<meta name="theme-color" content="{tc}">{"" if ROOT_BUILD else '<meta name="robots" content="noindex">'}
 <link rel="icon" href="{IMG}favicon.png">
-<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{V}style.css">
+<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{STYLE or V + "style.css"}">
 </head><body>
 <a class="rd-skip" href="#main">Skip to content</a>
 {header(active)}
@@ -317,6 +318,16 @@ def shop_page():
 <section class="rd-section rd-section--trust">{trust()}</section>'''
     return page("Shop all · TRESORA", body, "shop", active="shop")
 
+def return_page(ok):
+    if ok:
+        inner = f'''<section class="rd-section rd-pagehead rd-return" data-checkout-success>{crumbs(("Order confirmed", None))}<h1>Thank you</h1>
+  <p>Your order has been placed. A confirmation from Stripe is on its way to your email.</p>
+  <p><a class="rd-btn rd-btn--primary" href="{V}shop.html">Continue shopping</a></p></section>'''
+        return page("Thank you · TRESORA", inner, "return")
+    inner = f'''<section class="rd-section rd-pagehead rd-return">{crumbs(("Checkout cancelled", None))}<h1>Checkout cancelled</h1>
+  <p>No payment was taken. Your cart is saved, so you can pick up where you left off.</p>
+  <p><a class="rd-btn rd-btn--primary" href="{V}cart.html">View cart</a> <a class="rd-textlink" href="{V}shop.html">Continue shopping</a></p></section>'''
+    return page("Checkout cancelled · TRESORA", inner, "return")
 def cart_page():
     body = f'''
 <section class="rd-section rd-pagehead">{crumbs(("Cart", None))}<h1>Your cart</h1></section>
@@ -433,15 +444,21 @@ def zcard_grid(key, cols):
 # is shown whole on a blurred copy of itself instead of cropped ("land" = portrait photo on landscape screens, "port" = the reverse)
 SLIDES_HOME = [("rococo", "Rococo Reverie", "rococo-reverie-decorative-glass-bottle", "Rococo Reverie hand-decorated glass bottle with a turquoise patina and pastoral scene, among dried flowers and blue-and-white porcelain", "49% 54%", "port"),
                ("gothic", "Gothic Romance", "gothic-romance-decorative-glass-bottle", "Gothic Romance hand-decorated glass bottle with a black rose, on a dark wooden table by candlelight", "50% 50%", "land")]
-ALL_SLIDES = [(k, n, h, a, pos, "", "Inspired by City") for k, n, h, a, pos in SLIDES] + [(k, n, h, a, pos, fit, "Atelier Home") for k, n, h, a, pos, fit in SLIDES_HOME]
-def slide_v4(i, key, name, h, alt, pos, fit, kicker):
+SLIDE_BY = {k: (k, n, h, a, pos, "", "Inspired by City", "") for k, n, h, a, pos in SLIDES}
+SLIDE_BY.update({k: (k, n, h, a, pos, fit, "Atelier Home", "") for k, n, h, a, pos, fit in SLIDES_HOME})
+SLIDE_BY["caravaggio"] = ("caravaggio", "Caravaggio", "caravaggio-bacchus-wine-gift-box",
+    "Open Caravaggio Bacchus wine set: Bacchus red cable-knit throw, two wine glasses, wine opener set, candle, reed diffuser and framed Bacchus print",
+    "50% 50%", "port", "Inspired by Art", "--fit-top:13%;--fit-h:46%")
+# hero order: cities alternate with Atelier Home and Art
+ALL_SLIDES = [SLIDE_BY[k] for k in ("paris", "gothic", "barcelona", "caravaggio", "new-york", "rococo", "amalfi")]
+def slide_v4(i, key, name, h, alt, pos, fit, kicker, fitvars=""):
     vs = variants(BY_HANDLE[h]); avail = any(v["available"] for v in vs); tab = "" if i == 0 else ' tabindex="-1"'
     src = f"{SH}img/slide-{key}.jpg"; long = " rd-slide__city--long" if len(name) > 10 else ""
     bg = f'<img class="rd-slide__bg" src="{src}" alt="" aria-hidden="true" loading="eager" decoding="async">' if fit else ""
     link = (f'<a class="rd-slide__link" href="{purl(h)}"{tab}>Shop {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · {money(vs[0]["price"])}</span>' if avail else
             f'<a class="rd-slide__link" href="{purl(h)}"{tab}>View {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · Sold out</span>')
     return f'''<figure class="rd-slide{" is-active" if i == 0 else ""}{f" rd-slide--fit-{fit}" if fit else ""}" data-rd-slide aria-roledescription="slide" aria-label="{i+1} of {len(ALL_SLIDES)}: {name}"{"" if i == 0 else ' aria-hidden="true"'}>
-    {bg}<img class="rd-slide__img" src="{src}" alt="{E(alt)}" style="object-position:{pos}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
+    {bg}<img class="rd-slide__img" src="{src}" alt="{E(alt)}" style="object-position:{pos}{";" + fitvars if fitvars else ""}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
     <figcaption class="rd-slide__text"><span class="rd-slide__kicker">{kicker} · {i+1:02d}</span><span class="rd-slide__city{long}">{E(name)}</span>
       {link}</figcaption></figure>'''
 def home_v4():
@@ -466,12 +483,19 @@ def home_v4():
 
 NAMES = {1: "Midnight", 2: "Gallery", 3: "Modern", 4: "Cities"}
 count = 0
-for N in (1, 2, 3, 4):
-    V = f"{R}redesign/v{N}/"
-    d = f"redesign/v{N}"; os.makedirs(f"{d}/products", exist_ok=True)
+def build(d, title, extra=False):
+    global count
+    os.makedirs(f"{d}/products", exist_ok=True)
     def w(path, txt):
         global count; open(f"{d}/{path}", "w", encoding="utf-8").write(txt); count += 1
-    w("index.html", page(f"TRESORA · Concept {N} · {NAMES[N]}", home(), "home"))
+    w("index.html", page(title, home(), "home"))
     w("shop.html", shop_page()); w("cart.html", cart_page()); w("account.html", account_page())
     for h in ORDER: w(f"products/{h}.html", product_page(h))
-print(f"built {count} pages in redesign/v1..v3")
+    if extra: w("success.html", return_page(True)); w("cancel.html", return_page(False))
+for N in (1, 2, 3, 4):
+    V = f"{R}redesign/v{N}/"
+    build(f"redesign/v{N}", f"TRESORA · Concept {N} · {NAMES[N]}")
+# the main site: v4 at the root (index, shop, cart, account, products/, Stripe success/cancel pages)
+N, V, STYLE, ROOT_BUILD = 4, R, R + "redesign/v4/style.css", True
+build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
+print(f"built {count} pages (redesign/v1..v4 + site root)")
