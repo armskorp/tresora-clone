@@ -50,7 +50,17 @@
   document.querySelectorAll('slideshow-component').forEach(function (show) {
     var track = show.querySelector('slideshow-slides');
     if (!track) return;
-    var step = function (dir) { track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' }); };
+    // go to the previous/next laid-out slide exactly (card galleries have no scroll-snap in the copy)
+    var step = function (dir) {
+      var slides = Array.prototype.filter.call(track.children, function (el) {
+        return el.tagName === 'SLIDESHOW-SLIDE' && el.offsetWidth > 0;
+      });
+      if (!slides.length) return;
+      var cur = 0, best = Infinity;
+      slides.forEach(function (el, i) { var d = Math.abs(el.offsetLeft - track.scrollLeft); if (d < best) { best = d; cur = i; } });
+      var next = Math.max(0, Math.min(slides.length - 1, cur + dir));
+      track.scrollTo({ left: slides[next].offsetLeft, behavior: 'smooth' });
+    };
     show.querySelectorAll('.slideshow-control--previous').forEach(function (b) {
       b.disabled = false; b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); step(-1); });
     });
@@ -106,8 +116,8 @@
         browser never fetches them and a card can end up showing an empty frame. Load a card's images as soon as
         it comes near the screen, and everything else once the page is idle. */
   var eager = function (img) {
+    // only ever upgrade lazy -> eager; never touch src/decoding of an image that is already shown
     if (img.getAttribute('loading') === 'lazy') img.setAttribute('loading', 'eager');
-    if (img.decoding !== 'sync') img.decoding = 'async';
   };
   var groups = document.querySelectorAll('product-card, .resource-card, slideshow-component');
   if ('IntersectionObserver' in window) {

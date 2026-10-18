@@ -52,3 +52,13 @@ These things need a store backend, so they are inert in the copy:
 - newsletter and gift-finder forms
 - links other than the product pages (they point to `#`)
 - inventory: product availability is a snapshot from `products.json`
+
+## Mobile / iOS hardening
+
+`tools/finalize.py` runs at the end of `tools/build_shop.py`:
+- Each product card's photo is the first slide. It is a plain eager `<img>` with its real pixel size, and the first two cards of each row load at high priority.
+- Local CSS and JS get `?v=<content hash>` so phones never keep stale files.
+
+`assets/css/clone.css` turns off the theme's scroll-driven slider animations and `content-visibility` on slides. On phones and touch screens it shows only the first photo of each card.
+
+Checks: `tools/card_check.py` (iPhone emulation in WebKit or Chromium), `tools/audit_images.py`, `tools/mobile_audit.py`, `tools/phone_shot.py`.

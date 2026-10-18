@@ -1,2 +1,27 @@
 /* Overrides for the static copy (no Shopify runtime). */
 shopify-forms-embed, shopify-chat { display: none !important; }
+
+/* ---- Product / collection sliders without the Horizon runtime ----------------------------------
+   The theme drives its sliders with scroll-driven animations (view-timeline names --slide-0..N that
+   are declared again inside every nested card gallery) and content-visibility:auto on every slide.
+   Real iOS Safari skipped painting the first card of each row with this combination, leaving only the
+   title + price. A static copy needs none of it, so slides are plain, always-rendered boxes. */
+slideshow-component { timeline-scope: none !important; }
+slideshow-slide {
+  view-timeline-name: none !important;
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
+}
+/* the only thing those timelines animated: slide text in the image slideshow */
+.slide__content { animation: none !important; opacity: 1 !important; translate: none !important; }
+
+/* Card image galleries: the visible photo is always the first slide, a plain <img>.
+   On phones / touch screens (where the theme also disables card galleries) only that slide exists
+   in layout, so nothing can scroll, snap or swap it out. */
+.card-gallery slideshow-slides { scroll-snap-type: none !important; }
+.card-gallery slideshow-slide .product-media__image { opacity: 1 !important; visibility: visible !important; }
+@media (max-width: 749px), (hover: none) {
+  .card-gallery slideshow-slides { overflow: hidden !important; }
+  .card-gallery slideshow-slide:not(:first-child) { display: none !important; }
+  .card-gallery slideshow-arrows, .card-gallery slideshow-controls { display: none !important; }
+}

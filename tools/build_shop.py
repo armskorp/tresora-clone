@@ -122,3 +122,4 @@ if "assets/js/cart.js" not in idx:
     idx = idx.replace("</body>", '<script src="assets/js/config.js"></script>\n<script src="assets/js/catalog.js"></script>\n<script src="assets/js/payment-links.js"></script>\n<script src="assets/js/cart.js"></script>\n</body>', 1)
     open("index.html", "w", encoding="utf-8").write(idx)
 print("catalog:", len(client["variants"]), "variants;", len(products), "product pages")
+import subprocess, sys as _s; subprocess.run([_s.executable, "tools/finalize.py"], check=True)
