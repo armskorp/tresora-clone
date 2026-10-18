@@ -1,17 +1,24 @@
-# TRESORA homepage design concepts (preview)
+# TRESORA redesign concepts (preview only)
 
-The live homepage (`/index.html`) is unchanged. These pages only add new URLs.
+Three complete, browsable mini-sites built from the real catalog (12 products, real prices, real photos, the 5 real reviews at 5.00).
+The live homepage at the repo root is not changed.
 
-| Concept | URL | Idea |
+| Concept | URL | Look |
 |---|---|---|
-| v1 Luxury dark | `/redesign/v1/` | Midnight navy and emerald with ivory and soft-silver accents, large serif headlines, boutique feel (no gold). |
-| v2 Warm gallery | `/redesign/v2/` | Burgundy and terracotta on cream. Museum frame hero, "rooms" for categories, framed product cards, guest-book reviews. |
-| v3 Modern clean shop | `/redesign/v3/` | White with cobalt as the only brand color. Banner and promo hero, dense 4-column grid, marketplace clarity. |
+| v1 Midnight | /redesign/v1/ | Deep navy + emerald with ivory and soft silver. Centered editorial header, split hero with studio photo |
+| v2 Gallery | /redesign/v2/ | Cream, burgundy + terracotta, museum-label typography, framed hero artwork |
+| v3 Modern | /redesign/v3/ | White + cobalt, clean sans, split full-bleed hero, dense 4-column shop |
 
-All three use the real catalog: 12 products, real prices and real photos from `assets/js/catalog.js`. They show the 5 real reviews (5.00) and use the site's working cart (`assets/js/cart.js`, the same drawer and Stripe test checkout). Build: `python3 tools/build_redesign.py`. Check: `python3 tools/redesign_check.py BASE_URL [--shots]`.
+Each concept has: `index.html` (home), `shop.html` (category filter, in-stock filter, sort, search via `?q=`/`?cat=`),
+`products/<handle>.html` for all 12 products (gallery, variants, quantity, description, related), `cart.html`
+(full cart with quantity / remove / Stripe checkout) and `account.html` (sign in / create account, `?mode=signup`).
 
-**Front-end only, for now:**
-- Sign in / Create account: validates email and password, then shows a "preview" message. Nothing is sent or stored.
-- Newsletter: validates email and consent, then shows a "preview" message. Nothing is sent.
+- Cart, drawer and checkout are the site's real `assets/js/cart.js` (shared localStorage cart, Stripe Payment Links in test mode).
+- Account and newsletter forms are front-end previews only: nothing is sent or stored.
+- Build: `python3 tools/build_redesign.py`. Check: `python3 tools/redesign_check.py https://armskorp.github.io/tresora-clone/`.
 
-Real accounts and email sign-up need a backend: an auth service or database, password hashing, email verification and reset emails, and an email provider or mailing list.
+## What real customer accounts need
+An auth backend (e.g. Shopify customer accounts, or Supabase/Auth0/Clerk) with hashed passwords, email verification and
+password-reset emails sent through a transactional provider (Postmark, SendGrid, Amazon SES or Resend) on a verified domain
+(SPF, DKIM, DMARC for tresora.store). Order history needs Stripe Checkout webhooks stored per customer.
+The newsletter needs a list provider (Klaviyo, Mailchimp, Shopify Email) with double opt-in and unsubscribe links.

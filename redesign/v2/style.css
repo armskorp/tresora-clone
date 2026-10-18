@@ -1,62 +1,41 @@
-/* Concept 2 · Warm gallery: deep burgundy + terracotta on cream, museum labels (no gold) */
-:root{--bg:#f6efe4;--surface:#efe4d4;--ink:#2a1517;--muted:#6f5a55;--line:rgba(42,21,23,.15);
-  --accent:#6b1f2a;--accent-ink:#fbf6ee;--terracotta:#b85c3c;--head:"Cormorant",Georgia,serif;--body:"Josefin Slab",Georgia,serif;
-  --radius:0px;--btn-radius:0px;--field-radius:0px;--bar-bg:#6b1f2a;--bar-ink:#f6efe4;--header-bg:#fbf6ee;--eyebrow:#b85c3c;--star:#b85c3c;--trust-icon:#b85c3c;
-  --card-title:25px;--card-bg:#fbf6ee;--card-pad:18px 20px 22px;--review-bg:#fbf6ee;--news-bg:#6b1f2a;--news-ink:#f6efe4;--news-line:rgba(246,239,228,.4);
-  --foot-bg:#2a1517;--foot-ink:#efe4d4;--logo-foot-filter:brightness(0) invert(.9);--modal-bg:#fbf6ee;--drawer-bg:#fbf6ee;--drawer-ink:#2a1517;--ok:#4f6b3a;--ok-ink:#4f6b3a}
-body{font-size:17px}
-.rd-header__in{grid-template-columns:auto auto 1fr minmax(220px,320px) auto}
-.rd-nav{font-size:16px;letter-spacing:.03em}
-.rd-btn{font-family:var(--body);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;min-height:50px;padding:0 28px}
-.rd-label{font-family:var(--body);font-weight:700;letter-spacing:.24em}
-/* hero: gallery wall */
-.rd-hero{max-width:var(--wrap);margin:0 auto;padding:64px 24px 72px;display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
-.rd-hero h1{font-size:clamp(50px,6vw,84px);color:#6b1f2a;margin-bottom:22px;font-weight:500}
-.rd-hero__frame{margin:0;padding:22px;background:#fbf6ee;border:1px solid #d9c6ae;box-shadow:0 0 0 10px #6b1f2a,0 0 0 11px #4a1119,0 30px 60px rgba(42,21,23,.25);max-width:440px;justify-self:center}
-.rd-hero__frame img{aspect-ratio:4/5;object-fit:cover;width:100%}
-.rd-hero__frame figcaption{display:flex;flex-direction:column;gap:2px;padding-top:14px;font-size:14px;color:var(--muted)}
-.rd-hero__frame figcaption strong{font:600 18px var(--head);color:var(--ink)}
-.rd-btn--outline{border-color:#6b1f2a;color:#6b1f2a}
-/* trust: museum plaque strip */
-.rd-section--trust{padding-block:0 24px}
-.rd-trust{background:#fbf6ee;border-top:3px solid #6b1f2a;padding:26px 30px;box-shadow:0 1px 0 var(--line)}
-/* category tiles: framed artworks */
-.rd-cat{aspect-ratio:auto;background:#fbf6ee;padding:16px 16px 0;border:1px solid #e1d2bf}
-.rd-cat img{aspect-ratio:1;height:auto}
-.rd-cat__text{position:static;background:none;color:var(--ink);padding:16px 4px 22px;border-top:0}
-.rd-cat__text strong{font-size:28px;color:#6b1f2a}.rd-cat__text em{color:var(--muted);opacity:1}.rd-cat__text small{color:#b85c3c;opacity:1;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
-/* shop */
-.rd-section--shop{max-width:none;background:#efe4d4;padding-inline:max(24px,calc((100vw - var(--wrap))/2 + 24px))}
-.rd-grid{--cols:3;--gap:28px}
-.rd-tab{border-radius:0;border-color:#c9b49b;font-family:var(--body);font-weight:700;letter-spacing:.06em}
-.rd-tab[aria-pressed=true]{background:#6b1f2a;border-color:#6b1f2a;color:#fbf6ee}
-.rd-card{border:1px solid #e1d2bf}
-.rd-card__media{margin:14px 14px 0;aspect-ratio:1}
-.rd-card__cat{color:#b85c3c;font-weight:700}
-.rd-card__title{color:#2a1517}
-.rd-card__price{font:700 18px var(--body);color:#6b1f2a}
-.rd-badge{background:#2a1517}
-.rd-card .rd-btn--add{font-size:12px}
-/* why: curator note */
-.rd-why-wrap .rd-why{background:#fbf6ee;padding:36px;border-left:3px solid #b85c3c}
+/* Concept 2 · Gallery: cream, deep burgundy + terracotta, museum-label typography (no gold) */
+:root{--bg:#f6efe4;--surface:#ede3d3;--ink:#2a1a1b;--muted:#6e5c57;--line:rgba(42,26,27,.14);
+  --accent:#6b1f2a;--accent-ink:#fbf6ee;--head:"Cormorant",Georgia,serif;--body:"Josefin Slab",Georgia,serif;
+  --bar-bg:#6b1f2a;--bar-ink:#f6efe4;--header-bg:#f9f4ec;--eyebrow:#a4553a;--star:#a4553a;--trust-icon:#a4553a;--lead:#5a4743;
+  --card-title:25px;--card-bg:#fbf7f0;--card-pad:22px 22px 24px;--foot-bg:#2a1a1b;--foot-ink:#ede3d3;
+  --news-bg:#6b1f2a;--news-ink:#f6efe4;--news-line:rgba(246,239,228,.55);--news-border:0;
+  --drawer-bg:#fbf7f0;--drawer-ink:#2a1a1b;--ok:#4f6b3a;--ok-ink:#4f6b3a;--focus:#6b1f2a}
+body{font-size:16.5px}
+.rd-eyebrow,.rd-btn,.rd-textlink,.rd-nav,.rd-tab,.rd-card__cat,.rd-cat__text small,.rd-more,.rd-trust strong,.rd-crumbs,.rd-announce,.rd-icon,.rd-modal__tabs button,.rd-auth label,.rd-pdp__desc h3,.rd-footer__top h3{font-family:"Josefin Slab",Georgia,serif;font-weight:700}
+/* hero: framed artwork + exhibition text */
+.rd-hero{max-width:var(--wrap);margin:0 auto;padding:clamp(40px,5vw,72px) var(--pad);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,7vw,112px);align-items:center}
+.rd-hero__frame{margin:0;justify-self:center;width:100%;max-width:480px}
+.rd-mat{padding:clamp(14px,1.8vw,24px);background:#fbf7f0;border:1px solid #dccbb5;outline:1px solid rgba(107,31,42,.28);outline-offset:9px}
+.rd-mat img{width:100%;aspect-ratio:1;object-fit:cover}
+.rd-hero__frame figcaption{margin-top:26px;text-align:center;font:700 10.5px/1.4 "Josefin Slab",Georgia,serif;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.rd-hero__frame figcaption em{font:italic 400 15px "Cormorant",Georgia,serif;letter-spacing:.02em;text-transform:none;color:var(--ink)}
+.rd-hero h1{font-size:clamp(50px,5.6vw,84px);line-height:.98;color:#6b1f2a;font-weight:400}
+.rd-hero h1 em{display:block;font-style:italic;color:#4a1119}
+.rd-rule{display:block;width:72px;height:1px;background:#6b1f2a;margin:30px 0}
+/* sections */
+.rd-section--trust .rd-trust{border-color:rgba(107,31,42,.22)}
+.rd-section--shop{max-width:none;background:#efe5d6;padding-inline:max(var(--pad),calc((100vw - var(--wrap))/2 + var(--pad)))}
+.rd-head h2,.rd-pagehead h1,.rd-pdp h1,.rd-account__card h1{color:#6b1f2a}
+.rd-cat__text strong{color:#6b1f2a}
+.rd-card{border:1px solid #e3d5c1}
+.rd-card__price{font-weight:700;color:#6b1f2a}
+.rd-grid--gallery{--cols:3}
+.rd-why-wrap .rd-why li{border-top-color:rgba(107,31,42,.3)}
 .rd-why strong{color:#6b1f2a}
-/* reviews */
-.rd-review{border:1px solid #e1d2bf}
-.rd-review blockquote{font:italic 400 21px/1.4 var(--head)}
+.rd-review blockquote{font-style:italic;font-size:21px}
 .rd-score b{color:#6b1f2a}
-/* newsletter */
-.rd-news{border-radius:0}
-.rd-news .rd-btn{background:#b85c3c;border-color:#b85c3c}
-.rd-news__form input{border-radius:0}
-@media (max-width:1100px){.rd-grid{--cols:3}}
+.rd-news .rd-btn{color:#f6efe4}
+.rd-summary{background:#efe5d6}
+@media (max-width:1100px){.rd-hero{grid-template-columns:1fr}.rd-hero__frame{max-width:420px}}
 @media (max-width:749px){
-  .rd-hero{grid-template-columns:1fr;gap:40px;padding:36px 20px 48px}
+  .rd-hero{gap:44px;padding:36px var(--pad) 56px}
+  .rd-hero__frame{max-width:320px}
+  .rd-mat{outline-offset:6px}
   .rd-hero h1{font-size:46px}
-  .rd-hero__frame{max-width:300px;padding:14px;box-shadow:0 0 0 7px #6b1f2a,0 0 0 8px #4a1119,0 20px 40px rgba(42,21,23,.25)}
-  .rd-section--trust{padding:0 16px 8px}
-  .rd-trust{padding:20px}
-  .rd-section--shop{padding-inline:16px}
-  .rd-grid{--cols:2;--gap:12px}
-  .rd-card{--card-pad:12px 12px 14px}.rd-card__media{margin:8px 8px 0}
-  .rd-why-wrap .rd-why{padding:22px}
+  .rd-card{--card-pad:14px 12px 14px}
 }

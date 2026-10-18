@@ -1,64 +1,129 @@
-"""Screenshots + checks for redesign/v1..v3 in Chromium and WebKit at 1280 and 390.
-usage: python3 tools/redesign_check.py BASE_URL [--shots]"""
-import asyncio, sys, json
+"""Full-site checks for redesign/v1..v3 (home, shop, cart, account, 12 product pages each) in Chromium and WebKit at 1280 and 390.
+usage: python3 tools/redesign_check.py SITE_ROOT_URL [--shots DIR] [--only 1,2,3] [--engines chromium,webkit]"""
+import asyncio, sys, json, os, re
+from urllib.parse import urljoin, urlparse
 from playwright.async_api import async_playwright
-BASE = sys.argv[1].rstrip("/") + "/"; SHOTS = "--shots" in sys.argv
+BASE = sys.argv[1].rstrip("/") + "/"
+args = sys.argv[2:]
+SHOTS = args[args.index("--shots") + 1] if "--shots" in args else None
+ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3]
+ENGINES = args[args.index("--engines") + 1].split(",") if "--engines" in args else ["chromium", "webkit"]
+s = open("assets/js/catalog.js").read(); CAT = json.loads(s[s.index("{"): s.rstrip().rstrip(";").rindex("}") + 1])
+HANDLES = sorted(p["handle"] for p in CAT["products"].values())
+PAGES = ["", "shop.html", "cart.html", "account.html"] + [f"products/{h}.html" for h in HANDLES]
+if SHOTS: os.makedirs(SHOTS, exist_ok=True)
+
 async def load_all(pg):
     h = await pg.evaluate("document.documentElement.scrollHeight")
-    for y in range(0, h + 800, 500):
-        await pg.evaluate(f"window.scrollTo(0,{y})"); await pg.wait_for_timeout(60)
+    for y in range(0, h + 900, 700):
+        await pg.evaluate(f"window.scrollTo(0,{y})"); await pg.wait_for_timeout(40)
     await pg.evaluate("Promise.all([...document.images].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r;setTimeout(r,8000)})))")
-    await pg.evaluate("window.scrollTo(0,0)"); await pg.wait_for_timeout(300)
-async def run(p, engine, n, w, h, mobile):
-    if engine == "webkit": b = await p.webkit.launch(); ctx = await b.new_context(**(p.devices["iPhone 14"] | {"viewport": {"width": w, "height": h}}) if mobile else {"viewport": {"width": w, "height": h}})
+    await pg.evaluate("window.scrollTo(0,0)"); await pg.wait_for_timeout(150)
+
+async def context(p, engine, mobile):
+    w, h = (390, 844) if mobile else (1280, 800)
+    if engine == "webkit":
+        b = await p.webkit.launch()
+        ctx = await b.new_context(**(p.devices["iPhone 14"] | {"viewport": {"width": w, "height": h}}) if mobile else {"viewport": {"width": w, "height": h}})
     else:
         b = await p.chromium.launch(executable_path="/usr/bin/google-chrome", args=["--no-sandbox"])
         ctx = await b.new_context(viewport={"width": w, "height": h}, is_mobile=mobile, has_touch=mobile, device_scale_factor=2 if mobile else 1)
+    return b, ctx
+
+async def visible(pg, sel="#shop .rd-card, [data-rd-grid] .rd-card"):
+    return await pg.evaluate(f"[...document.querySelectorAll('[data-rd-grid] .rd-card')].filter(c=>!c.hidden).length")
+
+async def run_variant(p, engine, mobile, n):
+    tag = f"{engine}/{'390' if mobile else '1280'}/v{n}"
+    b, ctx = await context(p, engine, mobile)
     pg = await ctx.new_page(); errs = []; bad = []
     pg.on("pageerror", lambda e: errs.append(str(e)))
     pg.on("response", lambda r: bad.append(f"{r.status} {r.url}") if r.status >= 400 else None)
-    await pg.goto(f"{BASE}redesign/v{n}/", wait_until="load", timeout=60000)
-    await pg.evaluate("localStorage.clear()"); await pg.reload(wait_until="load")
-    await load_all(pg)
-    r = await pg.evaluate("""()=>({broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.getAttribute('src')),
-      imgs:document.images.length, overflow:document.documentElement.scrollWidth-innerWidth, height:document.documentElement.scrollHeight,
-      cards:document.querySelectorAll('.rd-card').length})""")
-    if SHOTS and engine == "chromium":
-        name = "mobile" if mobile else "desktop"
-        await pg.screenshot(path=f"screenshots/redesign-v{n}-{name}.png", full_page=True)
-        if not mobile: await pg.screenshot(path=f"screenshots/redesign-v{n}-hero.png")
-    # interactions
+    root = f"{BASE}redesign/v{n}/"
+    problems, links = [], set()
+    await pg.goto(root, wait_until="load"); await pg.evaluate("localStorage.clear()")
+    for path in PAGES:
+        resp = await pg.goto(root + path, wait_until="load", timeout=60000)
+        if resp.status != 200: problems.append(f"{path}: HTTP {resp.status}")
+        await load_all(pg)
+        r = await pg.evaluate("""()=>({broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.getAttribute('src')),
+          overflow:document.documentElement.scrollWidth-innerWidth, links:[...document.querySelectorAll('a[href]')].map(a=>a.href),
+          stray:[...document.querySelectorAll('a[href*="/products/"]')].map(a=>a.getAttribute('href')).filter(h=>!h.includes('/redesign/v'))})""")
+        if r["broken"]: problems.append(f"{path}: broken images {r['broken']}")
+        if r["overflow"] > 0: problems.append(f"{path}: horizontal overflow {r['overflow']}px")
+        if r["stray"]: problems.append(f"{path}: links leave the concept {r['stray'][:3]}")
+        links.update(l.split("#")[0] for l in r["links"] if "/redesign/" in l)
+        if SHOTS and engine == "chromium" and path in ("", "shop.html", "products/klimt-the-kiss-gift-box.html", "account.html"):
+            nm = (path.replace("products/", "p-").replace(".html", "") or "home")
+            await pg.screenshot(path=f"{SHOTS}/v{n}-{nm}-{'m' if mobile else 'd'}.png", full_page=(path == ""))
+            if path == "": await pg.screenshot(path=f"{SHOTS}/v{n}-hero-{'m' if mobile else 'd'}.png")
     t = {}
-    await pg.click(".rd-tab[data-rd-filter=city]"); t["filter_city"] = await pg.evaluate("[...document.querySelectorAll('.rd-card')].filter(c=>!c.hidden).length")
+    # home: filter + add to cart + drawer link stays in concept
+    await pg.goto(root, wait_until="load")
+    await pg.click(".rd-tab[data-rd-filter=city]"); t["home_city"] = await visible(pg)
     await pg.click(".rd-tab[data-rd-filter=all]")
-    btn = pg.locator(".rd-card[data-cat=city] [data-rd-add]").first
+    btn = pg.locator("[data-rd-grid] .rd-card[data-cat=city] [data-rd-add]").first
     await btn.scroll_into_view_if_needed(); await btn.click(); await pg.wait_for_timeout(500)
-    t["cart_count"] = await pg.evaluate("document.querySelector('[data-cart-count]').textContent")
-    t["drawer_open"] = await pg.evaluate("document.documentElement.classList.contains('tc-open')")
-    if SHOTS and engine == "chromium": await pg.screenshot(path=f"screenshots/redesign-v{n}-{'mobile' if mobile else 'desktop'}-cart.png")
-    await pg.keyboard.press("Escape"); await pg.evaluate("document.querySelectorAll('[data-cart-close]')[0]?.click()"); await pg.wait_for_timeout(400)
-    await pg.evaluate("window.scrollTo(0,0)"); await pg.wait_for_timeout(200)
+    t["count"] = await pg.text_content("[data-cart-count]")
+    t["drawer"] = await pg.evaluate("document.documentElement.classList.contains('tc-open')")
+    t["drawer_link_ok"] = await pg.evaluate(f"[...document.querySelectorAll('.tc-items a')].every(a=>a.getAttribute('href').startsWith('/tresora-clone/redesign/v{n}/products/'))")
+    await pg.keyboard.press("Escape"); await pg.wait_for_timeout(300)
+    # search from a product page navigates to the shop page with results
+    await pg.goto(root + "products/paris-gift-box.html", wait_until="load")
     if mobile: await pg.click("[data-rd-searchtoggle]")
     await pg.fill("[data-rd-q]", "klimt"); await pg.wait_for_timeout(250)
-    t["search_hits"] = await pg.evaluate("document.querySelectorAll('[data-rd-suggest] a').length")
-    await pg.press("[data-rd-q]", "Enter"); await pg.wait_for_timeout(300)
-    t["search_grid"] = await pg.evaluate("[...document.querySelectorAll('.rd-card')].filter(c=>!c.hidden).length")
-    await pg.evaluate("window.scrollTo(0,0)")
-    await pg.locator(".rd-header [data-rd-account]").click(); await pg.wait_for_timeout(300)
-    t["modal_open"] = await pg.evaluate("document.querySelector('[data-rd-modal]').open")
-    await pg.click("[data-rd-tab=signup]"); await pg.fill(".rd-auth input[name=email]", "test@example.com"); await pg.fill(".rd-auth input[name=password]", "secret123")
-    if SHOTS and engine == "chromium": await pg.screenshot(path=f"screenshots/redesign-v{n}-{'mobile' if mobile else 'desktop'}-signup.png")
-    await pg.click("[data-rd-submit]"); t["signup_msg"] = (await pg.text_content(".rd-auth__msg"))[:40]
+    t["suggest"] = await pg.evaluate("document.querySelectorAll('[data-rd-suggest] a').length")
+    await pg.press("[data-rd-q]", "Enter"); await pg.wait_for_load_state("load"); await pg.wait_for_timeout(300)
+    t["search_shop"] = (urlparse(pg.url).path.endswith("shop.html"), await visible(pg))
+    # shop: url filter, sort, stock filter
+    await pg.goto(root + "shop.html?cat=city", wait_until="load"); t["shop_city"] = await visible(pg)
+    await pg.goto(root + "shop.html", wait_until="load")
+    await pg.select_option("[data-rd-sort]", "price-asc")
+    prices = await pg.evaluate("[...document.querySelectorAll('[data-rd-grid] .rd-card')].filter(c=>!c.hidden).map(c=>+c.dataset.price)")
+    t["sorted"] = prices == sorted(prices)
+    await pg.check("[data-rd-instock]"); t["instock"] = await visible(pg)
+    # product page: variant pills + qty + add
+    await pg.goto(root + "products/vermeer-girl-with-a-pearl-earring-gift-box.html", wait_until="load")
+    await pg.click(".rd-pills label:nth-of-type(2) span"); await pg.click("[data-rd-step='1']")
+    await pg.click(".rd-pdp [data-rd-add]"); await pg.wait_for_timeout(500)
+    t["count_after_pdp"] = await pg.text_content("[data-cart-count]")
+    t["thumbs"] = await pg.evaluate("document.querySelectorAll('[data-rd-thumb]').length")
+    await pg.keyboard.press("Escape")
+    # cart page
+    await pg.goto(root + "cart.html", wait_until="load"); await pg.wait_for_timeout(200)
+    t["cart_lines"] = await pg.evaluate("document.querySelectorAll('.rd-line').length")
+    await pg.click(".rd-line:first-child [data-rd-inc]"); await pg.wait_for_timeout(150)
+    t["cart_count_inc"] = await pg.text_content("[data-cart-count]")
+    if SHOTS and engine == "chromium": await pg.screenshot(path=f"{SHOTS}/v{n}-cart-{'m' if mobile else 'd'}.png")
+    await pg.click(".rd-line:first-child [data-rd-remove]"); await pg.wait_for_timeout(150)
+    t["cart_lines_after_remove"] = await pg.evaluate("document.querySelectorAll('.rd-line').length")
+    # account page
+    await pg.goto(root + "account.html?mode=signup", wait_until="load")
+    t["signup_mode"] = await pg.get_attribute("[data-rd-accountpage]", "data-mode")
+    await pg.fill(".rd-auth input[name=email]", "test@example.com"); await pg.fill(".rd-auth input[name=password]", "secret123")
+    await pg.click("[data-rd-submit]"); t["signup_msg"] = (await pg.text_content(".rd-auth__msg"))[:30]
+    await pg.click("[data-rd-tab=signin]"); t["signin_title"] = await pg.text_content("[data-rd-modal-title]")
+    # every internal link resolves
+    for l in sorted(links):
+        r = await ctx.request.get(l)
+        if r.status != 200: problems.append(f"dead link {l} -> {r.status}")
     await b.close()
-    return {"engine": engine, "v": n, "w": w, **r, "errors": errs, "http_bad": bad, **t}
+    exp = {"home_city": 4, "count": "1", "drawer": True, "drawer_link_ok": True, "search_shop": (True, 1), "shop_city": 4, "sorted": True, "instock": 11,
+           "count_after_pdp": "3", "cart_lines": 2, "cart_count_inc": "4", "cart_lines_after_remove": 1, "signup_mode": "signup", "signin_title": "Welcome back"}
+    for k, v in exp.items():
+        if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
+    if t.get("suggest", 0) < 1: problems.append("no search suggestions")
+    if not t.get("signup_msg", "").startswith("Looks good"): problems.append(f"signup msg {t.get('signup_msg')}")
+    problems += [f"js error {e}" for e in errs] + [f"http {x}" for x in bad]
+    print(("PASS " if not problems else "FAIL ") + tag + f"  pages={len(PAGES)} links={len(links)}" + ("" if not problems else "\n   " + "\n   ".join(problems[:15])), flush=True)
+    return {"tag": tag, "problems": problems, **{k: str(v) for k, v in t.items()}}
+
 async def main():
     out = []
     async with async_playwright() as p:
-        for n in (1, 2, 3):
-            for engine in ("chromium", "webkit"):
-                for w, h, m in ((1280, 800, False), (390, 844, True)):
-                    res = await run(p, engine, n, w, h, m); out.append(res)
-                    ok = not res["broken"] and res["overflow"] <= 0 and not res["errors"] and not res["http_bad"] and res["cart_count"] == "1" and res["modal_open"] and res["filter_city"] == 4 and res["search_hits"] >= 1
-                    print(("PASS" if ok else "FAIL"), json.dumps(res)[:600])
+        for engine in ENGINES:
+            for mobile in (False, True):
+                for n in ONLY: out.append(await run_variant(p, engine, mobile, n))
     json.dump(out, open("/tmp/redesign_check.json", "w"), indent=1)
+    print(f"{sum(not o['problems'] for o in out)}/{len(out)} PASS")
 asyncio.run(main())
