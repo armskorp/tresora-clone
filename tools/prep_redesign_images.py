@@ -38,3 +38,8 @@ save(crop(src("amalfi-gift-box-6").convert("RGB"), .5, .5, 1, 1), IMG + "hero-am
 save(crop(src("van-gogh-almond-blossom-gift-box-5").convert("RGB"), .5, .5, 1, 4/5), IMG + "cat-art-vangogh.jpg", 1000)
 save(crop(src("klimt-the-kiss-gift-box-1").convert("RGB"), .42, .5, 1, 4/5), IMG + "cat-art-klimt.jpg", 1000)
 print("ok")
+# v4 city slideshow: full-bleed styled photos of each city set's items (native resolution, no packaging in frame)
+SLIDES = {"paris": "paris-gift-box-2", "barcelona": "barcelona-gift-box-2", "new-york": "new-york-gift-box-1", "amalfi": "amalfi-gift-box-1"}
+for city, name in SLIDES.items():
+    im = src(name).convert("RGB"); save(im, f"{IMG}slide-{city}.jpg", 2000, 86)
+print("slides ok")

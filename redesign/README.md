@@ -24,3 +24,7 @@ An auth backend (e.g. Shopify customer accounts, or Supabase/Auth0/Clerk) with h
 password-reset emails sent through a transactional provider (Postmark, SendGrid, Amazon SES or Resend) on a verified domain
 (SPF, DKIM, DMARC for tresora.store). Order history needs Stripe Checkout webhooks stored per customer.
 The newsletter needs a list provider (Klaviyo, Mailchimp, Shopify Email) with double opt-in and unsubscribe links.
+
+## v4 — Cities (Zara-style)
+
+Based on the first v1 Midnight concept, borderless. Full-screen 100svh city slideshow (Paris, Barcelona, New York, Amalfi; 5s crossfade, Ken Burns, progress bars, swipe, pause on caption hover / pause button), then a minimal product grid: Cities, Art, Atelier Home. Live: https://armskorp.github.io/tresora-clone/redesign/v4/

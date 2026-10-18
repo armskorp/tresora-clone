@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 BASE = sys.argv[1].rstrip("/") + "/"
 args = sys.argv[2:]
 SHOTS = args[args.index("--shots") + 1] if "--shots" in args else None
-ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3]
+ONLY = [int(x) for x in args[args.index("--only") + 1].split(",")] if "--only" in args else [1, 2, 3, 4]
 ENGINES = args[args.index("--engines") + 1].split(",") if "--engines" in args else ["chromium", "webkit"]
 s = open("assets/js/catalog.js").read(); CAT = json.loads(s[s.index("{"): s.rstrip().rstrip(";").rindex("}") + 1])
 HANDLES = sorted(p["handle"] for p in CAT["products"].values())
@@ -60,9 +60,26 @@ async def run_variant(p, engine, mobile, n):
     t = {}
     # home: filter + add to cart + drawer link stays in concept
     await pg.goto(root, wait_until="load")
-    await pg.click(".rd-tab[data-rd-filter=city]"); t["home_city"] = await visible(pg)
-    await pg.click(".rd-tab[data-rd-filter=all]")
-    btn = pg.locator("[data-rd-grid] .rd-card[data-cat=city] [data-rd-add]").first
+    if await pg.locator(".rd-tab[data-rd-filter=city]").count():
+        await pg.click(".rd-tab[data-rd-filter=city]"); t["home_city"] = await visible(pg)
+        await pg.click(".rd-tab[data-rd-filter=all]")
+    else: t["home_city"] = await pg.evaluate("document.querySelectorAll('.rd-card[data-cat=city]').length")
+    if await pg.locator("[data-rd-slides]").count():   # v4 slideshow: autoplay, progress, swipe, hover pause
+        t["slides"] = await pg.evaluate("document.querySelectorAll('[data-rd-slide]').length")
+        t["slide0"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
+        t["slide_imgs_ok"] = await pg.evaluate("[...document.querySelectorAll('[data-rd-slide] img')].every(i=>i.complete&&i.naturalWidth>=1000)")
+        t["slide_full"] = await pg.evaluate("(()=>{const r=document.querySelector('[data-rd-slides]').getBoundingClientRect();return Math.abs(r.width-innerWidth)<2&&Math.abs(r.height-innerHeight)<2})()")
+        if not mobile: await pg.mouse.move(640, 400)
+        await pg.wait_for_timeout(5600); t["slide_auto"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
+        await pg.evaluate("""(()=>{const el=document.querySelector('[data-rd-slides]'),b=el.getBoundingClientRect(),y=b.top+b.height*0.4;
+          const ev=(type,x)=>el.dispatchEvent(new PointerEvent(type,{bubbles:true,clientX:x,clientY:y,pointerType:'touch',isPrimary:true}));
+          ev('pointerdown',b.width*0.8);ev('pointerup',b.width*0.2);})()""")
+        await pg.wait_for_timeout(200); t["slide_swipe"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
+        if not mobile:
+            await pg.hover(".rd-slide.is-active .rd-slide__link"); await pg.wait_for_timeout(6000); t["slide_hold"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
+            await pg.mouse.move(640, 400)
+        if SHOTS and engine == "chromium": await pg.screenshot(path=f"{SHOTS}/v{n}-slide2-{'m' if mobile else 'd'}.png")
+    btn = pg.locator(".rd-card[data-cat=city] [data-rd-add]").first
     await btn.scroll_into_view_if_needed(); await btn.click(); await pg.wait_for_timeout(500)
     t["count"] = await pg.text_content("[data-cart-count]")
     t["drawer"] = await pg.evaluate("document.documentElement.classList.contains('tc-open')")
@@ -112,6 +129,11 @@ async def run_variant(p, engine, mobile, n):
            "count_after_pdp": "3", "cart_lines": 2, "cart_count_inc": "4", "cart_lines_after_remove": 1, "signup_mode": "signup", "signin_title": "Welcome back"}
     for k, v in exp.items():
         if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
+    if "slides" in t:
+        sx = {"slides": 4, "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
+        if not mobile: sx["slide_hold"] = "2"
+        for k, v in sx.items():
+            if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
     if t.get("suggest", 0) < 1: problems.append("no search suggestions")
     if not t.get("signup_msg", "").startswith("Looks good"): problems.append(f"signup msg {t.get('signup_msg')}")
     problems += [f"js error {e}" for e in errs] + [f"http {x}" for x in bad]

@@ -34,7 +34,16 @@ def money(c): return f"${c/100:.2f}"
 def from_price(key): return money(min(v["price"] for h in CATS[key]["handles"] for v in variants(BY_HANDLE[h])))
 def purl(h): return f"{V}products/{h}.html"
 VKEY = {"caravaggio-bacchus-wine-gift-box": {"Green": "green", "Red": "red"}, "vermeer-girl-with-a-pearl-earring-gift-box": {"Light Blue": "light-blue", "White": "white"}}
+V4_LEAD = {"amalfi-gift-box": 4, "barcelona-gift-box": 4, "new-york-gift-box": 4, "paris-gift-box": 3, "klimt-the-kiss-gift-box": 0,
+           "elegant-pearl-earring-table-gift-box": 0, "van-gogh-almond-blossom-gift-box": 0, "sargent-the-wineglasses-wine-gift-box": 0,
+           "gothic-romance-decorative-glass-bottle": 0, "rococo-reverie-decorative-glass-bottle": 0}
+V4_VLEAD = {("caravaggio-bacchus-wine-gift-box", "Green"): 0, ("caravaggio-bacchus-wine-gift-box", "Red"): 3,
+            ("vermeer-girl-with-a-pearl-earring-gift-box", "Light Blue"): 2, ("vermeer-girl-with-a-pearl-earring-gift-box", "White"): 1}
 def lead(h, v=None):
+    if N == 4:
+        vt = (v or variants(BY_HANDLE[h])[0])["variant_title"]
+        i = V4_VLEAD.get((h, vt), V4_LEAD.get(h, 0))
+        return f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg"
     k = h if h not in VKEY else f"{h}-{VKEY[h][(v or variants(BY_HANDLE[h])[0])['variant_title']]}"
     return f"{SH}products/{k}-lead.jpg", f"{SH}products/{k}-lead-t.jpg"
 PACK = {"amalfi-gift-box": [9, 10], "barcelona-gift-box": [0, 10, 11], "caravaggio-bacchus-wine-gift-box": [1, 2, 5, 8], "elegant-pearl-earring-table-gift-box": [3, 4, 5, 6],
@@ -46,6 +55,9 @@ def gallery(h):
     """lead (items) first, then item shots, packaging / personalisation shots last"""
     n = len(RAW[h]["images"]); order = [i for i in range(n) if i not in PACK.get(h, []) and i != LEAD_SAME.get(h)] + [i for i in PACK.get(h, []) if i < n]
     big, t = lead(h)
+    if N == 4:   # natural store shots: lead photo first, then the rest of the item shots, packaging last
+        li = int(big.rsplit("-", 1)[1].split(".")[0]); order = [li] + [i for i in order if i != li]
+        return [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
     return [(big, t, 1200, 900)] + [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
 REVIEWS = [  # the 5 real Judge.me reviews shown on tresora.store (5.00 average)
   ("Bought this as a gift for a wine lover.. The presentation is gorgeous, everything feels high quality and thoughtfully put together. Shipping was fast too. Thank you!", "Anonymous", "Caravaggio Bacchus Wine Gift Box"),
@@ -151,7 +163,7 @@ def header(active=""):
 <header class="rd-header" data-rd-header>
   <div class="rd-header__in">
     <button class="rd-icon rd-menu-btn" type="button" data-rd-menu aria-expanded="false" aria-controls="rd-nav" aria-label="Menu">{ICON["menu"]}</button>
-    <a class="rd-logo" href="{V}" aria-label="TRESORA home"><img src="{SH}img/logo-{"light" if N == 1 else "dark"}.png" alt="TRESORA" width="706" height="497"></a>
+    <a class="rd-logo" href="{V}" aria-label="TRESORA home"><img src="{SH}img/logo-{"light" if N in (1, 4) else "dark"}.png" alt="TRESORA" width="706" height="497"></a>
     <nav class="rd-nav" id="rd-nav" aria-label="Main"><a href="{V}shop.html"{cls("shop")}>Shop all</a>{nav}<a href="{V}#reviews">Reviews</a><a class="rd-nav__acc" href="{V}account.html">Account</a></nav>
     <form class="rd-search" role="search" data-rd-search action="{V}shop.html">
       <label class="rd-sr" for="rd-q">Search products</label>
@@ -184,7 +196,7 @@ def footer():
 </footer>'''
 
 def page(title, body, kind, active="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
-    tc = {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff"}[N]
+    tc = {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
     return f'''<!doctype html>
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
@@ -351,6 +363,7 @@ def home():
     VG, KL = SH + "img/cat-art-vangogh.jpg", SH + "img/cat-art-klimt.jpg"
     va = SHOT.replace("{V}", V)
     def plink(h, label): return f'<a href="{purl(h)}">{E(label)}</a>'
+    if N == 4: return home_v4()
     if N == 1: return f'''
 <section class="rd-hero">
   <div class="rd-hero__text">
@@ -410,9 +423,39 @@ def home():
 <section class="rd-section rd-why-wrap"><header class="rd-head rd-head--row"><h2>Why shop with TRESORA</h2></header>{why()}</section>
 <section class="rd-section rd-section--news">{newsletter("Get the first look at new collections", "One short email when something new arrives. Unsubscribe anytime.")}</section>'''
 
-NAMES = {1: "Midnight", 2: "Gallery", 3: "Modern"}
+SLIDES = [("paris", "Paris", "paris-gift-box", "Pearl beaded evening bag from the Paris set", "38% 50%"),
+          ("barcelona", "Barcelona", "barcelona-gift-box", "Park Güell mosaic hand fan and gold fan clutch from the Barcelona set", "42% 50%"),
+          ("new-york", "New York", "new-york-gift-box", "Silver Art Deco cage clutch and City Life newspaper scarf from the New York set", "55% 50%"),
+          ("amalfi", "Amalfi", "amalfi-gift-box", "Red Vespa charm keychain and pearls on a terrace above the Amalfi coast", "34% 60%")]
+def zcard_grid(key, cols):
+    return f'<div class="rd-grid rd-zgrid rd-zgrid--{cols}">' + "".join(card(BY_HANDLE[h], key) for h in CATS[key]["handles"]) + "</div>"
+def home_v4():
+    slides = "".join(f'''<figure class="rd-slide{" is-active" if i == 0 else ""}" data-rd-slide aria-roledescription="slide" aria-label="{i+1} of {len(SLIDES)}: {name}"{"" if i == 0 else ' aria-hidden="true"'}>
+    <img src="{SH}img/slide-{key}.jpg" alt="{E(alt)}" style="object-position:{pos}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
+    <figcaption class="rd-slide__text"><span class="rd-slide__kicker">Inspired by City · {i+1:02d}</span><span class="rd-slide__city">{E(name)}</span>
+      <a class="rd-slide__link" href="{purl(h)}"{"" if i == 0 else ' tabindex="-1"'}>Shop {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · {money(variants(BY_HANDLE[h])[0]["price"])}</span></figcaption></figure>'''
+        for i, (key, name, h, alt, pos) in enumerate(SLIDES))
+    dots = "".join(f'<button type="button" class="rd-dot" data-rd-dot="{i}" aria-label="Show {E(name)}"{" aria-current=\"true\"" if i == 0 else ""}><span></span></button>' for i, (key, name, *_r) in enumerate(SLIDES))
+    sec = lambda k, title, sub, cols: f'''<section class="rd-zsec" id="{k}"><header class="rd-zhead"><h2>{title}</h2><p>{sub}</p><a href="{V}shop.html?cat={k}">View all {len(CATS[k]["handles"])}</a></header>{zcard_grid(k, cols)}</section>'''
+    return f'''
+<h1 class="rd-sr">TRESORA · gifts inspired by cities and art</h1>
+<section class="rd-slides" data-rd-slides aria-roledescription="carousel" aria-label="Cities">
+  <div class="rd-slides__track" aria-live="off">{slides}</div>
+  <div class="rd-slides__nav" role="group" aria-label="Choose a city">{dots}</div>
+  <button type="button" class="rd-slides__pause" data-rd-pause aria-label="Pause slideshow" aria-pressed="false"><span></span></button>
+</section>
+<div id="shop">
+{sec("city", "Cities", "Paris, Barcelona, New York, Amalfi.", 2)}
+{sec("art", "Art", "Klimt, Vermeer, Van Gogh, Caravaggio, Sargent.", 3)}
+{sec("home", "Atelier Home", "Handmade decorative glass.", 2)}
+</div>
+<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{POL}refund-policy">see policy</a></li><li><a href="#reviews">5.00 · 5 reviews</a></li></ul></section>
+<section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 5 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
+<section class="rd-zsec rd-zsec--news">{newsletter("Newsletter", "New city and art collections, a few times a year.")}</section>'''
+
+NAMES = {1: "Midnight", 2: "Gallery", 3: "Modern", 4: "Cities"}
 count = 0
-for N in (1, 2, 3):
+for N in (1, 2, 3, 4):
     V = f"{R}redesign/v{N}/"
     d = f"redesign/v{N}"; os.makedirs(f"{d}/products", exist_ok=True)
     def w(path, txt):

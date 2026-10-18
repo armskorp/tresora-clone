@@ -235,5 +235,55 @@
       f.reset();
     });
   });
+  /* ---- full-screen city slideshow (v4): crossfade + slow zoom, ~5 s per slide, progress bars, swipe, pause on hover ---- */
+  var ss = $('[data-rd-slides]');
+  if (ss) {
+    var slides = $$('[data-rd-slide]', ss), dots = $$('[data-rd-dot]', ss), pauseBtn = $('[data-rd-pause]', ss);
+    var DUR = 5000, cur = 0, timer = null, started = 0, remain = DUR, hoverPaused = false, userPaused = false;
+    var show = function (n) {
+      n = (n + slides.length) % slides.length;
+      slides.forEach(function (sl, i) {
+        var on = i === n; sl.classList.toggle('is-active', on); sl.setAttribute('aria-hidden', String(!on));
+        var a = $('a', sl); if (a) a.tabIndex = on ? 0 : -1;
+      });
+      dots.forEach(function (d, i) { d.removeAttribute('aria-current'); d.classList.toggle('is-done', i < n); });
+      void ss.offsetWidth;   // restart the progress animation
+      dots[n].setAttribute('aria-current', 'true');
+      cur = n; ss.setAttribute('data-rd-current', String(n)); remain = DUR; schedule();
+    };
+    var schedule = function () {
+      clearTimeout(timer); timer = null;
+      if (hoverPaused || userPaused || document.hidden) return;
+      started = Date.now(); timer = setTimeout(function () { show(cur + 1); }, remain);
+    };
+    var pause = function () { if (timer) { remain = Math.max(0, remain - (Date.now() - started)); clearTimeout(timer); timer = null; } ss.classList.add('is-paused'); };
+    var resume = function () { if (hoverPaused || userPaused || document.hidden) return; ss.classList.remove('is-paused'); schedule(); };
+    dots.forEach(function (d, i) { d.addEventListener('click', function () { show(i); }); });
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      // pause while the pointer is on the caption / controls (the whole screen is the slideshow, so hovering anywhere would stop it for good)
+      $$('.rd-slide__text, .rd-slides__nav, .rd-slides__pause', ss).forEach(function (el) {
+        el.addEventListener('mouseenter', function () { hoverPaused = true; pause(); });
+        el.addEventListener('mouseleave', function () { hoverPaused = false; resume(); });
+      });
+    }
+    if (pauseBtn) pauseBtn.addEventListener('click', function () {
+      userPaused = !userPaused; pauseBtn.setAttribute('aria-pressed', String(userPaused));
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      if (userPaused) pause(); else resume();
+    });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) pause(); else resume(); });
+    ss.addEventListener('focusin', function () { hoverPaused = true; pause(); });
+    ss.addEventListener('focusout', function () { hoverPaused = false; resume(); });
+    // swipe (touch + pen + mouse drag) via pointer events; vertical scrolling stays native (touch-action: pan-y)
+    var sx = null, sy = 0;
+    ss.addEventListener('pointerdown', function (e) { if (e.target.closest('a,button')) return; sx = e.clientX; sy = e.clientY; });
+    ss.addEventListener('pointerup', function (e) {
+      if (sx === null) return; var dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(cur + (dx < 0 ? 1 : -1));
+    });
+    ss.addEventListener('pointercancel', function () { sx = null; });
+    ss.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') show(cur + 1); if (e.key === 'ArrowLeft') show(cur - 1); });
+    show(0);
+  }
   apply();
 })();
