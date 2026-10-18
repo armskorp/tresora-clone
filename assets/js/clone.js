@@ -97,6 +97,71 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { go(idx, false); });
   });
 
+  /* 6. Horizon sets `in-viewport` on carousels from JS; without it the theme CSS forces overflow:hidden,
+        so on phones the product / collection rows could not be swiped and their right half was unreachable. */
+  document.querySelectorAll('slideshow-component').forEach(function (show) { show.setAttribute('in-viewport', ''); });
+
+  /* 7. Images: the snapshot keeps loading="lazy" on gallery slides, menu thumbnails and hidden variant slides.
+        Lazy images inside clipped/overflow-hidden tracks or hidden menus never intersect the viewport, so the
+        browser never fetches them and a card can end up showing an empty frame. Load a card's images as soon as
+        it comes near the screen, and everything else once the page is idle. */
+  var eager = function (img) {
+    if (img.getAttribute('loading') === 'lazy') img.setAttribute('loading', 'eager');
+    if (img.decoding !== 'sync') img.decoding = 'async';
+  };
+  var groups = document.querySelectorAll('product-card, .resource-card, slideshow-component');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.querySelectorAll('img').forEach(eager);
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '800px 800px' });
+    groups.forEach(function (g) { io.observe(g); });
+  } else {
+    document.querySelectorAll('img').forEach(eager);
+  }
+  var loadRest = function () { document.querySelectorAll('img[loading="lazy"]').forEach(eager); };
+  window.addEventListener('load', function () {
+    (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(loadRest, { timeout: 3000 });
+  });
+  document.querySelectorAll('product-card, .header-menu, header-menu').forEach(function (el) {
+    el.addEventListener('pointerenter', function () { el.querySelectorAll('img').forEach(eager); }, { once: true });
+  });
+
+  /* 8. Sticky header state (normally done by Horizon's header.js). Without it the transparent header stayed
+        transparent while sticky and its logo/icons were drawn on top of the page content on phones. */
+  var header = document.getElementById('header-component');
+  if (header) {
+    var section = header.closest('.header-section') || header.parentElement;
+    var lastY = window.scrollY, ticking = false;
+    var sync = function () {
+      ticking = false;
+      var y = Math.max(0, window.scrollY);
+      // the header's resting position = everything above it in the header group (announcement bar);
+      // offsetTop of a stuck sticky element moves with it, so it can't be used here
+      var start = 0, n = section && section.previousElementSibling;
+      while (n) { start += n.offsetHeight; n = n.previousElementSibling; }
+      header.setAttribute('data-sticky-state', y > start + 1 ? 'active' : 'inactive');
+      header.setAttribute('data-scroll-direction', y <= 0 ? 'none' : (y > lastY ? 'down' : (y < lastY ? 'up' : header.getAttribute('data-scroll-direction') || 'none')));
+      lastY = y;
+    };
+    var layout = function () {
+      header.setAttribute('data-menu-style', window.matchMedia('(max-width: 749px)').matches ? 'drawer' : 'menu');
+      var row = header.offsetHeight;
+      if (row) document.body.style.setProperty('--header-height', row + 'px');
+      var group = document.getElementById('header-group');
+      var bar = group && group.querySelector('.shopify-section:not(.header-section)');
+      if (bar) document.body.style.setProperty('--header-group-height', bar.offsetHeight + 'px');
+      sync();
+    };
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(sync); } }, { passive: true });
+    window.addEventListener('resize', layout);
+    window.addEventListener('orientationchange', layout);
+    layout();
+  }
+
   /* 5. Non-functional controls in a static copy: keep them from navigating */
   document.querySelectorAll('a[href="#"]').forEach(function (a) {
     a.addEventListener('click', function (e) { e.preventDefault(); });
