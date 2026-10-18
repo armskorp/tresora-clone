@@ -1,0 +1,16 @@
+/* background preview "taupe": Warm greige / stone with charcoal type. Loaded after redesign/v4/style.css; only colours change. */
+:root{--bg:#dcd4c8;--surface:#d0c7b9;--ink:#26221e;--muted:#574f46;--field-line:rgba(38,34,30,0.24);--btn-line:rgba(38,34,30,0.4);
+  --accent:#26221e;--accent-ink:#dcd4c8;--header-bg:#dcd4c8;--eyebrow:#4a433b;--star:#26221e;--trust-icon:#4a433b;--lead:#4a433b;
+  --foot-bg:#2a2622;--foot-ink:#dcd4c8;--field-bg:rgba(38,34,30,0.04);--ok-ink:#2f5f47;--err:#8f2d22;
+  --count-bg:#26221e;--count-ink:#dcd4c8;--focus:#26221e}
+.tc-drawer{--tc-btn:#26221e;--tc-btn-ink:#dcd4c8}
+.rd-v4.rd-page--home .rd-header.is-scrolled{background:rgba(220,212,200,0.95)}
+.rd-v4 .rd-card__media{background:#d0c7b9}
+.rd-v4 .rd-card__buy .rd-btn.is-added{color:var(--ok-ink)}
+/* light backgrounds: header floats light-on-photo over the slideshow, turns dark-on-taupe once scrolled (logo darkened to match) */
+html:not(.rd-menu-open).rd-page--home .rd-header:not(.is-scrolled){--ink:#f1ece2;--muted:#e2ddd3;--field-line:rgba(255,255,255,.5);color:#f1ece2}
+.rd-menu-open.rd-page--home .rd-header{background:var(--header-bg)}
+.rd-v4:not(.rd-page--home) .rd-logo img,.rd-page--home .rd-header.is-scrolled .rd-logo img,.rd-menu-open .rd-logo img{filter:brightness(.16)}
+.rd-v4.rd-page--home .rd-header.is-scrolled .rd-search{border-bottom-color:var(--field-line)}
+.rd-v4.rd-page--home .rd-header.is-scrolled .rd-search input::placeholder{color:var(--muted)}
+.rd-footer{--ink:#dcd4c8;--muted:rgba(220,212,200,0.72);--field-line:rgba(220,212,200,0.3)}

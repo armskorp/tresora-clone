@@ -495,9 +495,6 @@ def build(d, title, extra=False):
 for N in (1, 2, 3, 4):
     V = f"{R}redesign/v{N}/"
     build(f"redesign/v{N}", f"TRESORA · Concept {N} · {NAMES[N]}")
-# the main site: v4 at the root (index, shop, cart, account, products/, Stripe success/cancel pages)
-N, V, STYLE, ROOT_BUILD = 4, R, R + "redesign/v4/style.css", True
-build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
 # background-colour previews of the main site at /bg/<name>/ (same pages, only background/surface/text colours change)
 BG_THEMES = {
   "ivory":    dict(light=True,  bg="#f5f0e6", surface="#ebe4d6", ink="#23211e", muted="#655f56", eyebrow="#55504a", foot="#23211e", foot_ink="#d9d2c5", ok="#2f6b4f", err="#a3362a",
@@ -539,5 +536,10 @@ for name, t in BG_THEMES.items():
     V, STYLE, ROOT_BUILD, THEME = f"{R}bg/{name}/", R + "redesign/v4/style.css", False, t
     d = f"bg/{name}"; os.makedirs(d, exist_ok=True); open(f"{d}/theme.css", "w").write(theme_css(name, t))
     build(d, f"TRESORA · Background preview · {name}")
+# the main site: v4 at the root (index, shop, cart, account, products/, Stripe success/cancel pages) in the chosen "taupe" colours
+SITE_THEME = "taupe"
+N, V, STYLE, ROOT_BUILD, THEME = 4, R, R + "redesign/v4/style.css", True, BG_THEMES[SITE_THEME]
+open("theme.css", "w").write(theme_css(SITE_THEME, THEME))
+build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
 THEME = None
-print(f"built {count} pages (redesign/v1..v4 + site root + bg previews)")
+print(f"built {count} pages (redesign/v1..v4 + bg previews + site root)")
