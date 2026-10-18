@@ -2,6 +2,7 @@
 usage:
   python3 tools/test_stripe_pay.py session  SITE_URL CHECKOUT_URL   # cart -> Worker -> Checkout Session -> pay
   python3 tools/test_stripe_pay.py link     SITE_URL                # product page "Buy now" -> Payment Link -> pay
+  python3 tools/test_stripe_pay.py cart     SITE_URL                # main site: add to cart -> cart.html Checkout -> Payment Link -> pay
 Screenshots: screenshots/stripe-<mode>-*.png"""
 import asyncio, sys, re
 from playwright.async_api import async_playwright
@@ -63,6 +64,11 @@ async def main():
             await pg.evaluate("TRESORA_CATALOG.variants['44325276582001'].price = 1")  # client tampering must not matter
             await pg.evaluate("TresoraCart.open()"); await pg.wait_for_timeout(400)
             await pg.click("[data-tc-checkout]")
+        elif MODE == "cart":
+            await pg.goto(SITE + "products/klimt-the-kiss-gift-box.html", wait_until="load")
+            await pg.evaluate("localStorage.clear()"); await pg.reload(wait_until="load")
+            await pg.click("[data-rd-add]"); await pg.wait_for_timeout(500)
+            await pg.goto(SITE + "cart.html", wait_until="load"); await pg.click("[data-rd-checkout]")
         else:
             await pg.goto(SITE + "products/klimt-the-kiss-gift-box.html", wait_until="load")
             await pg.click("[data-buy-now-link]")
@@ -74,6 +80,7 @@ async def main():
         await pg.wait_for_timeout(800)
         await pg.screenshot(path=f"{SHOT}-3-success.png")
         print("PAID; landed on", pg.url)
+        print("success page:", await pg.evaluate("({v4:document.documentElement.classList.contains('rd-v4'),h1:document.querySelector('h1')&&document.querySelector('h1').textContent,cart:JSON.parse(localStorage.getItem('tresora_cart_v1')||'[]').length})"))
         print("SESSION_ID", re.search(r"session_id=(cs_test_[A-Za-z0-9]+)", pg.url).group(1))
         await b.close()
 asyncio.run(main())
