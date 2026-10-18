@@ -381,3 +381,10 @@ main{display:block}
 .rd-pdp__glance{margin:0 0 26px;padding:16px 18px;background:var(--surface);font-size:13.5px;line-height:1.6}
 .rd-pdp__glance span{display:block;font:500 10.5px/1.6 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--eyebrow,var(--muted));margin-bottom:4px}
 .rd-pdp__glance a{margin-left:6px;color:var(--ink);text-underline-offset:4px}
+
+/* backdrop behind an open mobile menu / mobile search (tap to close); the cart drawer uses its own overlay */
+.rd-backdrop{position:fixed;inset:0;z-index:45;background:rgba(20,18,16,.32);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;-webkit-tap-highlight-color:transparent}
+.rd-has-backdrop .rd-backdrop{opacity:1;visibility:visible}
+@media (prefers-reduced-motion:reduce){.rd-backdrop{transition:none}}
+/* leave a strip of the cart overlay visible on phones so a tap outside the drawer closes it */
+.rd .tc-drawer{width:min(440px,calc(100vw - 56px))}

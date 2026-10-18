@@ -134,6 +134,62 @@
   if (mb) mb.addEventListener('click', function () { var o = doc.classList.toggle('rd-menu-open'); mb.setAttribute('aria-expanded', String(o)); });
   $$('.rd-nav a').forEach(function (a) { a.addEventListener('click', closeMenu); });
 
+  /* ---- open panels (mobile menu, mobile search, cart drawer): close on outside tap / backdrop, Escape, and browser back ---- */
+  var PANELS = {
+    menu: { on: function () { return doc.classList.contains('rd-menu-open'); }, close: closeMenu, inside: ['.rd-nav', '[data-rd-menu]'] },
+    search: { on: function () { return doc.classList.contains('rd-searching'); }, close: function () { doc.classList.remove('rd-searching'); if (sug) sug.hidden = true; },
+              inside: ['[data-rd-search]', '[data-rd-searchtoggle]', '[data-rd-suggest]'] },
+    cart: { on: function () { return doc.classList.contains('tc-open'); }, close: function () { if (window.TresoraCart) window.TresoraCart.close(); }, inside: ['.tc-drawer'] }
+  };
+  var bd = document.createElement('div'); bd.className = 'rd-backdrop'; bd.setAttribute('aria-hidden', 'true'); document.body.appendChild(bd);
+  var openNames = function () { return Object.keys(PANELS).filter(function (k) { return PANELS[k].on(); }); };
+  var closePanel = function (k) { if (PANELS[k].on()) PANELS[k].close(); };
+  bd.addEventListener('click', function () { closePanel('menu'); closePanel('search'); });
+  // a tap anywhere outside an open menu / search closes it (the cart drawer has its own full-screen overlay)
+  // (pointerup as well as click: iOS Safari fires no click for taps on non-interactive areas)
+  var outside = function (e) {
+    ['menu', 'search'].forEach(function (k) {
+      if (!PANELS[k].on()) return;
+      var inside = PANELS[k].inside.some(function (sel) { var el = e.target.closest && e.target.closest(sel); return !!el; });
+      if (!inside) PANELS[k].close();
+    });
+  };
+  document.addEventListener('pointerup', outside, true);
+  var ov = document.querySelector('.tc-overlay');
+  if (ov) ov.addEventListener('pointerup', function () { PANELS.cart.close(); });
+  document.addEventListener('click', outside, true);
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var o = openNames(); if (!o.length) return;
+    o.forEach(closePanel); if (mb && o.indexOf('menu') > -1) mb.focus();
+  });
+  // browser back (mobile back gesture) closes the panel instead of leaving the page
+  var hist = {}, ignorePop = 0, leaving = false;
+  // never call history.back() while the page is navigating away (a link inside a panel, the Stripe checkout redirect)
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (a && !e.defaultPrevented && a.getAttribute('href').charAt(0) !== '#' && a.target !== '_blank') leaving = true;
+  });
+  window.addEventListener('beforeunload', function () { leaving = true; });
+  window.addEventListener('pageshow', function () { leaving = false; });
+  var sync = function () {
+    Object.keys(PANELS).forEach(function (k) {
+      var on = PANELS[k].on();
+      if (on && !hist[k]) { hist[k] = true; try { history.pushState({ rdPanel: k }, ''); } catch (err) {} }
+      else if (!on && hist[k]) {
+        hist[k] = false;
+        setTimeout(function () { if (!leaving && history.state && history.state.rdPanel === k) { ignorePop++; history.back(); } }, 60);
+      }
+    });
+    doc.classList.toggle('rd-has-backdrop', PANELS.menu.on() || PANELS.search.on());
+  };
+  window.addEventListener('popstate', function () {
+    if (ignorePop) { ignorePop--; return; }
+    Object.keys(PANELS).forEach(function (k) { if (hist[k] && !(history.state && history.state.rdPanel === k)) { hist[k] = false; closePanel(k); } });
+    sync();
+  });
+  new MutationObserver(sync).observe(doc, { attributes: true, attributeFilter: ['class'] });
+
   /* ---- header state on scroll ---- */
   var hd = $('[data-rd-header]');
   var onScroll = function () { hd.classList.toggle('is-scrolled', window.scrollY > 10); };
