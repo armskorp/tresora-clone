@@ -429,19 +429,30 @@ SLIDES = [("paris", "Paris", "paris-gift-box", "Pearl beaded evening bag from th
           ("amalfi", "Amalfi", "amalfi-gift-box", "Red Vespa charm keychain and pearls on a terrace above the Amalfi coast", "34% 60%")]
 def zcard_grid(key, cols):
     return f'<div class="rd-grid rd-zgrid rd-zgrid--{cols}">' + "".join(card(BY_HANDLE[h], key) for h in CATS[key]["handles"]) + "</div>"
+# Atelier Home bottles follow the cities: (key, name, handle, alt, object-position, fit) -- fit = orientation where the photo
+# is shown whole on a blurred copy of itself instead of cropped ("land" = portrait photo on landscape screens, "port" = the reverse)
+SLIDES_HOME = [("rococo", "Rococo Reverie", "rococo-reverie-decorative-glass-bottle", "Rococo Reverie hand-decorated glass bottle with a turquoise patina and pastoral scene, among dried flowers and blue-and-white porcelain", "49% 54%", "port"),
+               ("gothic", "Gothic Romance", "gothic-romance-decorative-glass-bottle", "Gothic Romance hand-decorated glass bottle with a black rose, on a dark wooden table by candlelight", "50% 50%", "land")]
+ALL_SLIDES = [(k, n, h, a, pos, "", "Inspired by City") for k, n, h, a, pos in SLIDES] + [(k, n, h, a, pos, fit, "Atelier Home") for k, n, h, a, pos, fit in SLIDES_HOME]
+def slide_v4(i, key, name, h, alt, pos, fit, kicker):
+    vs = variants(BY_HANDLE[h]); avail = any(v["available"] for v in vs); tab = "" if i == 0 else ' tabindex="-1"'
+    src = f"{SH}img/slide-{key}.jpg"; long = " rd-slide__city--long" if len(name) > 10 else ""
+    bg = f'<img class="rd-slide__bg" src="{src}" alt="" aria-hidden="true" loading="eager" decoding="async">' if fit else ""
+    link = (f'<a class="rd-slide__link" href="{purl(h)}"{tab}>Shop {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · {money(vs[0]["price"])}</span>' if avail else
+            f'<a class="rd-slide__link" href="{purl(h)}"{tab}>View {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · Sold out</span>')
+    return f'''<figure class="rd-slide{" is-active" if i == 0 else ""}{f" rd-slide--fit-{fit}" if fit else ""}" data-rd-slide aria-roledescription="slide" aria-label="{i+1} of {len(ALL_SLIDES)}: {name}"{"" if i == 0 else ' aria-hidden="true"'}>
+    {bg}<img class="rd-slide__img" src="{src}" alt="{E(alt)}" style="object-position:{pos}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
+    <figcaption class="rd-slide__text"><span class="rd-slide__kicker">{kicker} · {i+1:02d}</span><span class="rd-slide__city{long}">{E(name)}</span>
+      {link}</figcaption></figure>'''
 def home_v4():
-    slides = "".join(f'''<figure class="rd-slide{" is-active" if i == 0 else ""}" data-rd-slide aria-roledescription="slide" aria-label="{i+1} of {len(SLIDES)}: {name}"{"" if i == 0 else ' aria-hidden="true"'}>
-    <img src="{SH}img/slide-{key}.jpg" alt="{E(alt)}" style="object-position:{pos}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
-    <figcaption class="rd-slide__text"><span class="rd-slide__kicker">Inspired by City · {i+1:02d}</span><span class="rd-slide__city">{E(name)}</span>
-      <a class="rd-slide__link" href="{purl(h)}"{"" if i == 0 else ' tabindex="-1"'}>Shop {E(name)}</a><span class="rd-slide__price">{E(BY_HANDLE[h]["title"])} · {money(variants(BY_HANDLE[h])[0]["price"])}</span></figcaption></figure>'''
-        for i, (key, name, h, alt, pos) in enumerate(SLIDES))
-    dots = "".join(f'<button type="button" class="rd-dot" data-rd-dot="{i}" aria-label="Show {E(name)}"{" aria-current=\"true\"" if i == 0 else ""}><span></span></button>' for i, (key, name, *_r) in enumerate(SLIDES))
+    slides = "".join(slide_v4(i, *s) for i, s in enumerate(ALL_SLIDES))
+    dots = "".join(f'<button type="button" class="rd-dot" data-rd-dot="{i}" aria-label="Show {E(name)}"{" aria-current=\"true\"" if i == 0 else ""}><span></span></button>' for i, (key, name, *_r) in enumerate(ALL_SLIDES))
     sec = lambda k, title, sub, cols: f'''<section class="rd-zsec" id="{k}"><header class="rd-zhead"><h2>{title}</h2><p>{sub}</p><a href="{V}shop.html?cat={k}">View all {len(CATS[k]["handles"])}</a></header>{zcard_grid(k, cols)}</section>'''
     return f'''
 <h1 class="rd-sr">TRESORA · gifts inspired by cities and art</h1>
-<section class="rd-slides" data-rd-slides aria-roledescription="carousel" aria-label="Cities">
+<section class="rd-slides" data-rd-slides aria-roledescription="carousel" aria-label="Cities and Atelier Home">
   <div class="rd-slides__track" aria-live="off">{slides}</div>
-  <div class="rd-slides__nav" role="group" aria-label="Choose a city">{dots}</div>
+  <div class="rd-slides__nav" role="group" aria-label="Choose a slide">{dots}</div>
   <button type="button" class="rd-slides__pause" data-rd-pause aria-label="Pause slideshow" aria-pressed="false"><span></span></button>
 </section>
 <div id="shop">

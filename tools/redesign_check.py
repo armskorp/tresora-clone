@@ -79,6 +79,17 @@ async def run_variant(p, engine, mobile, n):
             await pg.hover(".rd-slide.is-active .rd-slide__link"); await pg.wait_for_timeout(6000); t["slide_hold"] = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
             await pg.mouse.move(640, 400)
         if SHOTS and engine == "chromium": await pg.screenshot(path=f"{SHOTS}/v{n}-slide2-{'m' if mobile else 'd'}.png")
+        # full autoplay cycle from a fresh load: every slide shows in order and it wraps back to the first
+        await pg.reload(wait_until="load"); await pg.mouse.move(640, 400) if not mobile else None; seen = []
+        for _ in range(64):
+            c = await pg.get_attribute("[data-rd-slides]", "data-rd-current")
+            if not seen or seen[-1] != c:
+                seen.append(c)
+                if SHOTS and engine == "chromium" and c in ("4", "5"):
+                    await pg.wait_for_timeout(2000); await pg.screenshot(path=f"{SHOTS}/v{n}-slide{c}-{'m' if mobile else 'd'}.png")
+            if len(seen) > 6: break
+            await pg.wait_for_timeout(500)
+        t["slide_cycle"] = ",".join(seen[:6]); t["slide_wrap"] = seen[6] if len(seen) > 6 else None
     btn = pg.locator(".rd-card[data-cat=city] [data-rd-add]").first
     await btn.scroll_into_view_if_needed(); await btn.click(); await pg.wait_for_timeout(500)
     t["count"] = await pg.text_content("[data-cart-count]")
@@ -130,7 +141,7 @@ async def run_variant(p, engine, mobile, n):
     for k, v in exp.items():
         if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")
     if "slides" in t:
-        sx = {"slides": 4, "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
+        sx = {"slides": 6, "slide_cycle": "0,1,2,3,4,5", "slide_wrap": "0", "slide0": "0", "slide_imgs_ok": True, "slide_full": True, "slide_auto": "1", "slide_swipe": "2"}
         if not mobile: sx["slide_hold"] = "2"
         for k, v in sx.items():
             if t.get(k) != v: problems.append(f"{k}: got {t.get(k)!r}, expected {v!r}")

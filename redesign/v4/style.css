@@ -43,11 +43,27 @@
 .rd-slides__pause{position:absolute;z-index:3;right:var(--pad);bottom:36px;width:36px;height:36px;border:0;background:none;cursor:pointer;color:#fff}
 .rd-slides__pause span{display:block;width:10px;height:12px;margin:auto;border-left:2px solid #fff;border-right:2px solid #fff}
 .rd-slides__pause[aria-pressed=true] span{width:0;height:0;border:0;border-left:11px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent}
+/* Atelier Home bottle slides: where the photo's orientation doesn't match the screen, show the bottle whole over a blurred copy of the same photo */
+.rd-slide__bg{display:none}
+.rd-slide__city.rd-slide__city--long{font-size:clamp(56px,8.4vw,136px)}
+@media (min-aspect-ratio:1/1){
+  .rd-slide--fit-land .rd-slide__bg{display:block;filter:blur(34px) brightness(.5) saturate(1.1);transform:scale(1.15)!important;animation:none!important}
+  .rd-slide--fit-land .rd-slide__img{margin:auto;width:min(100%,calc(100svh * .96));-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+}
+@media (max-aspect-ratio:1/1){
+  .rd-slide--fit-port .rd-slide__bg{display:block;filter:blur(34px) brightness(.62) saturate(1.1);transform:scale(1.15)!important;animation:none!important}
+  .rd-slide--fit-port .rd-slide__img{top:5%;bottom:auto;height:72%;-webkit-mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent)}
+}
 .rd-slide .rd-slide__text{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .35s ease}
 .rd-slide.is-active .rd-slide__text{opacity:1;transform:none;transition:opacity .8s ease .7s,transform .8s ease .7s}
 @media (prefers-reduced-motion:reduce){.rd-slide .rd-slide__text{transition:none!important;transform:none}.rd-slide.is-active img{animation:none}.rd-slide{transition-duration:.01s}}
 /* ---- Zara-style sections: big images, small type, lots of space, no lines ---- */
 .rd-zsec{max-width:var(--wrap);margin:0 auto;padding:clamp(72px,9vw,140px) var(--pad) 0}
+/* first section sits closer to the hero; anchored sections/headings land below the fixed header */
+#shop>.rd-zsec:first-child{padding-top:72px}
+.rd-v4{scroll-padding-top:0}
+.rd-v4 .rd-zsec{scroll-margin-top:var(--hh)}
+.rd-v4 .rd-zhead,.rd-v4 .rd-zhead h2{scroll-margin-top:calc(var(--hh) + 24px)}
 .rd-zhead{display:flex;align-items:baseline;gap:8px 24px;flex-wrap:wrap;margin-bottom:28px}
 .rd-zhead h2{font:400 clamp(30px,3vw,44px)/1 var(--head)}
 .rd-zhead p{font-size:12px;letter-spacing:.06em;color:var(--muted)}
@@ -98,6 +114,7 @@
   .rd-header__in{min-height:58px}
   .rd-slide__text{bottom:92px;gap:10px}
   .rd-slide__city{font-size:clamp(48px,14.5vw,84px)}
+  .rd-slide__city.rd-slide__city--long{font-size:clamp(38px,11.2vw,60px)}
   .rd-slides__nav{bottom:40px;gap:6px}
   .rd-dot{flex:1 1 0}
   .rd-zgrid,.rd-zgrid--2,.rd-v4 .rd-grid--shop{--cols:2;gap:36px 10px}
