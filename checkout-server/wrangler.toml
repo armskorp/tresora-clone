@@ -1,0 +1,12 @@
+# Cloudflare Worker config. Secrets are NOT stored here; set them with:  npx wrangler secret put STRIPE_SECRET_KEY
+name = "tresora-checkout"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+[vars]
+# Public site that hosts the shop (used for success/cancel redirect URLs). No trailing slash.
+SITE_URL = "https://armskorp.github.io/tresora-clone"
+# Comma-separated list of origins allowed to call /checkout (scheme + host, no path).
+ALLOWED_ORIGINS = "https://armskorp.github.io"
+# Set to "true" once Stripe Tax is set up in the Stripe dashboard.
+STRIPE_AUTOMATIC_TAX = "false"

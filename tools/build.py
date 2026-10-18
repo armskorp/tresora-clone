@@ -176,17 +176,5 @@ soup.html["data-static-clone"] = "true"
 
 open("index.html", "w", encoding="utf-8").write("<!doctype html>\n" + str(soup).replace("<!DOCTYPE html>", "", 1))
 
-# ---------- product placeholder pages (real data from /products.json) ----------
-for h, p in products.items():
-    img = p["images"][0]["src"] if p["images"] else None
-    loc = fetch(with_width(img, 800), "images") if img else None
-    price = p["variants"][0]["price"] if p["variants"] else ""
-    page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(p['title'])} – TRESORA</title><link rel="icon" href="../assets/images/favicon.png"><link rel="stylesheet" href="../assets/css/product-placeholder.css"></head>
-<body><main class="pp"><a class="pp__back" href="../index.html">← TRESORA</a>
-{f'<img src="../{loc}" alt="{html.escape(p["title"])}">' if loc else ''}
-<h1>{html.escape(p['title'])}</h1><p class="pp__price">${price} USD</p>
-<div class="pp__body">{p.get('body_html') or ''}</div>
-<p class="pp__note">Static placeholder page of the local homepage copy.</p></main></body></html>"""
-    open(f"products/{h}.html", "w").write(page)
 print("done; files:", len(cache))
+print("now run tools/build_shop.py")
