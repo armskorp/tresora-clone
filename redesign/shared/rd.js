@@ -328,7 +328,7 @@
       if (userPaused) pause(); else resume();
     });
     document.addEventListener('visibilitychange', function () { if (document.hidden) pause(); else resume(); });
-    ss.addEventListener('focusin', function () { hoverPaused = true; pause(); });
+    ss.addEventListener('focusin', function (e) { if (!e.target.matches(':focus-visible')) return; hoverPaused = true; pause(); });  // keyboard focus only: a tap/click on a dot or Pause must not freeze the show
     ss.addEventListener('focusout', function () { hoverPaused = false; resume(); });
     // swipe (touch + pen + mouse drag) via pointer events; vertical scrolling stays native (touch-action: pan-y)
     var sx = null, sy = 0;
