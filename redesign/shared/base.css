@@ -388,3 +388,12 @@ main{display:block}
 @media (prefers-reduced-motion:reduce){.rd-backdrop{transition:none}}
 /* leave a strip of the cart overlay visible on phones so a tap outside the drawer closes it */
 .rd .tc-drawer{width:min(440px,calc(100vw - 56px))}
+
+/* language switcher EN | ES */
+.rd-lang-pending body{visibility:hidden}
+.rd-lang{display:inline-flex;align-items:center;gap:2px;margin:0 2px;font:500 11.5px/1 var(--body);letter-spacing:.14em}
+.rd-lang span{opacity:.45}
+.rd-lang button{border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;padding:8px 5px;min-height:40px;cursor:pointer;opacity:.55}
+.rd-lang button[aria-pressed="true"]{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.rd-lang button:hover,.rd-lang button:focus-visible{opacity:1}
+@media (max-width:420px){.rd-lang{margin:0}.rd-lang button{padding:8px 3px}}

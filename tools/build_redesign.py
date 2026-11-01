@@ -202,7 +202,7 @@ def page(title, body, kind, active="", desc="Art-inspired and city-inspired gift
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 <meta name="theme-color" content="{tc}">{"" if ROOT_BUILD else '<meta name="robots" content="noindex">'}
-<link rel="icon" href="{IMG}favicon.png">
+<link rel="icon" href="{IMG}favicon.png"><script>try{{if(localStorage.getItem("tresora-lang")==="es"){{document.documentElement.classList.add("rd-lang-pending");setTimeout(function(){{document.documentElement.classList.remove("rd-lang-pending")}},2000)}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{STYLE or V + "style.css"}">{f'<link rel="stylesheet" href="{V}theme.css">' if THEME else ""}
 </head><body>
 <a class="rd-skip" href="#main">Skip to content</a>
@@ -211,7 +211,7 @@ def page(title, body, kind, active="", desc="Art-inspired and city-inspired gift
 {footer()}
 <script src="{R}assets/js/config.js"></script><script src="{R}assets/js/catalog.js"></script><script src="{R}assets/js/payment-links.js"></script><script src="{R}assets/js/cart.js"></script>
 <script>window.RD_LEADS={json.dumps({str(v["id"]): list(lead(v["handle"], v)) for p in CAT["products"].values() for v in variants(p)}, separators=(",", ":"))};</script>
-<script src="{SH}rd.js"></script>
+<script src="{SH}rd.js"></script><script src="{SH}i18n.js"></script>
 </body></html>'''
 
 def crumbs(*items):
