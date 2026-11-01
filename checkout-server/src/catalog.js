@@ -8,7 +8,7 @@ export default {
    "name": "New York Gift Box",
    "unit_amount": 4900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/newyork-d871bc-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/newyork-d871bc-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoyxBtPv0P7LG1jJmEKTJp"
@@ -19,7 +19,7 @@ export default {
    "name": "Handcrafted Artisan Glass Bottle – Rococo Reverie Collection",
    "unit_amount": 3600,
    "available": false,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/Bottleback-0dab13-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/Bottleback-0dab13-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoz0BtPv0P7LG1q9ewytlA"
@@ -30,7 +30,7 @@ export default {
    "name": "Amalfi Gift Box",
    "unit_amount": 4900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/Amalfy-64f657-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/Amalfy-64f657-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoz1BtPv0P7LG1LmML4jrb"
@@ -41,7 +41,7 @@ export default {
    "name": "Barcelona Gift Box",
    "unit_amount": 5900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/Screenshot2026-09-09at6_44_19pm-9ed7c9-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/Screenshot2026-09-09at6_44_19pm-9ed7c9-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoz4BtPv0P7LG1fPahI4qH"
@@ -52,7 +52,7 @@ export default {
    "name": "Gothic Romance Handcrafted Decorative Glass Bottle",
    "unit_amount": 6500,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/image-6_b92e24dc-ba31-4913-aad0-55f046c4ebcb-0c4de7-w800.jpg",
+   "image": "https://tresoragift.com/assets/images/products/image-6_b92e24dc-ba31-4913-aad0-55f046c4ebcb-0c4de7-w800.jpg",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoz6BtPv0P7LG19lwd6XQp"
@@ -63,7 +63,7 @@ export default {
    "name": "Paris Gift Box",
    "unit_amount": 5900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/Screenshot2026-09-08at7_24_24pm-46547e-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/Screenshot2026-09-08at7_24_24pm-46547e-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URoz8BtPv0P7LG1TECAqhlv"
@@ -74,7 +74,7 @@ export default {
    "name": "Elegant Girl Pearl Earring Gift Box",
    "unit_amount": 5900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/2_f55055c7-d5c0-4e1b-a242-ba08b7e3c202-4b206f-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/2_f55055c7-d5c0-4e1b-a242-ba08b7e3c202-4b206f-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URozBBtPv0P7LG16mvXfkfU"
@@ -85,7 +85,7 @@ export default {
    "name": "John Sargent The Wineglasses Gift Box",
    "unit_amount": 5900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/0_eb5798a9-207e-4452-8392-2591a431f854-ff46ed-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/0_eb5798a9-207e-4452-8392-2591a431f854-ff46ed-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URozDBtPv0P7LG1f04BrK5W"
@@ -96,7 +96,7 @@ export default {
    "name": "Van Gogh Almond Blossom Gift Box",
    "unit_amount": 5400,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/1_4e3688cc-65a2-4158-b140-82a5e9772eab-99e0d3-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/1_4e3688cc-65a2-4158-b140-82a5e9772eab-99e0d3-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URozFBtPv0P7LG1aYpP6qxz"
@@ -107,7 +107,7 @@ export default {
    "name": "Caravaggio Bacchus Wine Gift Box – Green",
    "unit_amount": 6900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/2_f460b0b4-42bf-4cf6-acbe-93889e92f22b-57f41f-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/2_f460b0b4-42bf-4cf6-acbe-93889e92f22b-57f41f-w800.png",
    "variant": "Green",
    "stripe_price": {
     "test": "price_1URozIBtPv0P7LG1LYn3FxqU"
@@ -118,7 +118,7 @@ export default {
    "name": "Caravaggio Bacchus Wine Gift Box – Red",
    "unit_amount": 6900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/1_379864d5-2401-406e-9dc6-7a9aa1803cb3-2c2ba7-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/1_379864d5-2401-406e-9dc6-7a9aa1803cb3-2c2ba7-w800.png",
    "variant": "Red",
    "stripe_price": {
     "test": "price_1URozJBtPv0P7LG1X2uoKR3g"
@@ -129,7 +129,7 @@ export default {
    "name": "Vermeer Girl with a Pearl Earring Gift Box – Light Blue",
    "unit_amount": 6500,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/1_32245e4a-d268-4368-932b-431a859c7f24-e90431-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/1_32245e4a-d268-4368-932b-431a859c7f24-e90431-w800.png",
    "variant": "Light Blue",
    "stripe_price": {
     "test": "price_1URozLBtPv0P7LG1BZAPWEtg"
@@ -140,7 +140,7 @@ export default {
    "name": "Vermeer Girl with a Pearl Earring Gift Box – White",
    "unit_amount": 6500,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/1-742f49-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/1-742f49-w800.png",
    "variant": "White",
    "stripe_price": {
     "test": "price_1URozNBtPv0P7LG1kNORg3Qo"
@@ -151,7 +151,7 @@ export default {
    "name": "Klimt The Kiss Gift Box",
    "unit_amount": 5900,
    "available": true,
-   "image": "https://armskorp.github.io/tresora-clone/assets/images/products/red1-85a457-w800.png",
+   "image": "https://tresoragift.com/assets/images/products/red1-85a457-w800.png",
    "variant": "",
    "stripe_price": {
     "test": "price_1URozPBtPv0P7LG1o24K36uT"

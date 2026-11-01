@@ -8,7 +8,7 @@ The script is idempotent: it finds existing objects by metadata (shopify_product
 and reuses the Payment Links recorded in the ids file."""
 import json, os, re, sys, time, html, urllib.request, urllib.parse, urllib.error
 ROOT = "/workspace/tresora-clone"; os.chdir(ROOT)
-SITE = "https://armskorp.github.io/tresora-clone"
+SITE = os.environ.get("SITE", "https://tresoragift.com").rstrip("/")
 KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 if not KEY.startswith(("sk_test_", "sk_live_", "rk_test_", "rk_live_")): sys.exit("STRIPE_SECRET_KEY missing or malformed")
 MODE = "live" if "_live_" in KEY[:8] else "test"
@@ -72,6 +72,7 @@ for p in catalog:
         if cv["available"]:
             if old.get("stripe_price") == price["id"] and old.get("payment_link"):
                 rec.update({k: old[k] for k in ("payment_link", "payment_link_url")})
+                api("POST", f"payment_links/{old['payment_link']}", {"after_completion": {"type": "redirect", "redirect": {"url": f"{SITE}/success.html?session_id={{CHECKOUT_SESSION_ID}}"}}})  # keep the return URL on the current domain
             else:
                 link = api("POST", "payment_links", {
                     "line_items": [{"price": price["id"], "quantity": 1, "adjustable_quantity": {"enabled": True, "minimum": 1, "maximum": 20}}],

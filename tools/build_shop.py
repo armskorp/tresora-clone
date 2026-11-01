@@ -8,7 +8,7 @@ Run after tools/build.py.  Source data: orig/products.json (Shopify /products.js
 import json, os, re, html, subprocess, hashlib, time, urllib.parse as up
 ROOT = "/workspace/tresora-clone"; os.chdir(ROOT)
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
-SITE = "https://armskorp.github.io/tresora-clone"
+SITE = os.environ.get("SITE", "https://tresoragift.com").rstrip("/")
 products = json.load(open("orig/products.json"))["products"]
 os.makedirs("assets/images/products", exist_ok=True); os.makedirs("checkout-server", exist_ok=True)
 
