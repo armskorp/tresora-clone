@@ -1,5 +1,6 @@
 """Full-site checks for redesign/v1..v3 (home, shop, cart, account, 12 product pages each) in Chromium and WebKit at 1280 and 390.
 usage: python3 tools/redesign_check.py SITE_ROOT_URL [--shots DIR] [--only 1,2,3] [--engines chromium,webkit]"""
+from urllib.parse import urlparse
 import asyncio, sys, json, os, re
 from urllib.parse import urljoin, urlparse
 from playwright.async_api import async_playwright
@@ -40,7 +41,7 @@ async def run_variant(p, engine, mobile, n):
     pg.on("pageerror", lambda e: errs.append(str(e)))
     pg.on("response", lambda r: bad.append(f"{r.status} {r.url}") if r.status >= 400 else None)
     sub = "" if n == 0 else f"bg/{n}/" if isinstance(n, str) else f"redesign/v{n}/"
-    root = BASE + sub; prod = f"/tresora-clone/{sub}products/"
+    root = BASE + sub; prod = urlparse(BASE).path + f"{sub}products/"
     problems, links = [], set()
     await pg.goto(root, wait_until="load"); await pg.evaluate("localStorage.clear()")
     for path in PAGES + (["success.html", "cancel.html"] if n == 0 else []):
