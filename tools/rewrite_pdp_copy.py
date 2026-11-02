@@ -60,6 +60,8 @@ PROSE = {  # old EN -> (new EN, ES)
  ("Questions? Write to hello@tresora.store — we answer fast.", "¿Preguntas? Escríbenos a hello@tresora.store; respondemos enseguida."),
 }
 es = json.load(open("i18n/es.json"))
+VERBATIM = True  # owner decision 2026-11-01: product copy is tresora.store body_html word for word (tools/verbatim_pdp.py); own-words rewrite disabled
+if VERBATIM: raise SystemExit("rewrite_pdp_copy: disabled (VERBATIM) - product copy comes from tools/verbatim_pdp.py")
 def esc(t): return t.replace("&", "&amp;")
 for f in glob.glob("products/*.html"):
     h = os.path.basename(f)[:-5]; s = o = open(f).read()

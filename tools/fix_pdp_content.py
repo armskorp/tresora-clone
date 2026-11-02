@@ -20,7 +20,8 @@ for f in glob.glob("*.html") + glob.glob("products/*.html"):
     s = o = open(f).read()
     s = s.replace(VER_OLD, VER_NEW)
     s = s.replace('aria-label="Shopify store" title="Shopify store"', 'aria-label="Main store" title="Main store"')
-    for a, b in COPY.items(): s = s.replace(a, b)
+    if not f.startswith("products/"):  # product copy is verbatim from tresora.store (tools/verbatim_pdp.py)
+        for a, b in COPY.items(): s = s.replace(a, b)
     if f.startswith("products/"):
         h = os.path.basename(f)[:-5]
         glass = h.endswith(("-bottle", "-vase"))  # glass pieces ship with no chocolate or card: no discretion note
@@ -54,7 +55,7 @@ ESCOPY = {"no un montón de recuerdos turísticos.": "reunidos con cuidado para 
 new = {}
 for k, v in es.items():
     k2 = k
-    for a, b in COPY.items(): k2 = k2.replace(a, b)
-    for a, b in ESCOPY.items(): v = v.replace(a, b)
+    pass  # COPY no longer applied to keys: product copy is verbatim
+    pass  # ESCOPY disabled with COPY
     new[k2] = v
 new.update(add); json.dump(new, open("i18n/es.json", "w"), ensure_ascii=False, indent=0)

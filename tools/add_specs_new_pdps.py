@@ -4,6 +4,7 @@ shop grid cards, search catalog, sitemap, sizes.json and Spanish. Edits committe
 import os, re, json, io, urllib.request
 os.chdir(os.path.join(os.path.dirname(__file__), ".."))
 es = json.load(open("i18n/es.json"))
+if True: raise SystemExit("add_specs_new_pdps: one-time (already applied in c247229); product copy now comes verbatim from tools/verbatim_pdp.py")
 def E(t): return t.replace("&", "&amp;").replace('"', "&quot;")
 def sp(t): return f'<p class="rd-inside__spec">{E(t)}</p>'
 # ---- 1. size & materials for gift boxes (only facts stated on tresora.store; overall box size is not published) ----
