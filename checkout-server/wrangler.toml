@@ -5,8 +5,8 @@ compatibility_date = "2024-09-23"
 
 [vars]
 # Public site that hosts the shop (used for success/cancel redirect URLs). No trailing slash.
-SITE_URL = "https://armskorp.github.io/tresora-clone"
+SITE_URL = "https://tresoragift.com"
 # Comma-separated list of origins allowed to call /checkout (scheme + host, no path).
-ALLOWED_ORIGINS = "https://armskorp.github.io"
+ALLOWED_ORIGINS = "https://tresoragift.com,https://armskorp.github.io"
 # Set to "true" once Stripe Tax is set up in the Stripe dashboard.
 STRIPE_AUTOMATIC_TAX = "false"

@@ -19,7 +19,7 @@ shopper pays on Stripe ──▶ redirected to SITE_URL/success.html?session_id=
 | Name | Kind | Example |
 | --- | --- | --- |
 | `STRIPE_SECRET_KEY` | **secret** (`wrangler secret put`) | `sk_test_…` while testing, `sk_live_…` for real payments |
-| `SITE_URL` | var (`wrangler.toml`) | `https://armskorp.github.io/tresora-clone` |
+| `SITE_URL` | var (`wrangler.toml`) | `https://tresoragift.com` |
 | `ALLOWED_ORIGINS` | var | `https://armskorp.github.io` (comma-separated) |
 | `STRIPE_AUTOMATIC_TAX` | var | `"true"` once Stripe Tax is set up |
 | `USE_STRIPE_PRICE_IDS` | var (optional) | `"false"` to always send inline amounts |
