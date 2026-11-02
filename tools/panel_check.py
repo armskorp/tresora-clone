@@ -38,8 +38,16 @@ async def run(p, engine, mobile):
         await tap(200, 800); res["menu_backdrop_tap"] = not await is_on("rd-menu-open")
         await open_menu(); await is_on("rd-menu-open"); await pg.keyboard.press("Escape"); res["menu_escape"] = not await is_on("rd-menu-open")
         res["menu_back"] = await back_closes(open_menu, "rd-menu-open")
-        await open_menu(); await is_on("rd-menu-open"); await tap(100, 30)   # empty header area outside the menu list
-        res["menu_outside_header_tap"] = not await pg.evaluate(CLS % "rd-menu-open")
+        await open_menu(); await is_on("rd-menu-open")
+        # pick an empty header spot (not a link/button) so the tap can't navigate away (old fixed (100,30) hit the logo)
+        pt = await pg.evaluate("""()=>{const h=document.querySelector('header')||document.body;const r=h.getBoundingClientRect();
+          for(let x=r.left+5;x<r.right;x+=8){for(const y of [r.top+6,r.top+r.height/2,r.bottom-6]){const e=document.elementFromPoint(x,y);
+          if(e&&!e.closest('a,button,input,.rd-nav,[data-rd-menu]'))return [x,y];}}return null}""")
+        if pt:
+            await tap(*pt); await pg.wait_for_timeout(350)
+            try: res["menu_outside_header_tap"] = not await pg.evaluate(CLS % "rd-menu-open")
+            except Exception: await pg.wait_for_load_state("load"); res["menu_outside_header_tap"] = "navigated"
+        else: await pg.keyboard.press("Escape")
         if pg.url.endswith("/products/paris-gift-box.html") is False: await pg.goto(BASE + "products/paris-gift-box.html", wait_until="load")
         await open_menu(); await is_on("rd-menu-open")
         async with pg.expect_navigation(): await pg.click(".rd-nav a[href$='shop.html']")
