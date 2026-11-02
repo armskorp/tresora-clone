@@ -345,8 +345,7 @@ def return_page(ok):
     return page("Checkout cancelled · TRESORA", inner, "return")
 def info_body(slug):
     if slug == "contact":
-        return (f'<p>Trade name: TRESORA</p><p>Email: <a href="mailto:{EMAIL}">{EMAIL}</a></p>'
-                '<p>Physical address: 333 E Fairview Ave, 315, Glendale CA 91207, United States.</p>')
+        return (f'<p>Trade name: TRESORA</p><p>Email: <a href="mailto:{EMAIL}">{EMAIL}</a></p>')
     _, key, lists = INFO[slug]; out = []; open_ul = False
     for i, t in enumerate(INFO_SRC[key]):
         li = any(a <= i <= b for a, b in lists)

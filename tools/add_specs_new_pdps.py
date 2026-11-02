@@ -60,7 +60,7 @@ NEW = {
         ("p","Decorative use only. Keep it away from moisture and direct sun to protect the artwork, and dust lightly with a soft, dry cloth.","Solo decorativo. Mantenlo lejos de la humedad y del sol directo para proteger el arte, y quita el polvo con un paño suave y seco."),
         ("h3","Perfect For","Ideal para"),
         ("p","Gothic or Victorian-style rooms, dark academia shelves, a vanity or mantel, faux or dried bouquets, and anyone drawn to beautifully dark things.","Espacios de estilo gótico o victoriano, estanterías dark academia, un tocador o una repisa, ramos artificiales o secos, y cualquiera que ame la belleza oscura."),
-        ("p","Free standard US shipping. Ships from Glendale, California, within 1–4 business days.","Envío estándar gratis en EE. UU. Se envía desde Glendale, California, en 1 a 4 días hábiles.")]),
+        ("p","Free standard US shipping. Ships from Los Angeles, California, within 1–4 business days.","Envío estándar gratis en EE. UU. Se envía desde Los Ángeles, California, en 1 a 4 días hábiles.")]),
  "crow-roses-decorative-bottle": dict(pid=15421127196785, vid=67725560053873, price=4000,
   title="Crow & Roses Handcrafted Decorative Glass Bottle",
   imgs=["01_tresora-gothic-crow-bottle_front-rose-light_1200x1500_e29f3827-bcc0-477e-a6bc-1f8a3f7f9d92.jpg","02_tresora-gothic-crow-bottle_front-crystal-light_1200x1500_6a4a9deb-5671-4015-ada7-21bf4b89873f.jpg","03_tresora-gothic-crow-bottle_back-rose-light_1200x1500_290bffea-bf5e-468b-8ad5-0b6ea271d24b.jpg","04_tresora-gothic-crow-bottle_in-hand-scale_1200x1500_5cb40d27-bae0-4736-9da9-c2caf1745d03.jpg"],
@@ -83,7 +83,7 @@ NEW = {
         ("p","For display only. Keep away from moisture and direct sun to protect the artwork, and dust lightly with a soft, dry cloth.","Solo decorativa. Mantenla lejos de la humedad y del sol directo para proteger el arte, y quita el polvo con un paño suave y seco."),
         ("h3","Perfect For","Ideal para"),
         ("p","Gothic interiors, dark academia shelves, vanity or bookshelf styling, collectors of art objects, and a thoughtful gift for anyone who loves the beautifully dark.","Interiores góticos, estanterías dark academia, decoración de tocador o librero, coleccionistas de objetos de arte y un regalo especial para quien ama la belleza oscura."),
-        ("p","Free standard US shipping. Ships from Glendale, California, within 1–4 business days.","Envío estándar gratis en EE. UU. Se envía desde Glendale, California, en 1 a 4 días hábiles.")]),
+        ("p","Free standard US shipping. Ships from Los Angeles, California, within 1–4 business days.","Envío estándar gratis en EE. UU. Se envía desde Los Ángeles, California, en 1 a 4 días hábiles.")]),
 }
 PACK = ("Arrives in a gift pouch and box.", "Llega en una bolsita de regalo y una caja.")
 CS = ("Coming soon", "Próximamente")
