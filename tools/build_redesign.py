@@ -12,7 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
-ASSET_V = "20261101c"
+ASSET_V = "20261101d"
 STYLE = ""; ROOT_BUILD = False; THEME = None         # root build: v4 published at the site root
 N = 0
 CATS = {
@@ -61,12 +61,10 @@ def gallery(h):
         li = int(big.rsplit("-", 1)[1].split(".")[0]); order = [li] + [i for i in order if i != li]
         return [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
     return [(big, t, 1200, 900)] + [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
-REVIEWS = [  # the 5 real Judge.me reviews shown on tresora.store (5.00 average)
+REVIEWS = [  # the 3 distinct Judge.me reviews from tresora.store (5.00 average); duplicates removed
   ("Bought this as a gift for a wine lover.. The presentation is gorgeous, everything feels high quality and thoughtfully put together. Shipping was fast too. Thank you!", "Anonymous", "Caravaggio Bacchus Wine Gift Box"),
   ("Absolutely love this set. I gave it to my mom as a gift. Her favorite is the tea cup with the butterfly and roses. It’s so pretty.", "SueD", "Klimt The Kiss Gift Box"),
   ("I gave it to my mom. She really liked it. Thank you.👌", "Anonymous", "Klimt The Kiss Gift Box"),
-  ("I gave it to my mom. She really liked it. Thank you very much.", "Anonymous", "TRESORA"),
-  ("Bought this as a gift for a wine lover.. The presentation is gorgeous, everything feels high quality and thoughtfully put together. Shipping was fast too. Thank you!", "Anonymous", "TRESORA"),
 ]
 WHY = [("Curated, not generic.", "Every piece tells a story."), ("Inspired by Art & Places.", "Discover a city, artist or moment through objects."),
        ("Ready to gift.", "Beautifully packaged and ready to give."), ("Made to be remembered.", "Not another gift that gets forgotten.")]
@@ -142,7 +140,7 @@ def review_items(rs):
   <figcaption><strong>{E(n)}</strong><span>{E(pr)}</span></figcaption></figure>''' for t, n, pr in rs)
 
 def reviews():
-    return f'''<div class="rd-reviews__head"><div class="rd-score"><b>5.00</b>{stars()}<span>Based on 5 verified reviews</span></div></div>
+    return f'''<div class="rd-reviews__head"><div class="rd-score"><b>5.00</b>{stars()}<span>Based on 3 verified reviews</span></div></div>
 <div class="rd-reviews__body rd-reviews__body--text"><div class="rd-reviews__list">{review_items(REVIEWS)}</div></div>'''
 
 def why():
@@ -416,7 +414,7 @@ def reset_page():
     return page("Reset password · TRESORA", body, "account", active="account", extra_js=auth_scripts())
 
 SHOT = '<p class="rd-viewall"><a class="rd-btn rd-btn--secondary" href="{V}shop.html">View the full collection</a></p>'
-FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 5 reviews</a></li></ul>'
+FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 3 reviews</a></li></ul>'
 def home():
     VP, VP45, FAN, BAG, AMALFI = (SH + "img/hero-vermeer-print.jpg", SH + "img/hero-vermeer-print-45.jpg", SH + "img/hero-barcelona-fan.jpg", SH + "img/hero-paris-bag.jpg", SH + "img/hero-amalfi.jpg")
     VG, KL = SH + "img/cat-art-vangogh.jpg", SH + "img/cat-art-klimt.jpg"
@@ -526,8 +524,8 @@ def home_v4():
 {sec("art", "Art", "Klimt, Vermeer, Van Gogh, Caravaggio, Sargent.", 3)}
 {sec("home", "Atelier Home", "Handmade decorative glass.", 2)}
 </div>
-<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{POL}refund-policy">see policy</a></li><li><a href="#reviews">5.00 · 5 reviews</a></li></ul></section>
-<section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 5 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
+<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{POL}refund-policy">see policy</a></li><li><a href="#reviews">5.00 · 3 reviews</a></li></ul></section>
+<section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 3 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
 <section class="rd-zsec rd-zsec--news">{newsletter("Newsletter", "New city and art collections, a few times a year.")}</section>'''
 
 NAMES = {1: "Midnight", 2: "Gallery", 3: "Modern", 4: "Cities"}
