@@ -23,9 +23,11 @@ for f in glob.glob("*.html") + glob.glob("products/*.html"):
     for a, b in COPY.items(): s = s.replace(a, b)
     if f.startswith("products/"):
         h = os.path.basename(f)[:-5]
-        if NOTE not in s:
+        glass = h.endswith(("-bottle", "-vase"))  # glass pieces ship with no chocolate or card: no discretion note
+        if glass: s = s.replace(f'<p class="rd-pdp__note">{NOTE}</p>', '')
+        if NOTE not in s and not glass:
             s = re.sub(r'(<div class="rd-pdp__desc">.*?)(</div>)', lambda m: m.group(1) + f'<p class="rd-pdp__note">{NOTE}</p>' + m.group(2), s, count=1, flags=re.S)
-        if h == "elegant-pearl-earring-table-gift-box" and ELEGANT_CARD not in s:
+        if h == "elegant-pearl-earring-table-gift-box" and ELEGANT_CARD not in s and "<h3>Message Card</h3>" not in s:
             s = s.replace('<div class="rd-pdp__desc">', f'<div class="rd-pdp__desc"><h3>Message Card</h3><p>{ELEGANT_CARD}</p>', 1)
         if h == "amalfi-gift-box":  # drop the "Add Any Name or Message" image: no personalization field on this site
             s = re.sub(r'<button type="button" class="rd-thumb" data-rd-thumb="/redesign/shared/products/amalfi-gift-box-10\.jpg".*?</button>', '', s, flags=re.S)
