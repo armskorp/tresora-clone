@@ -129,3 +129,7 @@
 .rd-v4 .tc-item img{height:66px}.rd-v4 .rd-suggest img{width:52px;height:41px}
 @media (max-width:749px){.rd-v4 .tc-item img{height:57px}}
 .rd-return p{max-width:52ch;margin-top:16px;color:var(--muted)}.rd-return .rd-btn{margin-right:18px}
+/* hero social icons: bottom-centre strip below the progress dots */
+.rd-slides__social{position:absolute;z-index:4;left:50%;bottom:4px;transform:translateX(-50%);margin:0;color:#fff;flex-wrap:nowrap;gap:4px 12px}
+.rd-slides__social svg{width:24px;height:24px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+@media (max-width:749px){.rd-slides__social{gap:2px 6px;bottom:2px}.rd-slides__social svg{width:22px;height:22px}}

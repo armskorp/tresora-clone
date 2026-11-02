@@ -12,6 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
+ASSET_V = "20261101b"
 STYLE = ""; ROOT_BUILD = False; THEME = None         # root build: v4 published at the site root
 N = 0
 CATS = {
@@ -179,12 +180,23 @@ def header(active=""):
   </div>
 </header>'''
 
+SOCIAL = [
+ ("Instagram", "https://www.instagram.com/tresora.gift/", '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/>'),
+ ("TikTok", "https://www.tiktok.com/@tresorastore", '<path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.8 2.2 4.6 5 5"/>'),
+ ("Facebook", "https://www.facebook.com/TRESORAgifts", '<path d="M14.5 21v-8h3l.5-3.5h-3.5V7.6c0-1 .4-1.6 1.7-1.6H18V3.2A20 20 0 0 0 15.6 3c-2.6 0-4.1 1.5-4.1 4.2v2.3H8.5V13h3v8"/>'),
+ ("Pinterest", "https://www.pinterest.com/TRESORAgift/", '<circle cx="12" cy="12" r="8.5"/><path d="M10.8 20.2 12.6 13"/><path d="M11.3 15c.6.5 1.3.8 2.1.8 2.3 0 3.6-2 3.6-4.3 0-2.6-2.1-4.3-4.8-4.3-3 0-5 2-5 4.5 0 1.1.5 2.2 1.3 2.6"/>'),
+ ("Etsy", "https://www.etsy.com/shop/TRESORAgift", '<path d="M16.5 5H8v14h8.5"/><path d="M8 12h6"/><path d="M16.5 5v2.5M16.5 19v-2.5"/>'),
+ ("Shopify store", "https://tresora.store", '<path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M13.6 12.2c-.4-.4-1-.6-1.6-.6-.9 0-1.6.5-1.6 1.2 0 1.6 3.4.9 3.4 2.6 0 .8-.8 1.3-1.8 1.3-.7 0-1.3-.2-1.8-.7"/>'),
+]
+def social_icons(cls):
+    return f'<p class="{cls} rd-socicons">' + "".join(f'<a href="{u}" target="_blank" rel="noopener" aria-label="{n}" title="{n}"><svg viewBox="0 0 24 24" aria-hidden="true">{svg}</svg></a>' for n, u, svg in SOCIAL) + '</p>'
+
 def footer():
     return f'''<footer class="rd-footer">
   <div class="rd-footer__top">
     <div class="rd-footer__brand"><img src="{SH}img/logo-light.png" alt="TRESORA" width="706" height="497" loading="lazy">
       <p>Gifts inspired by art, cities, and beautiful moments. Curated with intention. Made to be remembered.</p>
-      <div class="rd-follow"><h3>Follow &amp; shop</h3><p class="rd-social"><a href="https://www.instagram.com/tresora.gift/" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@tresorastore" target="_blank" rel="noopener">TikTok</a><a href="https://www.facebook.com/TRESORAgifts" target="_blank" rel="noopener">Facebook</a><a href="https://www.pinterest.com/TRESORAgift/" target="_blank" rel="noopener">Pinterest</a><a href="https://www.etsy.com/shop/TRESORAgift" target="_blank" rel="noopener">Etsy shop</a><a href="https://tresora.store" target="_blank" rel="noopener">Shopify store</a></p></div></div>
+      <div class="rd-follow"><h3>Follow &amp; shop</h3>{social_icons("rd-social")}</div></div>
     <div><h3>Shop</h3><a href="{V}shop.html">All products</a>{"".join(f'<a href="{V}shop.html?cat={k}">{E(c["name"])}</a>' for k, c in CATS.items())}</div>
     <div><h3>Client care</h3><a href="{POL}contact-information">Contact us</a><a href="{POL}shipping-policy">Shipping</a><a href="{POL}refund-policy">Returns &amp; refunds</a><a href="{V}#reviews">Reviews</a></div>
     <div><h3>Account</h3><a href="{V}account.html">Sign in</a><a href="{V}account.html?mode=signup">Create account</a><a href="{V}cart.html">Your cart</a></div>
@@ -203,7 +215,7 @@ def page(title, body, kind, active="", desc="Art-inspired and city-inspired gift
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 <meta name="theme-color" content="{tc}">{"" if ROOT_BUILD else '<meta name="robots" content="noindex">'}
 <link rel="icon" href="{IMG}favicon.png"><script>try{{if(localStorage.getItem("tresora-lang")==="es"){{document.documentElement.classList.add("rd-lang-pending");setTimeout(function(){{document.documentElement.classList.remove("rd-lang-pending")}},2000)}}}}catch(e){{}}</script>
-<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css"><link rel="stylesheet" href="{STYLE or V + "style.css"}">{f'<link rel="stylesheet" href="{V}theme.css">' if THEME else ""}
+<link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css?v={ASSET_V}"><link rel="stylesheet" href="{STYLE or V + "style.css"}?v={ASSET_V}">{f'<link rel="stylesheet" href="{V}theme.css?v={ASSET_V}">' if THEME else ""}
 </head><body>
 <a class="rd-skip" href="#main">Skip to content</a>
 {header(active)}
@@ -470,6 +482,7 @@ def home_v4():
 <section class="rd-slides" data-rd-slides aria-roledescription="carousel" aria-label="Cities and Atelier Home">
   <div class="rd-slides__track" aria-live="off">{slides}</div>
   <div class="rd-slides__nav" role="group" aria-label="Choose a slide">{dots}</div>
+  {social_icons("rd-slides__social")}
   <button type="button" class="rd-slides__pause" data-rd-pause aria-label="Pause slideshow" aria-pressed="false"><span></span></button>
 </section>
 <div id="shop">
