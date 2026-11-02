@@ -12,7 +12,7 @@
    If neither is set, Checkout shows a friendly "payments coming soon" message. */
 window.TRESORA_CONFIG = {
   CHECKOUT_URL: "",
-  PAYMENT_LINKS: "test",
+  PAYMENT_LINKS: "live",
   CURRENCY: "USD",
   MAX_QTY_PER_LINE: 20
 };

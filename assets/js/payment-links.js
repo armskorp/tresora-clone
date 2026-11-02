@@ -15,5 +15,20 @@ window.TRESORA_PAYMENT_LINKS = {
   "44325326454897": "https://buy.stripe.com/test_cNibJ077U0b59c97aF2cg0a",
   "44325355978865": "https://buy.stripe.com/test_cNiaEW4ZMf5Z5ZX9iN2cg0b",
   "44325276582001": "https://buy.stripe.com/test_fZu8wOcsega33RP66B2cg0c"
+ },
+ "live": {
+  "48949484060785": "https://buy.stripe.com/4gM00i8dJ7kUaus4gx1ck0b",
+  "44541176447089": "https://buy.stripe.com/eVq8wO1Pl34E5a828p1ck0c",
+  "44516210016369": "https://buy.stripe.com/3cIfZg65B34EdGEdR71ck0a",
+  "44514428649585": "https://buy.stripe.com/14AdR8fGb0Ww0TS5kB1ck01",
+  "44512196821105": "https://buy.stripe.com/5kQ9ASdy36gQ9qo6oF1ck06",
+  "44325569495153": "https://buy.stripe.com/5kQeVcctZgVufOM14l1ck04",
+  "44325484134513": "https://buy.stripe.com/dRmfZg3XtcFedGE7sJ1ck09",
+  "44325426823281": "https://buy.stripe.com/bJe8wOalRcFe6ec28p1ck00",
+  "44325380391025": "https://buy.stripe.com/aFa9AS51x48IfOM7sJ1ck03",
+  "44325380423793": "https://buy.stripe.com/9B66oGctZax6fOM5kB1ck07",
+  "44325326454897": "https://buy.stripe.com/aFa8wOdy3gVu5a85kB1ck08",
+  "44325355978865": "https://buy.stripe.com/00wfZgctZ6gQ9qo5kB1ck02",
+  "44325276582001": "https://buy.stripe.com/00wdR8eC734E5a8cN31ck05"
  }
 };
