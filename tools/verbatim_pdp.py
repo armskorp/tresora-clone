@@ -77,13 +77,16 @@ def visible(s):
     a = s.find('<div class="rd-pdp__info">'); b = s.find('<section class="rd-section rd-related">')
     return norm(re.sub(r"<[^>]+>", " ", s[a:b]))
 es = json.load(open("i18n/es.json")); bad = 0; miss = set()
+LA_FROM, LA_TO = "Ships from Glendale, California", "Ships from Los Angeles, California"
 for p in SRC:
     h = p["handle"]; f = f"products/{h}.html"
     if not os.path.exists(f): print("NO PAGE", h); bad += 1; continue
     s0 = open(f).read(); s, strings = render(h, p, s0)
+    s = s.replace(LA_FROM, LA_TO); strings = [x.replace(LA_FROM, LA_TO) if x else x for x in strings]  # owner: say Los Angeles, not Glendale
     if "--check" in sys.argv:
         intro, items, specs, rest = split(p); v = visible(s0)
-        need = intro + items + specs + [t for t, l in rest if t] + [l for t, l in rest if l and l != "li"]
+        need = [x.replace(LA_FROM, LA_TO) for x in intro + items + specs + [t for t, l in rest if t] + [l for t, l in rest if l and l != "li"]]
+        _unused = intro + items + specs + [t for t, l in rest if t] + [l for t, l in rest if l and l != "li"]
         lost = [x for x in need if E(x) not in v and x not in v and x not in html.unescape(v)]
         print("MATCH" if not lost else "DIFF ", h, "" if not lost else lost[:3]); bad += bool(lost); continue
     miss |= {x for x in strings if x and x not in es}
