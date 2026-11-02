@@ -147,3 +147,27 @@
 .rd-legal__more h2{font:500 10.5px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
 .rd-legal__more a{text-decoration:none}.rd-legal__more a:hover{text-decoration:underline}
 @media (max-width:760px){.rd-legal{grid-template-columns:1fr;gap:36px}}
+/* 2026-11-01h PDP fixes: note, gap before related, mobile buy order + thumb carousel, legible small caps */
+.rd-pdp__note{font-size:13px;font-style:italic;color:var(--muted)}
+.rd-section.rd-pdp{padding-bottom:clamp(40px,4vw,56px)}
+.rd-section.rd-pdp-reviews,.rd-section.rd-related{padding-top:clamp(40px,4vw,64px)}
+@media (min-width:750px){
+  .rd-pdp__gallery{position:sticky;top:calc(var(--hh,70px) + 24px);align-self:start}
+  .rd-eyebrow,.rd-crumbs,.rd-card__cat,.rd-inside__count,.rd-pdp__glance span,.rd-pills legend,.rd-pdp__desc h3,
+  .rd-cat__text small,.rd-zhead a,.rd-zinfo,.rd-legal__more h2,.rd-footer__top h3,.rd-trust strong,.rd-cartpage__cols{font-size:12.5px!important}
+  main .rd-eyebrow,main .rd-crumbs,main .rd-inside__count,main .rd-pdp__glance span,main .rd-pills legend,main .rd-zinfo,main .rd-cartpage__cols,main .rd-legal__more h2,main .rd-cat__text small{color:#3f3932}
+  .rd-footer__top h3{opacity:.8}
+}
+@media (max-width:749px){
+  .rd-pdp__info{display:flex;flex-direction:column}
+  .rd-pdp__info>*{order:5}
+  .rd-pdp__info>.rd-eyebrow,.rd-pdp__info>h1,.rd-pdp__info>.rd-pdp__price{order:0}
+  .rd-pdp__info>.rd-pills{order:1}.rd-pdp__info>.rd-pdp__buy{order:2;margin-top:4px}
+  .rd-pdp__info>.rd-pdp__assure{order:3}
+  .rd-pdp__info>.rd-pdp__tagline,.rd-pdp__info>.rd-pdp__intro,.rd-pdp__info>.rd-pdp__glance{order:4}
+  .rd-pdp__info>.rd-pdp__tagline{margin-top:24px}
+  .rd-pdp__info>.rd-inside{order:6}.rd-pdp__info>.rd-pdp__desc{order:7}
+  .rd-thumbs{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:6px;padding-bottom:2px}
+  .rd-thumbs::-webkit-scrollbar{display:none}
+  .rd-thumb{flex:0 0 22%;scroll-snap-align:start}
+}

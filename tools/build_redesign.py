@@ -189,7 +189,7 @@ SOCIAL = [
  ("Facebook", "https://www.facebook.com/TRESORAgifts", '<path d="M14.5 21v-8h3l.5-3.5h-3.5V7.6c0-1 .4-1.6 1.7-1.6H18V3.2A20 20 0 0 0 15.6 3c-2.6 0-4.1 1.5-4.1 4.2v2.3H8.5V13h3v8"/>'),
  ("Pinterest", "https://www.pinterest.com/TRESORAgift/", '<circle cx="12" cy="12" r="8.5"/><path d="M10.8 20.2 12.6 13"/><path d="M11.3 15c.6.5 1.3.8 2.1.8 2.3 0 3.6-2 3.6-4.3 0-2.6-2.1-4.3-4.8-4.3-3 0-5 2-5 4.5 0 1.1.5 2.2 1.3 2.6"/>'),
  ("Etsy", "https://www.etsy.com/shop/TRESORAgift", '<path d="M16.5 5H8v14h8.5"/><path d="M8 12h6"/><path d="M16.5 5v2.5M16.5 19v-2.5"/>'),
- ("Shopify store", "https://tresora.store", '<path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M13.6 12.2c-.4-.4-1-.6-1.6-.6-.9 0-1.6.5-1.6 1.2 0 1.6 3.4.9 3.4 2.6 0 .8-.8 1.3-1.8 1.3-.7 0-1.3-.2-1.8-.7"/>'),
+ ("Main store", "https://tresora.store", '<path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M13.6 12.2c-.4-.4-1-.6-1.6-.6-.9 0-1.6.5-1.6 1.2 0 1.6 3.4.9 3.4 2.6 0 .8-.8 1.3-1.8 1.3-.7 0-1.3-.2-1.8-.7"/>'),
 ]
 def social_icons(cls):
     return f'<p class="{cls} rd-socicons">' + "".join(f'<a href="{u}" target="_blank" rel="noopener" aria-label="{n}" title="{n}"><svg viewBox="0 0 24 24" aria-hidden="true">{svg}</svg></a>' for n, u, svg in SOCIAL) + '</p>'
