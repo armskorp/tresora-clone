@@ -176,6 +176,7 @@ main{display:block}
 .rd-footer__brand img{height:62px;width:auto;margin-bottom:20px}
 .rd-footer__brand p{max-width:30em;opacity:.7;font-size:14px}
 .rd-social{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.rd-follow{margin-top:26px}.rd-follow h3{margin-bottom:0}.rd-follow .rd-social{margin-top:12px;gap:8px 18px}
 .rd-footer__bottom{max-width:var(--wrap);margin:0 auto;padding:24px var(--pad) 32px;border-top:1px solid var(--foot-line,rgba(255,255,255,.14));display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:12px;opacity:.75}
 .rd-pay{display:flex;align-items:center;gap:8px}.rd-pay svg{width:14px;height:14px}
 .rd-policies{display:flex;gap:18px;flex-wrap:wrap}
