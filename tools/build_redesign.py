@@ -619,3 +619,5 @@ open("theme.css", "w").write(theme_css(SITE_THEME, THEME))
 build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
 THEME = None
 print(f"built {count} pages (redesign/v1..v4 + bg previews + site root)")
+
+import subprocess as _sp, sys as _sy; _sp.run([_sy.executable, "tools/add_ga.py"], check=True)

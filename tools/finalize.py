@@ -68,3 +68,5 @@ for p in pages:
     t = bust(s, os.path.dirname(p) or ".")
     if t != s: open(p, "w", encoding="utf-8").write(t)
 print(f"finalize: {fixed} card photos hardened, {len(dims)} images sized, {len(pages)} pages cache-busted", notes[:3])
+
+import subprocess as _sp, sys as _sy; _sp.run([_sy.executable, "tools/add_ga.py"], check=True)

@@ -123,3 +123,5 @@ if "assets/js/cart.js" not in idx:
     open("index.html", "w", encoding="utf-8").write(idx)
 print("catalog:", len(client["variants"]), "variants;", len(products), "product pages")
 import subprocess, sys as _s; subprocess.run([_s.executable, "tools/finalize.py"], check=True)
+
+import subprocess as _sp, sys as _sy; _sp.run([_sy.executable, "tools/add_ga.py"], check=True)
