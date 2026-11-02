@@ -12,7 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
-ASSET_V = "20261101d"
+ASSET_V = "20261101f"
 STYLE = ""; ROOT_BUILD = False; THEME = None         # root build: v4 published at the site root
 N = 0
 CATS = {
@@ -61,14 +61,19 @@ def gallery(h):
         li = int(big.rsplit("-", 1)[1].split(".")[0]); order = [li] + [i for i in order if i != li]
         return [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
     return [(big, t, 1200, 900)] + [(f"{SH}products/{h}-{i}.jpg", f"{SH}products/{h}-{i}-t.jpg", SIZES[f"{h}-{i}"][2], SIZES[f"{h}-{i}"][3]) for i in order]
-REVIEWS = [  # the 3 distinct Judge.me reviews from tresora.store (5.00 average); duplicates removed
+REVIEWS = [  # the 2 distinct Judge.me reviews from tresora.store (5.00 average); duplicates removed
   ("Bought this as a gift for a wine lover.. The presentation is gorgeous, everything feels high quality and thoughtfully put together. Shipping was fast too. Thank you!", "Anonymous", "Caravaggio Bacchus Wine Gift Box"),
   ("Absolutely love this set. I gave it to my mom as a gift. Her favorite is the tea cup with the butterfly and roses. It’s so pretty.", "SueD", "Klimt The Kiss Gift Box"),
-  ("I gave it to my mom. She really liked it. Thank you.👌", "Anonymous", "Klimt The Kiss Gift Box"),
 ]
 WHY = [("Curated, not generic.", "Every piece tells a story."), ("Inspired by Art & Places.", "Discover a city, artist or moment through objects."),
        ("Ready to gift.", "Beautifully packaged and ready to give."), ("Made to be remembered.", "Not another gift that gets forgotten.")]
-POL = "https://tresora.store/policies/"
+POL = "https://tresora.store/policies/"  # legacy; footer/policy links now point to local pages (INFO below)
+INFO_SRC = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "i18n", "info_pages.json"), encoding="utf-8"))
+EMAIL = "hello@tresora.store"
+# local info/policy pages: slug -> (title, source key in i18n/info_pages.json copied from tresora.store, list-item index ranges)
+INFO = {"shipping": ("Shipping policy", "shipping-policy", []), "returns": ("Refund policy", "refund-policy", []),
+        "privacy": ("Privacy policy", "privacy-policy", [(5, 11), (14, 17), (20, 24), (27, 31), (43, 48)]),
+        "terms": ("Terms of service", "terms-of-service", []), "about": ("About TRESORA", "about", []), "faq": ("Frequently asked questions", "faq", [])}
 ICON = {
  "search": '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
  "user": '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
@@ -140,7 +145,7 @@ def review_items(rs):
   <figcaption><strong>{E(n)}</strong><span>{E(pr)}</span></figcaption></figure>''' for t, n, pr in rs)
 
 def reviews():
-    return f'''<div class="rd-reviews__head"><div class="rd-score"><b>5.00</b>{stars()}<span>Based on 3 verified reviews</span></div></div>
+    return f'''<div class="rd-reviews__head"><div class="rd-score"><b>5.00</b>{stars()}<span>Based on 2 verified reviews</span></div></div>
 <div class="rd-reviews__body rd-reviews__body--text"><div class="rd-reviews__list">{review_items(REVIEWS)}</div></div>'''
 
 def why():
@@ -196,13 +201,13 @@ def footer():
       <p>Gifts inspired by art, cities, and beautiful moments. Curated with intention. Made to be remembered.</p>
       <div class="rd-follow"><h3>Follow &amp; shop</h3>{social_icons("rd-social")}</div></div>
     <div><h3>Shop</h3><a href="{V}shop.html">All products</a>{"".join(f'<a href="{V}shop.html?cat={k}">{E(c["name"])}</a>' for k, c in CATS.items())}</div>
-    <div><h3>Client care</h3><a href="{POL}contact-information">Contact us</a><a href="{POL}shipping-policy">Shipping</a><a href="{POL}refund-policy">Returns &amp; refunds</a><a href="{V}#reviews">Reviews</a></div>
+    <div><h3>Client care</h3><a href="{V}contact.html">Contact us</a><a href="{V}shipping.html">Shipping</a><a href="{V}returns.html">Returns &amp; refunds</a><a href="{V}faq.html">FAQ</a><a href="{V}about.html">About TRESORA</a><a href="{V}#reviews">Reviews</a></div>
     <div><h3>Account</h3><a href="{V}account.html">Sign in</a><a href="{V}account.html?mode=signup">Create account</a><a href="{V}cart.html">Your cart</a></div>
   </div>
   <div class="rd-footer__bottom">
     <p>© 2026 TRESORA</p>
     <p class="rd-pay">{ICON["lock"]} Secure payments by Stripe · Visa · Mastercard · Amex · Apple Pay · Google Pay</p>
-    <p class="rd-policies"><a href="{POL}privacy-policy">Privacy policy</a><a href="{POL}refund-policy">Refund policy</a><a href="{POL}terms-of-service">Terms of service</a><a href="{POL}shipping-policy">Shipping policy</a></p>
+    <p class="rd-policies"><a href="{V}privacy.html">Privacy policy</a><a href="{V}returns.html">Refund policy</a><a href="{V}terms.html">Terms of service</a><a href="{V}shipping.html">Shipping policy</a></p>
   </div>
 </footer>'''
 
@@ -311,7 +316,7 @@ def product_page(h):
     <p class="rd-pdp__glance"><span>{"Inside" if is_set else "The piece"}</span> {E(inside_line(h))} <a href="#inside">{"See all " + str(len(inside)) if is_set else "Details"}</a></p>
     {pills}
     <div class="rd-pdp__buy"><div class="rd-qty"><button type="button" data-rd-step="-1" aria-label="Decrease quantity">−</button><input type="number" inputmode="numeric" min="1" max="10" value="1" data-rd-qty aria-label="Quantity"><button type="button" data-rd-step="1" aria-label="Increase quantity">+</button></div>{btn}</div>
-    <ul class="rd-pdp__assure"><li>{ICON["lock"]} Secure checkout via Stripe</li><li>{ICON["truck"]} Free US shipping from Los Angeles</li><li>{ICON["gift"]} Arrives ready to give</li><li>{ICON["return"]} <a href="{POL}refund-policy">Returns &amp; refunds policy</a></li></ul>
+    <ul class="rd-pdp__assure"><li>{ICON["lock"]} Secure checkout via Stripe</li><li>{ICON["truck"]} Free US shipping from Los Angeles</li><li>{ICON["gift"]} Arrives ready to give</li><li>{ICON["return"]} <a href="{V}returns.html">Returns &amp; refunds policy</a></li></ul>
     {inside_html}
     <div class="rd-pdp__desc">{more}</div>
   </div>
@@ -338,6 +343,29 @@ def return_page(ok):
   <p>No payment was taken. Your cart is saved, so you can pick up where you left off.</p>
   <p><a class="rd-btn rd-btn--primary" href="{V}cart.html">View cart</a> <a class="rd-textlink" href="{V}shop.html">Continue shopping</a></p></section>'''
     return page("Checkout cancelled · TRESORA", inner, "return")
+def info_body(slug):
+    if slug == "contact":
+        return (f'<p>Trade name: TRESORA</p><p>Email: <a href="mailto:{EMAIL}">{EMAIL}</a></p>'
+                '<p>Physical address: 333 E Fairview Ave, 315, Glendale CA 91207, United States.</p>')
+    _, key, lists = INFO[slug]; out = []; open_ul = False
+    for i, t in enumerate(INFO_SRC[key]):
+        li = any(a <= i <= b for a, b in lists)
+        if li and not open_ul: out.append("<ul>"); open_ul = True
+        if not li and open_ul: out.append("</ul>"); open_ul = False
+        head = t.endswith("?") if key == "faq" else (len(t) < 70 and not t.endswith((".", ":", ",")) and not t.startswith("Last updated") and not li)
+        if key in ("shipping-policy",) and t.endswith(":"): head = True
+        out.append(f"<li>{E(t)}</li>" if li else (f"<h2>{E(t)}</h2>" if head else f"<p>{E(t)}</p>"))
+    if open_ul: out.append("</ul>")
+    return "".join(out)
+def info_page(slug):
+    title = "Contact information" if slug == "contact" else INFO[slug][0]
+    links = [("contact", "Contact us"), ("shipping", "Shipping policy"), ("returns", "Refund policy"), ("faq", "FAQ"), ("about", "About TRESORA"), ("privacy", "Privacy policy"), ("terms", "Terms of service")]
+    more = "".join(f'<a href="{V}{k}.html">{E(n)}</a>' for k, n in links if k != slug)
+    body = f'''<section class="rd-section rd-pagehead">{crumbs((title, None))}<h1>{E(title)}</h1></section>
+<section class="rd-section rd-legal"><div class="rd-legal__body">{info_body(slug)}
+<p class="rd-legal__mail"><span>Questions?</span> <span>Write to us at</span> <a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
+<nav class="rd-legal__more" aria-label="More from client care"><h2>Client care</h2>{more}</nav></section>'''
+    return page(f"{title} · TRESORA", body, "legal", desc=f"{title} for TRESORA gifts (tresoragift.com).")
 def cart_page():
     body = f'''
 <section class="rd-section rd-pagehead">{crumbs(("Cart", None))}<h1>Your cart</h1></section>
@@ -414,7 +442,7 @@ def reset_page():
     return page("Reset password · TRESORA", body, "account", active="account", extra_js=auth_scripts())
 
 SHOT = '<p class="rd-viewall"><a class="rd-btn rd-btn--secondary" href="{V}shop.html">View the full collection</a></p>'
-FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 3 reviews</a></li></ul>'
+FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul>'
 def home():
     VP, VP45, FAN, BAG, AMALFI = (SH + "img/hero-vermeer-print.jpg", SH + "img/hero-vermeer-print-45.jpg", SH + "img/hero-barcelona-fan.jpg", SH + "img/hero-paris-bag.jpg", SH + "img/hero-amalfi.jpg")
     VG, KL = SH + "img/cat-art-vangogh.jpg", SH + "img/cat-art-klimt.jpg"
@@ -524,8 +552,8 @@ def home_v4():
 {sec("art", "Art", "Klimt, Vermeer, Van Gogh, Caravaggio, Sargent.", 3)}
 {sec("home", "Atelier Home", "Handmade decorative glass.", 2)}
 </div>
-<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{POL}refund-policy">see policy</a></li><li><a href="#reviews">5.00 · 3 reviews</a></li></ul></section>
-<section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 3 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
+<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{V}returns.html">see policy</a></li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul></section>
+<section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 2 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
 <section class="rd-zsec rd-zsec--news">{newsletter("Newsletter", "New city and art collections, a few times a year.")}</section>'''
 
 NAMES = {1: "Midnight", 2: "Gallery", 3: "Modern", 4: "Cities"}
@@ -538,6 +566,7 @@ def build(d, title, extra=False):
     w("index.html", page(title, home(), "home"))
     w("shop.html", shop_page()); w("cart.html", cart_page()); w("account.html", account_page()); w("reset-password.html", reset_page())
     for h in ORDER: w(f"products/{h}.html", product_page(h))
+    for slug in ["contact", *INFO]: w(f"{slug}.html", info_page(slug))
     if extra: w("success.html", return_page(True)); w("cancel.html", return_page(False))
 for N in (1, 2, 3, 4):
     V = f"{R}redesign/v{N}/"

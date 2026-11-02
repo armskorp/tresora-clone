@@ -2,7 +2,7 @@
 import asyncio, sys, re, json
 from playwright.async_api import async_playwright
 B = sys.argv[1].rstrip("/") + "/"
-PAGES = ["", "shop.html", "cart.html", "account.html", "success.html", "cancel.html", "products/paris-gift-box.html", "products/caravaggio-bacchus-wine-gift-box.html", "products/rococo-reverie-decorative-glass-bottle.html", "products/gothic-romance-decorative-glass-bottle.html", "products/elegant-pearl-earring-table-gift-box.html"]
+PAGES = ["", "shop.html", "cart.html", "account.html", "success.html", "cancel.html", "products/paris-gift-box.html", "products/caravaggio-bacchus-wine-gift-box.html", "products/rococo-reverie-decorative-glass-bottle.html", "products/gothic-romance-decorative-glass-bottle.html", "products/elegant-pearl-earring-table-gift-box.html", "contact.html", "shipping.html", "returns.html", "privacy.html", "terms.html", "about.html", "faq.html"]
 BRAND = re.compile(r"^(TRESORA|© 2026 TRESORA|Instagram|Facebook|TikTok|Pinterest|Etsy|SueD|EN|ES|\||Amalfi|Barcelona|Caravaggio|Gothic Romance|Klimt.*|Vermeer.*|Van Gogh.*|John Sargent.*|Paris Gift Box|New York Gift Box|Amalfi Gift Box|Barcelona Gift Box|Caravaggio Bacchus Wine Gift Box|Elegant Girl.*|Gothic Romance Handcrafted.*|Handcrafted Artisan Glass Bottle.*|.*\$[\d.,]+.*|USD|[\d\s.,:()+×−·$|%/-]+)$")
 async def main():
     fails = 0
