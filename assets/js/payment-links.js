@@ -25,6 +25,8 @@ window.TRESORA_PAYMENT_LINKS = {
   "44325569495153": "https://buy.stripe.com/5kQeVcctZgVufOM14l1ck04",
   "44325484134513": "https://buy.stripe.com/dRmfZg3XtcFedGE7sJ1ck09",
   "44325426823281": "https://buy.stripe.com/bJe8wOalRcFe6ec28p1ck00",
+  "67726334754929": "https://buy.stripe.com/eVqdR865B9t26ec00h1ck0d",
+  "67725560053873": "https://buy.stripe.com/00wdR865B8oYaus28p1ck0e",
   "44325380391025": "https://buy.stripe.com/aFa9AS51x48IfOM7sJ1ck03",
   "44325380423793": "https://buy.stripe.com/9B66oGctZax6fOM5kB1ck07",
   "44325326454897": "https://buy.stripe.com/aFa8wOdy3gVu5a85kB1ck08",

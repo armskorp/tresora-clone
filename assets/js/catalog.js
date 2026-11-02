@@ -292,7 +292,7 @@ window.TRESORA_CATALOG = {
    "title": "Gothic Portraits Handcrafted Decorative Glass Vase",
    "variant_title": "",
    "price": 5000,
-   "available": false,
+   "available": true,
    "thumb": "redesign/shared/products/gothic-portraits-decorative-glass-vase-0-t.jpg",
    "image": "redesign/shared/products/gothic-portraits-decorative-glass-vase-0.jpg"
   },
@@ -303,7 +303,7 @@ window.TRESORA_CATALOG = {
    "title": "Crow & Roses Handcrafted Decorative Glass Bottle",
    "variant_title": "",
    "price": 4000,
-   "available": false,
+   "available": true,
    "thumb": "redesign/shared/products/crow-roses-decorative-bottle-0-t.jpg",
    "image": "redesign/shared/products/crow-roses-decorative-bottle-0.jpg"
   }
