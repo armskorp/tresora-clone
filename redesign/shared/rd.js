@@ -246,37 +246,13 @@
     renderCart();
   }
 
-  /* ---- account page (UI only) ---- */
-  var ap = $('[data-rd-accountpage]'), auth = $('[data-rd-auth]');
-  if (ap && auth) {
-    var mode = function (m) {
-      ap.setAttribute('data-mode', m);
-      $$('[data-rd-tab]', ap).forEach(function (t) { t.setAttribute('aria-selected', String(t.getAttribute('data-rd-tab') === m)); });
-      $('[data-rd-modal-title]', ap).textContent = m === 'signup' ? 'Create your account' : 'Welcome back';
-      $('[data-rd-submit]', ap).textContent = m === 'signup' ? 'Create account' : 'Sign in';
-      auth.password.setAttribute('autocomplete', m === 'signup' ? 'new-password' : 'current-password');
-      $('[data-rd-msg]', auth).textContent = '';
-    };
-    mode(params.get('mode') === 'signup' ? 'signup' : 'signin');
-    $$('[data-rd-tab]', ap).forEach(function (t) { t.addEventListener('click', function () { mode(t.getAttribute('data-rd-tab')); }); });
-    $('[data-rd-showpass]', ap).addEventListener('click', function (e) {
-      var p = auth.password, show = p.type === 'password'; p.type = show ? 'text' : 'password'; e.target.textContent = show ? 'Hide' : 'Show';
-    });
-    $('[data-rd-forgot]', ap).addEventListener('click', function () {
-      var m = $('[data-rd-msg]', auth);
-      m.textContent = emailOk(auth.email.value) ? 'Preview: a reset link would be emailed to ' + auth.email.value.trim() + '.' : 'Enter your email first.';
-    });
-    auth.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var m = $('[data-rd-msg]', auth), signup = ap.getAttribute('data-mode') === 'signup';
-      m.className = 'rd-auth__msg is-error';
-      if (!emailOk(auth.email.value)) { m.textContent = 'Please enter a valid email address.'; auth.email.focus(); return; }
-      if (auth.password.value.length < 8) { m.textContent = 'Password must be at least 8 characters.'; auth.password.focus(); return; }
-      m.className = 'rd-auth__msg is-ok';
-      m.textContent = signup ? 'Looks good! Accounts launch soon. This preview did not create an account.' : 'Accounts launch soon. This preview did not sign you in.';
-      auth.password.value = '';
-    });
-  }
+  /* ---- header account state: a stored Supabase session (set by auth.js) shows "My account" ---- */
+  try {
+    if (localStorage.getItem('sb-bnequlkhwcnuzplsdktp-auth-token')) {
+      $$('[data-rd-account]').forEach(function (a) { a.classList.add('is-in'); a.setAttribute('aria-label', 'My account'); var s = a.querySelector('span'); if (s) s.textContent = 'My account'; });
+      $$('.rd-nav__acc').forEach(function (a) { a.textContent = 'My account'; });
+    }
+  } catch (e) {}
 
   /* ---- newsletter (UI only) ---- */
   $$('[data-rd-news]').forEach(function (f) {

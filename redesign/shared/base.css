@@ -405,3 +405,15 @@ main{display:block}
 .rd-socicons a:focus-visible{outline:1px solid currentColor;outline-offset:0;border-radius:2px}
 .rd-socicons svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .rd-follow .rd-socicons{margin-left:-8px}
+
+/* accounts (Supabase): forgot mode, welcome code, signed-in panel */
+[data-mode=forgot] [data-hide=forgot],[data-mode=forgot] [data-only-tabs]{display:none}
+[data-mode=signin] [data-only=forgot],[data-mode=signup] [data-only=forgot],[data-mode=forgot] [data-only=signin],[data-mode=forgot] [data-only=signup]{display:none}
+.rd-auth__perk{font-size:14px;margin:-8px 0 22px;color:var(--ink)}
+.rd-auth .rd-btn:disabled{opacity:.6;cursor:progress}
+.rd-account__who{font-size:14px;color:var(--muted);margin:-8px 0 28px}.rd-account__who b{color:var(--ink);font-weight:500;word-break:break-all}
+.rd-welcome{background:var(--surface);padding:28px;margin:0 0 24px;max-width:460px}
+.rd-welcome__title{font-family:var(--head);font-size:26px;margin:4px 0 14px}
+.rd-welcome__code{font:500 22px/1 var(--body);letter-spacing:.24em;margin:0 0 10px;padding:14px 0;border-top:1px solid var(--field-line,var(--line));border-bottom:1px solid var(--field-line,var(--line))}
+.rd-welcome__note{font-size:13px;color:var(--muted);margin:0 0 10px}
+.rd-account__news{margin:0 0 10px}

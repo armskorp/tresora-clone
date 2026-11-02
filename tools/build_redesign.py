@@ -12,7 +12,7 @@ SH = R + "redesign/shared/"
 IMG = R + "assets/images/"
 E = html.escape
 V = ""                                # current concept root, set per concept below
-ASSET_V = "20261101b"
+ASSET_V = "20261101c"
 STYLE = ""; ROOT_BUILD = False; THEME = None         # root build: v4 published at the site root
 N = 0
 CATS = {
@@ -208,7 +208,7 @@ def footer():
   </div>
 </footer>'''
 
-def page(title, body, kind, active="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
+def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
     tc = THEME["bg"] if THEME else {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
     return f'''<!doctype html>
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -223,7 +223,7 @@ def page(title, body, kind, active="", desc="Art-inspired and city-inspired gift
 {footer()}
 <script src="{R}assets/js/config.js"></script><script src="{R}assets/js/catalog.js"></script><script src="{R}assets/js/payment-links.js"></script><script src="{R}assets/js/cart.js"></script>
 <script>window.RD_LEADS={json.dumps({str(v["id"]): list(lead(v["handle"], v)) for p in CAT["products"].values() for v in variants(p)}, separators=(",", ":"))};</script>
-<script src="{SH}rd.js"></script><script src="{SH}i18n.js"></script>
+<script src="{SH}rd.js?v={ASSET_V}"></script>{extra_js}<script src="{SH}i18n.js?v={ASSET_V}"></script>
 </body></html>'''
 
 def crumbs(*items):
@@ -357,27 +357,63 @@ def cart_page():
 </section>'''
     return page("Your cart · TRESORA", body, "cart")
 
+SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"
+def auth_scripts():
+    return f'<script src="{SB_JS}" crossorigin="anonymous"></script><script src="{R}assets/js/auth-config.js?v={ASSET_V}"></script><script src="{SH}auth.js?v={ASSET_V}"></script>'
+
 def account_page():
     body = f'''
 <section class="rd-section rd-account-page" data-rd-accountpage data-mode="signin">
-  <div class="rd-account__card">
+  <div class="rd-account__card" data-rd-out>
     <p class="rd-eyebrow">Your TRESORA account</p>
     <h1 data-rd-modal-title>Welcome back</h1>
-    <div class="rd-modal__tabs" role="tablist"><button type="button" role="tab" data-rd-tab="signin" aria-selected="true">Sign in</button><button type="button" role="tab" data-rd-tab="signup" aria-selected="false">Create account</button></div>
+    <div class="rd-modal__tabs" role="tablist" data-only-tabs><button type="button" role="tab" data-rd-tab="signin" aria-selected="true">Sign in</button><button type="button" role="tab" data-rd-tab="signup" aria-selected="false">Create account</button></div>
+    <p class="rd-auth__perk" data-only="signup">Create an account and get 10% off your first order.</p>
     <form class="rd-auth" data-rd-auth novalidate>
-      <label data-only="signup">Name<input name="name" autocomplete="name"></label>
+      <label data-only="signup">Name (optional)<input name="name" autocomplete="name"></label>
       <label>Email<input name="email" type="email" autocomplete="email" required></label>
-      <label>Password<span class="rd-pass"><input name="password" type="password" autocomplete="current-password" minlength="8" required><button type="button" class="rd-linkbtn" data-rd-showpass>Show</button></span></label>
+      <label data-hide="forgot">Password<span class="rd-pass"><input name="password" type="password" autocomplete="current-password" minlength="8" required><button type="button" class="rd-linkbtn" data-rd-showpass>Show</button></span></label>
       <label class="rd-check" data-only="signup"><input type="checkbox" name="news"> Email me new collections</label>
       <button class="rd-btn rd-btn--primary rd-btn--full" type="submit" data-rd-submit>Sign in</button>
       <button type="button" class="rd-linkbtn rd-forgot" data-only="signin" data-rd-forgot>Forgot password?</button>
+      <button type="button" class="rd-linkbtn rd-forgot" data-only="forgot" data-rd-back>Back to sign in</button>
       <p class="rd-auth__msg" data-rd-msg role="status" aria-live="polite"></p>
-      <p class="rd-auth__note">Preview: accounts are not live yet. Nothing you type here is sent or stored.</p>
     </form>
   </div>
-  <aside class="rd-account__perks"><h2>With an account</h2><ul><li>Track orders and delivery</li><li>Save addresses for faster checkout</li><li>Early access to new collections</li></ul><a class="rd-textlink" href="{V}shop.html">Continue as guest</a></aside>
+  <div class="rd-account__card" data-rd-in hidden>
+    <p class="rd-eyebrow">Your TRESORA account</p>
+    <h1>My account</h1>
+    <p class="rd-account__who"><span>Signed in as</span> <b data-rd-email></b></p>
+    <div class="rd-welcome" data-rd-welcome>
+      <p class="rd-eyebrow">Welcome gift</p>
+      <p class="rd-welcome__title">10% off your first order</p>
+      <p class="rd-welcome__code" data-rd-code>WELCOME10</p>
+      <p class="rd-welcome__note">Use this code at checkout.</p>
+      <button type="button" class="rd-linkbtn" data-rd-copy>Copy code</button>
+    </div>
+    <label class="rd-check rd-account__news"><input type="checkbox" data-rd-newsopt> Email me new collections</label>
+    <p class="rd-auth__msg" data-rd-inmsg role="status" aria-live="polite"></p>
+    <button class="rd-btn rd-btn--secondary" type="button" data-rd-logout>Log out</button>
+  </div>
+  <aside class="rd-account__perks"><h2>With an account</h2><ul><li>10% off your first order</li><li>Faster checkout next time</li><li>Early access to new collections</li></ul><a class="rd-textlink" href="{V}shop.html">Continue shopping</a></aside>
 </section>'''
-    return page("Account · TRESORA", body, "account", active="account")
+    return page("Account · TRESORA", body, "account", active="account", extra_js=auth_scripts())
+
+def reset_page():
+    body = f'''
+<section class="rd-section rd-account-page" data-rd-resetpage data-mode="newpass">
+  <div class="rd-account__card">
+    <p class="rd-eyebrow">Your TRESORA account</p>
+    <h1>Choose a new password</h1>
+    <form class="rd-auth" data-rd-reset novalidate>
+      <label>New password<span class="rd-pass"><input name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="rd-linkbtn" data-rd-showpass>Show</button></span></label>
+      <button class="rd-btn rd-btn--primary rd-btn--full" type="submit">Save new password</button>
+      <p class="rd-auth__msg" data-rd-msg role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  <aside class="rd-account__perks"><h2>Need help?</h2><ul><li>Reset links expire after one hour.</li><li>Request a new link from the sign-in page.</li></ul><a class="rd-textlink" href="{V}account.html">Back to sign in</a></aside>
+</section>'''
+    return page("Reset password · TRESORA", body, "account", active="account", extra_js=auth_scripts())
 
 SHOT = '<p class="rd-viewall"><a class="rd-btn rd-btn--secondary" href="{V}shop.html">View the full collection</a></p>'
 FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 5 reviews</a></li></ul>'
@@ -502,7 +538,7 @@ def build(d, title, extra=False):
     def w(path, txt):
         global count; open(f"{d}/{path}", "w", encoding="utf-8").write(txt); count += 1
     w("index.html", page(title, home(), "home"))
-    w("shop.html", shop_page()); w("cart.html", cart_page()); w("account.html", account_page())
+    w("shop.html", shop_page()); w("cart.html", cart_page()); w("account.html", account_page()); w("reset-password.html", reset_page())
     for h in ORDER: w(f"products/{h}.html", product_page(h))
     if extra: w("success.html", return_page(True)); w("cancel.html", return_page(False))
 for N in (1, 2, 3, 4):
