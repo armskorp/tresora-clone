@@ -211,6 +211,20 @@ def footer():
   </div>
 </footer>'''
 
+TAWK = '''<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6aea93d43b57853c3a9624a5/1k6i52u8e';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+'''
 def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
     tc = THEME["bg"] if THEME else {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
     return f'''<!doctype html>
@@ -227,7 +241,7 @@ def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-
 <script src="{R}assets/js/config.js"></script><script src="{R}assets/js/catalog.js"></script><script src="{R}assets/js/payment-links.js"></script><script src="{R}assets/js/cart.js"></script>
 <script>window.RD_LEADS={json.dumps({str(v["id"]): list(lead(v["handle"], v)) for p in CAT["products"].values() for v in variants(p)}, separators=(",", ":"))};</script>
 <script src="{SH}rd.js?v={ASSET_V}"></script>{extra_js}<script src="{SH}i18n.js?v={ASSET_V}"></script>
-</body></html>'''
+{TAWK if ROOT_BUILD else ""}</body></html>'''
 
 def crumbs(*items):
     out = [f'<a href="{V}">Home</a>'] + [f'<a href="{h}">{E(t)}</a>' if h else f'<span aria-current="page">{E(t)}</span>' for t, h in items]
