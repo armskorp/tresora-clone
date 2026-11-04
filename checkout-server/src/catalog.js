@@ -170,6 +170,28 @@ export default {
     "test": "price_1URozPBtPv0P7LG1o24K36uT",
     "live": "price_1UX6utBCFAVtk0Hoc2rnyL1I"
    }
+  },
+  "67726334754929": {
+   "product_id": 15421337763953,
+   "name": "Gothic Portraits Handcrafted Decorative Glass Vase",
+   "unit_amount": 5000,
+   "available": true,
+   "image": "https://tresoragift.com/redesign/shared/products/gothic-portraits-decorative-glass-vase-0.jpg",
+   "variant": "",
+   "stripe_price": {
+    "live": "price_1UXCD2BCFAVtk0HolqAM3h3N"
+   }
+  },
+  "67725560053873": {
+   "product_id": 15421127196785,
+   "name": "Crow & Roses Handcrafted Decorative Glass Bottle",
+   "unit_amount": 4000,
+   "available": true,
+   "image": "https://tresoragift.com/redesign/shared/products/crow-roses-decorative-bottle-0.jpg",
+   "variant": "",
+   "stripe_price": {
+    "live": "price_1UXCD3BCFAVtk0HobuP3CkWu"
+   }
   }
  }
 };

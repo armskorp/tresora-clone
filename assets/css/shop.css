@@ -99,3 +99,8 @@ body.tp{margin:0;background:var(--tc-bg);color:var(--tc-ink);font:400 17px/1.55 
 .tc-msg{display:flex;flex-direction:column;gap:8px}.tc-msg small{font-size:13px;color:var(--tc-muted)}
 .tc-paylink{display:block;padding:10px 12px;border-radius:10px;background:var(--tc-btn);color:var(--tc-btn-ink)!important;text-decoration:none;font-size:15px}
 .tc-paylink:hover{opacity:.9}
+.tc-pers{grid-column:1/-1;margin-top:10px;font-size:14px;color:var(--tc-muted)}
+.tc-pers summary{cursor:pointer;color:var(--tc-ink);text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.tc-pers label{display:block;margin-top:8px}
+.tc-pers small{font-size:12px}
+.tc-pers input,.tc-pers select,.tc-pers textarea{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:8px;border:1px solid rgba(0,0,0,.2);background:#fff;color:var(--tc-ink);font:inherit;font-size:14px}

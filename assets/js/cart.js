@@ -2,7 +2,7 @@
    - Cart lines are stored in localStorage ("tresora_cart_v1") as [{variant_id, quantity}], so the cart is the same on every page and survives reloads.
    - Product data (titles, images, display prices) comes from window.TRESORA_CATALOG (assets/js/catalog.js).
      Prices here are for display only. The checkout backend looks up the real prices on the server.
-   - Checkout POSTs {items:[{product_id, variant_id, quantity}]} to TRESORA_CONFIG.CHECKOUT_URL and expects {url} back
+   - Checkout POSTs {items:[{product_id, variant_id, quantity, personalization:{card,message,lid}}]} to TRESORA_CONFIG.CHECKOUT_URL and expects {url} back
      (a Stripe Checkout URL). If CHECKOUT_URL is empty, it shows a "payments coming soon" message. */
 (function () {
   'use strict';
@@ -18,13 +18,23 @@
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); };
   var clamp = function (n) { n = parseInt(n, 10); return isNaN(n) ? 1 : Math.max(1, Math.min(MAX, n)); };
 
+  /* ---------- personalization (mirrors the Stripe Payment Link custom fields) ---------- */
+  var CARDS = [['', 'No greeting card'], ['nocard', 'No Card (Blank / None)'], ['birthday', 'Happy Birthday'], ['anniversary', 'Anniversary'], ['thankyou', 'Thank You'], ['congrats', 'Congratulations'], ['justbecause', 'Just Because']];
+  var LID_MAX = 20, MSG_MAX = 255;
+  var hasLid = function (v) { return /gift box/i.test(v.title || ''); };
+  function cleanP(p, v) {
+    p = p || {};
+    var card = CARDS.some(function (c) { return c[0] && c[0] === p.card; }) ? p.card : '';
+    return { card: card, message: String(p.message || '').slice(0, MSG_MAX), lid: v && hasLid(v) ? String(p.lid || '').slice(0, LID_MAX) : '' };
+  }
+
   /* ---------- storage ---------- */
   function read() {
     var lines;
     try { lines = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { lines = []; }
     if (!Array.isArray(lines)) lines = [];
     return lines.filter(function (l) { return l && CAT.variants[String(l.variant_id)]; })
-      .map(function (l) { return { variant_id: Number(l.variant_id), quantity: clamp(l.quantity) }; });
+      .map(function (l) { return { variant_id: Number(l.variant_id), quantity: clamp(l.quantity), p: cleanP(l.p, CAT.variants[String(l.variant_id)]) }; });
   }
   function write(lines) {
     try { localStorage.setItem(KEY, JSON.stringify(lines)); } catch (e) { /* private mode: cart is kept in memory only */ }
@@ -41,12 +51,17 @@
       var v = CAT.variants[String(variantId)];
       if (!v || !v.available) return false;
       var ls = lines().slice(), q = clamp(qty || 1), hit = ls.find(function (l) { return l.variant_id === v.id; });
-      if (hit) hit.quantity = clamp(hit.quantity + q); else ls.push({ variant_id: v.id, quantity: q });
+      if (hit) hit.quantity = clamp(hit.quantity + q); else ls.push({ variant_id: v.id, quantity: q, p: cleanP(null, v) });
       write(ls); return true;
     },
     set: function (variantId, qty) {
-      var ls = lines().map(function (l) { return l.variant_id === Number(variantId) ? { variant_id: l.variant_id, quantity: clamp(qty) } : l; });
+      var ls = lines().map(function (l) { return l.variant_id === Number(variantId) ? { variant_id: l.variant_id, quantity: clamp(qty), p: l.p } : l; });
       write(ls);
+    },
+    personalize: function (variantId, field, value) {
+      var ls = lines().map(function (l) { if (l.variant_id !== Number(variantId)) return l; var p = Object.assign({}, l.p); p[field] = value; return { variant_id: l.variant_id, quantity: l.quantity, p: cleanP(p, CAT.variants[l.variant_id]) }; });
+      try { localStorage.setItem(KEY, JSON.stringify(ls)); } catch (e) {}
+      memory = ls; // no re-render: keeps typing focus
     },
     remove: function (variantId) { write(lines().filter(function (l) { return l.variant_id !== Number(variantId); })); },
     clear: function () { write([]); }
@@ -95,6 +110,16 @@
     clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
 
+  function persForm(v, p) {
+    p = p || {};
+    var any = p.card || p.message || p.lid;
+    return '<details class="tc-pers"' + (any ? ' open' : '') + '><summary>Personalize' + '</summary>' +
+      (hasLid(v) ? '<label>Box lid inscription <small>(optional, max ' + LID_MAX + ' characters)</small><input type="text" data-tc-p="lid" maxlength="' + LID_MAX + '" value="' + esc(p.lid || '') + '"></label>' : '') +
+      '<label>Greeting card <small>(optional)</small><select data-tc-p="card">' + CARDS.map(function (c) { return '<option value="' + c[0] + '"' + (c[0] === (p.card || '') ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') + '</select></label>' +
+      '<label>Greeting card message <small>(optional, max ' + MSG_MAX + ' characters)</small><textarea data-tc-p="message" maxlength="' + MSG_MAX + '" rows="2">' + esc(p.message || '') + '</textarea></label>' +
+      '</details>';
+  }
+
   /* ---------- render ---------- */
   function render() {
     var ls = lines(), n = Cart.count();
@@ -109,7 +134,7 @@
         '<button type="button" data-tc-dec aria-label="Decrease quantity of ' + esc(v.title) + '"' + (l.quantity <= 1 ? ' disabled' : '') + '>−</button>' +
         '<output aria-live="polite" aria-label="Quantity">' + l.quantity + '</output>' +
         '<button type="button" data-tc-inc aria-label="Increase quantity of ' + esc(v.title) + '"' + (l.quantity >= MAX ? ' disabled' : '') + '>+</button></div>' +
-        '<button class="tc-link tc-item__remove" type="button" data-tc-remove>Remove</button></div></div>' +
+        '<button class="tc-link tc-item__remove" type="button" data-tc-remove>Remove</button></div>' + persForm(v, l.p) + '</div>' +
         '<div class="tc-item__total">' + fmt(v.price * l.quantity) + '</div></li>';
     }).join('');
     $('[data-tc-empty]').hidden = ls.length > 0;
@@ -143,11 +168,19 @@
     else if (t.closest('[data-tc-dec]')) Cart.set(id, line.quantity - 1);
     else if (t.closest('[data-tc-remove]')) Cart.remove(id);
   });
+  root.addEventListener('input', function (e) {
+    var f = e.target.getAttribute && e.target.getAttribute('data-tc-p'), item = e.target.closest('.tc-item');
+    if (f && item) Cart.personalize(item.getAttribute('data-variant'), f, e.target.value);
+  });
+  root.addEventListener('change', function (e) {
+    var f = e.target.getAttribute && e.target.getAttribute('data-tc-p'), item = e.target.closest('.tc-item');
+    if (f && item) Cart.personalize(item.getAttribute('data-variant'), f, e.target.value);
+  });
   document.addEventListener('keydown', function (e) {
     if (!document.documentElement.classList.contains('tc-open')) return;
     if (e.key === 'Escape') close();
     if (e.key === 'Tab') { // keep focus inside the drawer
-      var f = drawer.querySelectorAll('a[href],button:not([disabled]),input');
+      var f = drawer.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,summary');
       f = Array.prototype.filter.call(f, function (el) { return el.offsetParent !== null; });
       if (!f.length) return;
       if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
@@ -238,7 +271,11 @@
   function checkout() {
     if (busy || !lines().length) return;
     var url = (CFG.CHECKOUT_URL || '').trim();
-    if (!url) {
+    if (!url) { return fallback(); }
+    return combined(url);
+  }
+  function fallback() {
+    {
       var ls = lines();
       if (PL) {
         if (ls.length === 1 && PL[ls[0].variant_id]) {
@@ -253,13 +290,20 @@
       }
       msg('Payments are coming soon. Online checkout isn\'t open yet, but your cart is saved on this device.'); return;
     }
+  }
+  function combined(url) {
     var btn = $('[data-tc-checkout]');
     busy = true; btn.disabled = true; btn.textContent = 'Redirecting…'; msg('');
-    var items = lines().map(function (l) { return { product_id: CAT.variants[l.variant_id].product_id, variant_id: l.variant_id, quantity: l.quantity }; });
+    var items = lines().map(function (l) { return { product_id: CAT.variants[l.variant_id].product_id, variant_id: l.variant_id, quantity: l.quantity, personalization: l.p || {} }; });
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items }) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed'); return d; }); })
       .then(function (d) { location.href = d.url; })
       .catch(function (err) {
+        busy = false; btn.disabled = false; btn.textContent = 'Checkout';
+        if (PL && !/characters|greeting|inscription|sold out|Invalid|Unknown|empty/i.test(err.message)) { // backend unreachable: fall back to Payment Links
+          var ls2 = lines();
+          if (ls2.every(function (l) { return PL[l.variant_id]; })) { showLinks(ls2); return; }
+        }
         msg('Sorry, we couldn\'t start checkout (' + err.message + '). Please try again in a moment.');
         busy = false; btn.disabled = false; btn.textContent = 'Checkout';
       });

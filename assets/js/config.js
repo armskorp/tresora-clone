@@ -1,6 +1,6 @@
 /* Shop configuration – safe to commit (no secrets here).
 
-   CHECKOUT_URL  URL of the deployed checkout backend (checkout-server/, a Cloudflare Worker), e.g.
+   CHECKOUT_URL  URL of the checkout backend (Supabase edge function supabase/functions/checkout), e.g.
                  "https://tresora-checkout.<your-subdomain>.workers.dev/checkout".
                  When set, the cart's Checkout button creates ONE Stripe Checkout Session for the whole cart (recommended).
 
@@ -11,7 +11,7 @@
 
    If neither is set, Checkout shows a friendly "payments coming soon" message. */
 window.TRESORA_CONFIG = {
-  CHECKOUT_URL: "",
+  CHECKOUT_URL: "https://bnequlkhwcnuzplsdktp.supabase.co/functions/v1/checkout",
   PAYMENT_LINKS: "live",
   CURRENCY: "USD",
   MAX_QTY_PER_LINE: 20
