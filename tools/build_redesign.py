@@ -236,7 +236,7 @@ def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 <meta name="theme-color" content="{tc}">{"" if ROOT_BUILD else '<meta name="robots" content="noindex">'}
-<link rel="icon" href="{IMG}favicon.png"><script>try{{if(localStorage.getItem("tresora-lang")==="es"){{document.documentElement.classList.add("rd-lang-pending");setTimeout(function(){{document.documentElement.classList.remove("rd-lang-pending")}},2000)}}}}catch(e){{}}</script>
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><script>try{{if(localStorage.getItem("tresora-lang")==="es"){{document.documentElement.classList.add("rd-lang-pending");setTimeout(function(){{document.documentElement.classList.remove("rd-lang-pending")}},2000)}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="{R}assets/css/shop.css"><link rel="stylesheet" href="{SH}base.css?v={ASSET_V}"><link rel="stylesheet" href="{STYLE or V + "style.css"}?v={ASSET_V}">{f'<link rel="stylesheet" href="{V}theme.css?v={ASSET_V}">' if THEME else ""}
 </head><body>
 <a class="rd-skip" href="#main">Skip to content</a>
