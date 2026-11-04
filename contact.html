@@ -31,7 +31,19 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
   </div>
 </header>
 <main id="main"><section class="rd-section rd-pagehead"><nav class="rd-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="rd-crumbs__sep">/</span><span aria-current="page">Contact information</span></nav><h1>Contact information</h1></section>
-<section class="rd-section rd-legal"><div class="rd-legal__body"><p>Trade name: TRESORA</p><p>Email: <a href="mailto:hello@tresora.store">hello@tresora.store</a></p>
+<section class="rd-section rd-legal"><div class="rd-legal__body"><p>Trade name: TRESORA</p><p>Email: <a href="mailto:hello@tresora.store">hello@tresora.store</a></p><h2>Send us a message</h2><p>Questions about an order, a gift, or a custom request? Write to us and we will reply by email, usually within 1–2 business days.</p>
+<div class="rd-contact__thanks" id="thanks" role="status" hidden><h2>Thank you</h2><p>Your message has been sent. We will get back to you by email soon.</p></div>
+<form class="rd-auth rd-contact" action="https://formsubmit.co/hello@tresora.store" method="POST" data-rd-contact>
+<input type="hidden" name="_subject" value="TRESORA website inquiry"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_template" value="table"><input type="hidden" name="_next" value="https://tresoragift.com/contact.html?sent=1#thanks">
+<input type="text" name="_honey" class="rd-contact__hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label><span>Name</span><input type="text" name="name" autocomplete="name" required maxlength="120"></label>
+<label><span>Email</span><input type="email" name="email" autocomplete="email" required maxlength="200"></label>
+<label><span>Order number (optional)</span><input type="text" name="order_number" maxlength="60"></label>
+<label><span>Message</span><textarea name="message" rows="6" required maxlength="5000"></textarea></label>
+<p><button class="rd-btn rd-btn--primary" type="submit">Send message</button></p>
+</form>
+<style>.rd-contact textarea{padding:12px 14px;border:1px solid var(--line);border-radius:var(--btn-radius);background:var(--field-bg,transparent);font:inherit;font-size:15px;width:100%;letter-spacing:0;text-transform:none;color:var(--ink);resize:vertical}.rd-contact textarea:focus{outline:none;border-color:var(--ink)}.rd-contact__hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}.rd-contact__thanks{border:1px solid var(--line);padding:18px 22px;margin:8px 0 24px}.rd-legal .rd-contact{margin:8px 0 28px}</style>
+<script>if(/[?&]sent=1/.test(location.search)){var t=document.getElementById("thanks"),f=document.querySelector("[data-rd-contact]");if(t)t.hidden=false;if(f)f.hidden=true}</script>
 <p class="rd-legal__mail"><span>Questions?</span> <span>Write to us at</span> <a href="mailto:hello@tresora.store">hello@tresora.store</a></p></div>
 <nav class="rd-legal__more" aria-label="More from client care"><h2>Client care</h2><a href="/shipping.html">Shipping policy</a><a href="/returns.html">Refund policy</a><a href="/faq.html">FAQ</a><a href="/about.html">About TRESORA</a><a href="/privacy.html">Privacy policy</a><a href="/terms.html">Terms of service</a></nav></section></main>
 <footer class="rd-footer">

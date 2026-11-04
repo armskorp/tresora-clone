@@ -343,9 +343,23 @@ def return_page(ok):
   <p>No payment was taken. Your cart is saved, so you can pick up where you left off.</p>
   <p><a class="rd-btn rd-btn--primary" href="{V}cart.html">View cart</a> <a class="rd-textlink" href="{V}shop.html">Continue shopping</a></p></section>'''
     return page("Checkout cancelled · TRESORA", inner, "return")
+CONTACT_FORM = '''<h2>Send us a message</h2><p>Questions about an order, a gift, or a custom request? Write to us and we will reply by email, usually within 1–2 business days.</p>
+<div class="rd-contact__thanks" id="thanks" role="status" hidden><h2>Thank you</h2><p>Your message has been sent. We will get back to you by email soon.</p></div>
+<form class="rd-auth rd-contact" action="https://formsubmit.co/hello@tresora.store" method="POST" data-rd-contact>
+<input type="hidden" name="_subject" value="TRESORA website inquiry"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="_template" value="table"><input type="hidden" name="_next" value="https://tresoragift.com/contact.html?sent=1#thanks">
+<input type="text" name="_honey" class="rd-contact__hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label><span>Name</span><input type="text" name="name" autocomplete="name" required maxlength="120"></label>
+<label><span>Email</span><input type="email" name="email" autocomplete="email" required maxlength="200"></label>
+<label><span>Order number (optional)</span><input type="text" name="order_number" maxlength="60"></label>
+<label><span>Message</span><textarea name="message" rows="6" required maxlength="5000"></textarea></label>
+<p><button class="rd-btn rd-btn--primary" type="submit">Send message</button></p>
+</form>
+<style>.rd-contact textarea{padding:12px 14px;border:1px solid var(--line);border-radius:var(--btn-radius);background:var(--field-bg,transparent);font:inherit;font-size:15px;width:100%;letter-spacing:0;text-transform:none;color:var(--ink);resize:vertical}.rd-contact textarea:focus{outline:none;border-color:var(--ink)}.rd-contact__hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}.rd-contact__thanks{border:1px solid var(--line);padding:18px 22px;margin:8px 0 24px}.rd-legal .rd-contact{margin:8px 0 28px}</style>
+<script>if(/[?&]sent=1/.test(location.search)){var t=document.getElementById("thanks"),f=document.querySelector("[data-rd-contact]");if(t)t.hidden=false;if(f)f.hidden=true}</script>'''
+
 def info_body(slug):
     if slug == "contact":
-        return (f'<p>Trade name: TRESORA</p><p>Email: <a href="mailto:{EMAIL}">{EMAIL}</a></p>')
+        return (f'<p>Trade name: TRESORA</p><p>Email: <a href="mailto:{EMAIL}">{EMAIL}</a></p>') + CONTACT_FORM
     _, key, lists = INFO[slug]; out = []; open_ul = False
     for i, t in enumerate(INFO_SRC[key]):
         li = any(a <= i <= b for a, b in lists)
