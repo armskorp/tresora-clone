@@ -1,0 +1,14 @@
+{
+  "handle": "vintage-christmas-decoupage-ornaments",
+  "title": "Vintage Christmas Decoupage Ornament Set",
+  "max_edge": 1600,
+  "thumb_edge": 240,
+  "require_portrait": true,
+  "images": [
+    "01-bronze-tree.jpg",
+    "02-green-tree.jpg",
+    "03-box-primary.jpg",
+    "04-candle.jpg",
+    "05-box-alt.jpg"
+  ]
+}
