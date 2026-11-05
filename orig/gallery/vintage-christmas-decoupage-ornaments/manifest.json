@@ -6,7 +6,7 @@
   "max_edge": 1600,
   "thumb_edge": 240,
   "require_portrait": true,
-  "initial_index": 3,
+  "initial_index": 0,
   "images": [
     {
       "file": "01-bronze-tree.jpg",
