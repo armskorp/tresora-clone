@@ -129,22 +129,23 @@ window.TRESORA_CATALOG = {
     67725560053873
    ]
   },
-  "15422000000001": {
-   "id": 15422000000001,
+  "15464662990961": {
+   "id": 15464662990961,
    "handle": "vintage-christmas-decoupage-ornaments",
    "title": "Vintage Christmas Decoupage Ornament Set",
    "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg",
    "variants": [
-    67727000000001
+    68346966737009,
+    68346966769777
    ]
   },
-  "15422000000002": {
-   "id": 15422000000002,
+  "15464695464049": {
+   "id": 15464695464049,
    "handle": "vanilla-holiday-candle",
    "title": "Vanilla Holiday Candle in Red Gift Box",
    "image": "redesign/shared/products/vanilla-holiday-candle-0.jpg",
    "variants": [
-    67727000000002
+    68347155677297
    ]
   }
  },
@@ -325,20 +326,31 @@ window.TRESORA_CATALOG = {
    "thumb": "redesign/shared/products/crow-roses-decorative-bottle-0-t.jpg",
    "image": "redesign/shared/products/crow-roses-decorative-bottle-0.jpg"
   },
-  "67727000000001": {
-   "id": 67727000000001,
-   "product_id": 15422000000001,
+  "68346966737009": {
+   "id": 68346966737009,
+   "product_id": 15464662990961,
    "handle": "vintage-christmas-decoupage-ornaments",
    "title": "Vintage Christmas Decoupage Ornament Set",
-   "variant_title": "",
+   "variant_title": "Ornaments only",
    "price": 4800,
    "available": true,
    "thumb": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0-t.jpg",
    "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg"
   },
-  "67727000000002": {
-   "id": 67727000000002,
-   "product_id": 15422000000002,
+  "68346966769777": {
+   "id": 68346966769777,
+   "product_id": 15464662990961,
+   "handle": "vintage-christmas-decoupage-ornaments",
+   "title": "Vintage Christmas Decoupage Ornament Set",
+   "variant_title": "Ornaments + candle",
+   "price": 6500,
+   "available": true,
+   "thumb": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0-t.jpg",
+   "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg"
+  },
+  "68347155677297": {
+   "id": 68347155677297,
+   "product_id": 15464695464049,
    "handle": "vanilla-holiday-candle",
    "title": "Vanilla Holiday Candle in Red Gift Box",
    "variant_title": "",
