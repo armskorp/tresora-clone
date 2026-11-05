@@ -1,0 +1,37 @@
+{
+  "handle": "vintage-christmas-decoupage-ornaments",
+  "title": "Vintage Christmas Decoupage Ornament Set",
+  "source_js": "https://tresora.store/products/vintage-christmas-decoupage-ornaments.js",
+  "canonical": "https://tresora.store/products/vintage-christmas-decoupage-ornaments",
+  "max_edge": 1600,
+  "thumb_edge": 240,
+  "require_portrait": true,
+  "initial_index": 0,
+  "images": [
+    {
+      "file": "01-bronze-tree.jpg",
+      "alt": "Bronze handcrafted Christmas ornament with brown bow hanging on a Christmas tree",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/tresora-ornament-bronze-tree-hanging.jpg?v=1793913523"
+    },
+    {
+      "file": "02-green-tree.jpg",
+      "alt": "Green and gold handcrafted Christmas ornament with green bow hanging on a snowy tree",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/tresora-ornament-green-tree-hanging.jpg?v=1793913523"
+    },
+    {
+      "file": "03-box-primary.jpg",
+      "alt": "Two handcrafted Christmas ornaments with bows in their velvet-lined gift box",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/tresora-ornaments-box-primary.jpg?v=1793911436"
+    },
+    {
+      "file": "04-candle.jpg",
+      "alt": "Vanilla-scented holiday candle in a red glass jar with its open red gift box; candle only, no ornaments",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/tresora-vanilla-candle-red-box.jpg?v=1793913524"
+    },
+    {
+      "file": "05-box-alt.jpg",
+      "alt": "Alternate view of the two handcrafted Christmas ornaments in their gift box",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/tresora-ornaments-box-alt.jpg?v=1793911445"
+    }
+  ]
+}

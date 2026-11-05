@@ -109,6 +109,22 @@
 .rd-v4 .rd-grid--related{gap:48px var(--gap)}
 .rd-v4 .rd-pdp__main{aspect-ratio:5/4}
 .rd-v4 .rd-pdp__main img{object-position:50% 50%}
+/* Portrait galleries (opt-in). The 5/4 cover stage crops bows and box edges.
+   --rd-frame is the photo's own pixel ratio, set per image. */
+.rd-v4.rd-pdp-ornaments .rd-pdp__gallery{min-width:0}
+.rd-v4.rd-pdp-ornaments .rd-pdp__main{aspect-ratio:auto;height:auto;overflow:visible;display:flex;justify-content:center;align-items:flex-start}
+.rd-v4.rd-pdp-ornaments .rd-pdp__main img{display:block;width:auto;height:auto;max-width:100%;max-height:min(72vh,880px);object-fit:contain;object-position:center center}
+.rd-v4.rd-pdp-ornaments .rd-thumbs{position:relative;z-index:1;grid-template-columns:repeat(5, minmax(0, 1fr));align-items:flex-start;margin-top:12px}
+.rd-v4.rd-pdp-ornaments .rd-thumb{aspect-ratio:var(--rd-frame, 3 / 4);height:auto}
+.rd-v4.rd-pdp-ornaments .rd-thumb img{object-fit:contain;object-position:center center}
+/* One column from 750px to 1100px. A sticky portrait stage is taller than the
+   window, so the description scrolls underneath the thumbnails. */
+@media (max-width:1100px){
+  .rd-v4.rd-pdp-ornaments .rd-pdp__gallery{position:static;top:auto}
+  .rd-v4.rd-pdp-ornaments .rd-pdp__info{position:static}
+}
+.rd-v4 .rd-card__media.rd-card__media--full{aspect-ratio:var(--rd-frame, 3 / 4)}
+.rd-v4 .rd-card__media.rd-card__media--full img{object-fit:contain;object-position:center center}
 @media (max-width:1100px){.rd-v4 .rd-grid--shop{--cols:3}.rd-zreviews{grid-template-columns:1fr 1fr!important}}
 @media (max-width:749px){
   .rd-header__in{min-height:58px}

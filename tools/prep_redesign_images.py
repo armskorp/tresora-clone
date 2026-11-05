@@ -1,8 +1,15 @@
 """Product-first imagery for the redesign concepts: lead images that show the items (not the packaging),
-plus hero/tile crops. Sources: orig/pimg (store gallery originals) and orig/hires. usage: python3 tools/prep_redesign_images.py"""
-import os
+plus hero/tile crops. Sources: orig/pimg (store gallery originals) and orig/hires.
+
+Portrait galleries with committed masters live in orig/gallery/<handle>/ and are
+built first by tools/prep_gallery.py (EXIF baked once, long-edge scale, no crop).
+usage: python3 tools/prep_redesign_images.py"""
+import os, sys
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import prep_gallery
+prep_gallery.main()
 P, H, OUT, IMG = "orig/pimg/", "orig/hires/", "redesign/shared/products/", "redesign/shared/img/"
 def crop(im, cx=.5, cy=.5, s=1.0, ar=4/3):
     W, Hh = im.size; w = s * W; h = w / ar
@@ -25,23 +32,30 @@ LEADS = {
   "vermeer-girl-with-a-pearl-earring-gift-box-white": ("vermeer-girl-with-a-pearl-earring-gift-box-1", .45, .52, .4),
   "gothic-romance-decorative-glass-bottle": ("gothic-romance-decorative-glass-bottle-0", .5, .48, 1), "rococo-reverie-decorative-glass-bottle": ("rococo-reverie-decorative-glass-bottle-0", .5, .5, 1),
 }
-for key, (name, cx, cy, s) in LEADS.items():
-    im = crop(src(name).convert("RGB"), cx, cy, s)
-    save(im, f"{OUT}{key}-lead.jpg", 1200); t = im.copy(); t.thumbnail((240, 240)); save(t, f"{OUT}{key}-lead-t.jpg", 240, 80)
-# heroes + tiles (no packaging in frame)
-art = src("elegant-pearl-earring-table-gift-box-2").convert("RGB")
-save(crop(art, .5, .5, .42, 1), IMG + "hero-vermeer-print.jpg", 1400)          # mini framed Vermeer print on pearl tulle
-save(crop(art, .5, .5, .42, 4/5), IMG + "hero-vermeer-print-45.jpg", 1100)
-save(crop(src("barcelona-gift-box-2").convert("RGB"), .5, .5, 1, 4/3), IMG + "hero-barcelona-fan.jpg", 1200)
-save(crop(src("paris-gift-box-2").convert("RGB"), .5, .5, 1, 4/3), IMG + "hero-paris-bag.jpg", 1200)
-save(crop(src("amalfi-gift-box-6").convert("RGB"), .5, .5, 1, 1), IMG + "hero-amalfi.jpg", 1200)
-save(crop(src("van-gogh-almond-blossom-gift-box-5").convert("RGB"), .5, .5, 1, 4/5), IMG + "cat-art-vangogh.jpg", 1000)
-save(crop(src("klimt-the-kiss-gift-box-1").convert("RGB"), .42, .5, 1, 4/5), IMG + "cat-art-klimt.jpg", 1000)
-print("ok")
-# v4 city slideshow: full-bleed styled photos of each city set's items (native resolution, no packaging in frame)
-SLIDES = {"paris": "paris-gift-box-2", "barcelona": "barcelona-gift-box-2", "new-york": "new-york-gift-box-1", "amalfi": "amalfi-gift-box-1",
-          "rococo": "rococo-reverie-decorative-glass-bottle-1", "gothic": "gothic-romance-decorative-glass-bottle-0",
-          "caravaggio": "caravaggio-bacchus-wine-gift-box-3"}
-for city, name in SLIDES.items():
-    im = src(name).convert("RGB"); save(im, f"{IMG}slide-{city}.jpg", 2000, 86)
-print("slides ok")
+def legacy_leads():
+    if not os.path.isdir(P.rstrip("/")) and not os.path.isdir(H.rstrip("/")):
+        print("skip lead crops: orig/pimg and orig/hires are not in this checkout")
+        return
+    for key, (name, cx, cy, s) in LEADS.items():
+        im = crop(src(name).convert("RGB"), cx, cy, s)
+        save(im, f"{OUT}{key}-lead.jpg", 1200); t = im.copy(); t.thumbnail((240, 240)); save(t, f"{OUT}{key}-lead-t.jpg", 240, 80)
+    # heroes + tiles (no packaging in frame)
+    art = src("elegant-pearl-earring-table-gift-box-2").convert("RGB")
+    save(crop(art, .5, .5, .42, 1), IMG + "hero-vermeer-print.jpg", 1400)          # mini framed Vermeer print on pearl tulle
+    save(crop(art, .5, .5, .42, 4/5), IMG + "hero-vermeer-print-45.jpg", 1100)
+    save(crop(src("barcelona-gift-box-2").convert("RGB"), .5, .5, 1, 4/3), IMG + "hero-barcelona-fan.jpg", 1200)
+    save(crop(src("paris-gift-box-2").convert("RGB"), .5, .5, 1, 4/3), IMG + "hero-paris-bag.jpg", 1200)
+    save(crop(src("amalfi-gift-box-6").convert("RGB"), .5, .5, 1, 1), IMG + "hero-amalfi.jpg", 1200)
+    save(crop(src("van-gogh-almond-blossom-gift-box-5").convert("RGB"), .5, .5, 1, 4/5), IMG + "cat-art-vangogh.jpg", 1000)
+    save(crop(src("klimt-the-kiss-gift-box-1").convert("RGB"), .42, .5, 1, 4/5), IMG + "cat-art-klimt.jpg", 1000)
+    print("ok")
+    # v4 city slideshow: full-bleed styled photos of each city set's items (native resolution, no packaging in frame)
+    slides = {"paris": "paris-gift-box-2", "barcelona": "barcelona-gift-box-2", "new-york": "new-york-gift-box-1", "amalfi": "amalfi-gift-box-1",
+              "rococo": "rococo-reverie-decorative-glass-bottle-1", "gothic": "gothic-romance-decorative-glass-bottle-0",
+              "caravaggio": "caravaggio-bacchus-wine-gift-box-3"}
+    for city, name in slides.items():
+        im = src(name).convert("RGB"); save(im, f"{IMG}slide-{city}.jpg", 2000, 86)
+    print("slides ok")
+
+if __name__ == "__main__":
+    legacy_leads()
