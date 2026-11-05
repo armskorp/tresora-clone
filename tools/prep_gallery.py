@@ -14,7 +14,7 @@ folder are the prepared upright files (no Orientation tag). This script:
 Run: python3 tools/prep_gallery.py
 Also invoked at the start of tools/prep_redesign_images.py.
 """
-import io, json, os, re, sys
+import html, io, json, os, re, sys
 from PIL import Image, ImageOps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,12 +26,26 @@ FRAME_JS = """<script>
 /* ornament-gallery-frame: stage ratio follows the selected photo so the whole ornament, bow, and box stay visible */
 (function () {
   var frame = document.querySelector(".rd-pdp__main");
-  if (!frame) return;
+  var main = document.querySelector("[data-rd-main]");
+  if (!frame || !main) return;
+  function show(src, w, h, alt) {
+    if (src) main.src = src;
+    if (w && h) { main.width = +w; main.height = +h; frame.style.setProperty("--rd-frame", w + " / " + h); }
+    if (alt) main.alt = alt;
+    if (!src) return;
+    document.querySelectorAll("[data-rd-thumb]").forEach(function (t) {
+      if (t.getAttribute("data-rd-thumb") === src) t.setAttribute("aria-current", "true");
+      else t.removeAttribute("aria-current");
+    });
+  }
   document.querySelectorAll("[data-rd-thumb][data-w]").forEach(function (t) {
     t.addEventListener("click", function () {
-      var w = t.getAttribute("data-w"), h = t.getAttribute("data-h");
-      var m = document.querySelector("[data-rd-main]");
-      if (m && w && h) { m.width = +w; m.height = +h; frame.style.setProperty("--rd-frame", w + " / " + h); }
+      show(t.getAttribute("data-rd-thumb"), t.getAttribute("data-w"), t.getAttribute("data-h"), t.getAttribute("data-alt"));
+    });
+  });
+  document.querySelectorAll('input[name="variant"][data-w]').forEach(function (r) {
+    r.addEventListener("change", function () {
+      if (r.checked) show(r.getAttribute("data-img"), r.getAttribute("data-w"), r.getAttribute("data-h"), r.getAttribute("data-alt"));
     });
   });
 })();
@@ -136,21 +150,24 @@ def patch_sizes(entries):
         open(SIZES, "w", encoding="utf-8").write(json.dumps(data, indent=1) + "\n")
 
 
-def gallery_html(handle, title, frames):
-    w, h = frames[0]["full"]
+def gallery_html(handle, title, frames, initial):
+    fr0 = frames[initial]
+    w, h = fr0["full"]
+    alt = html.escape(fr0.get("alt") or title, quote=True)
     main = (
         f'<div class="rd-pdp__main" style="--rd-frame:{w} / {h}">'
-        f'<img src="/redesign/shared/products/{handle}-0.jpg" alt="{title}" width="{w}" height="{h}" '
+        f'<img src="/redesign/shared/products/{handle}-{initial}.jpg" alt="{alt}" width="{w}" height="{h}" '
         f'fetchpriority="high" data-rd-img data-rd-main></div>'
     )
     buttons = []
     for i, fr in enumerate(frames):
         fw, fh = fr["full"]
         tw, th = fr["thumb"]
-        cur = ' aria-current="true"' if i == 0 else ""
+        cur = ' aria-current="true"' if i == initial else ""
+        ialt = html.escape(fr.get("alt") or "", quote=True)
         buttons.append(
             f'<button type="button" class="rd-thumb" style="--rd-frame:{tw} / {th}" '
-            f'data-rd-thumb="/redesign/shared/products/{handle}-{i}.jpg" data-w="{fw}" data-h="{fh}" '
+            f'data-rd-thumb="/redesign/shared/products/{handle}-{i}.jpg" data-w="{fw}" data-h="{fh}" data-alt="{ialt}" '
             f'aria-label="Show image {i + 1}"{cur}>'
             f'<img src="/redesign/shared/products/{handle}-{i}-t.jpg" alt="" width="{tw}" height="{th}" loading="lazy"></button>'
         )
@@ -165,7 +182,7 @@ def patch_product(handle, title, frames):
         raise SystemExit(f"{handle}: video is not part of this card")
     html = html.replace('class="rd rd-v4 rd-page--product"', 'class="rd rd-v4 rd-page--product rd-pdp-ornaments"', 1)
     html = html.replace(" rd-pdp-ornaments rd-pdp-ornaments", " rd-pdp-ornaments")
-    block = gallery_html(handle, title, frames)
+    block = gallery_html(handle, title, frames, frames[0].get("_initial", 0))
     html2, n = re.subn(
         r'<div class="rd-pdp__main"[^>]*>.*?</div>\s*<div class="rd-thumbs"[^>]*>.*?</div>',
         block,
@@ -183,22 +200,22 @@ def patch_product(handle, title, frames):
     open(path, "w", encoding="utf-8").write(html2)
 
 
-def patch_shop(handle, title, full):
+def patch_shop(handle, title, full, index):
     path = os.path.join(ROOT, "shop.html")
     if not os.path.exists(path):
         return
-    html = open(path, encoding="utf-8").read()
+    html_doc = open(path, encoding="utf-8").read()
     w, h = full
     new = (
         f'<a class="rd-card__media rd-card__media--full" style="--rd-frame:{w} / {h}" '
-        f'href="/products/{handle}.html"><img src="/redesign/shared/products/{handle}-0.jpg" '
-        f'alt="{title}" width="{w}" height="{h}" loading="lazy" decoding="async" data-rd-img></a>'
+        f'href="/products/{handle}.html"><img src="/redesign/shared/products/{handle}-{index}.jpg" '
+        f'alt="{html.escape(title, quote=True)}" width="{w}" height="{h}" loading="lazy" decoding="async" data-rd-img></a>'
     )
     html2, n = re.subn(
-        r'<a class="rd-card__media[^"]*" (?:style="[^"]*" )?href="/products/%s\.html"><img src="/redesign/shared/products/%s-0\.jpg"[^>]*></a>'
+        r'<a class="rd-card__media[^"]*" (?:style="[^"]*" )?href="/products/%s\.html"><img src="/redesign/shared/products/%s-\d+\.jpg"[^>]*></a>'
         % (handle, handle),
         new,
-        html,
+        html_doc,
         count=1,
     )
     if n != 1:
@@ -216,7 +233,16 @@ def build_one(folder):
     require_portrait = bool(manifest.get("require_portrait", False))
     frames = []
     entries = {}
-    for i, name in enumerate(manifest["images"]):
+    images = []
+    for item in manifest["images"]:
+        if isinstance(item, str):
+            images.append((item, ""))
+        else:
+            images.append((item["file"], item.get("alt") or ""))
+    initial = int(manifest.get("initial_index", 0))
+    if not 0 <= initial < len(images):
+        raise SystemExit(f"{handle}: initial_index {initial} is outside the gallery")
+    for i, (name, alt) in enumerate(images):
         src_path = os.path.join(folder, name)
         raw = Image.open(src_path)
         orient = raw.getexif().get(274)
@@ -245,7 +271,7 @@ def build_one(folder):
             raise SystemExit(f"{name}: saved file {disk.size} exif {disk.getexif().get(274)}")
         if require_portrait and disk.width >= disk.height:
             raise SystemExit(f"{name}: saved file is not portrait")
-        frames.append({"full": full.size, "thumb": thumb.size, "src": im.size, "exif": orient})
+        frames.append({"full": full.size, "thumb": thumb.size, "src": im.size, "exif": orient, "alt": alt, "_initial": initial})
         entries[f"{handle}-{i}"] = [im.width, im.height, full.width, full.height]
         print(f"{handle}-{i} src {im.size} exif {orient} -> {full.size} thumb {thumb.size} err {err:.2f}")
     # drop a previous extra slot (the loose-plaid pair lived in slots 1 and 2; nothing past the manifest stays)
@@ -256,7 +282,7 @@ def build_one(folder):
             print("removed obsolete", extra)
     patch_sizes(entries)
     patch_product(handle, title, frames)
-    patch_shop(handle, title, frames[0]["full"])
+    patch_shop(handle, title, frames[initial]["full"], initial)
     css = open(CSS, encoding="utf-8").read()
     if "rd-pdp-ornaments" not in css or "rd-card__media--full" not in css:
         raise SystemExit("redesign/v4/style.css is missing the ornament gallery frame rules")

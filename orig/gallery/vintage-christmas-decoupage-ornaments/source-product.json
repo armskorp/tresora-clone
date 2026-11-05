@@ -1,0 +1,24 @@
+{
+  "fetched_from": "https://tresora.store/products/vintage-christmas-decoupage-ornaments.js",
+  "verified_at": "2026-11-05T23:01:26Z",
+  "product_id": 15464662990961,
+  "title": "Vintage Christmas Decoupage Ornament Set",
+  "handle": "vintage-christmas-decoupage-ornaments",
+  "canonical": "https://tresora.store/products/vintage-christmas-decoupage-ornaments",
+  "available": true,
+  "option_name": "Choose your set",
+  "variants": [
+    {"id": 68358282936433, "title": "Candle only", "price_cents": 1700, "available": true, "image_index": 3},
+    {"id": 68346966737009, "title": "Ornaments only", "price_cents": 4800, "available": true, "image_index": 0},
+    {"id": 68346966769777, "title": "Ornaments + candle", "price_cents": 6500, "available": true, "image_index": 0}
+  ],
+  "body_html": "<p>A little Christmas magic, boxed to treasure.</p><p>Choose a pair of handcrafted Victorian-inspired Christmas ornaments, a vanilla-scented holiday candle, or both. Your selection determines what is included.</p><h3>Choose your set</h3><ul><li><strong>Candle only — $17:</strong> One vanilla-scented candle in its festive red gift box. No ornaments included.</li><li><strong>Ornaments only — $48:</strong> Two handcrafted decoupage ornaments in a velvet-lined gift box. No candle included.</li><li><strong>Ornaments + candle — $65:</strong> Two handcrafted decoupage ornaments in a velvet-lined gift box, plus one vanilla-scented candle in its festive red gift box.</li></ul><p>The ornament pair includes one bronze ornament with a brown bow and one green-and-gold ornament with a green bow. Nostalgic winter scenes, raised decorative details, and hanging loops give each piece its vintage character. The two box photos show different sides of the same pair.</p><p><strong>The $17 option is for the candle only. The two-ornament gift set starts at $48.</strong></p><p>Ornaments handmade by TRESORA in California. Keep This Feeling.</p>",
+  "media_types": ["image", "image", "image", "image", "image"],
+  "removed_standalone": {
+    "handle": "vanilla-holiday-candle",
+    "product_id": 15464695464049,
+    "variant_id": 68347155677297,
+    "storefront": "https://tresora.store/products/vanilla-holiday-candle",
+    "storefront_status": 404
+  }
+}
