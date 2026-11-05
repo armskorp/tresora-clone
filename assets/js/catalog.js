@@ -128,6 +128,24 @@ window.TRESORA_CATALOG = {
    "variants": [
     67725560053873
    ]
+  },
+  "15422000000001": {
+   "id": 15422000000001,
+   "handle": "vintage-christmas-decoupage-ornaments",
+   "title": "Vintage Christmas Decoupage Ornament Set",
+   "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg",
+   "variants": [
+    67727000000001
+   ]
+  },
+  "15422000000002": {
+   "id": 15422000000002,
+   "handle": "vanilla-holiday-candle",
+   "title": "Vanilla Holiday Candle in Red Gift Box",
+   "image": "redesign/shared/products/vanilla-holiday-candle-0.jpg",
+   "variants": [
+    67727000000002
+   ]
   }
  },
  "variants": {
@@ -306,6 +324,28 @@ window.TRESORA_CATALOG = {
    "available": true,
    "thumb": "redesign/shared/products/crow-roses-decorative-bottle-0-t.jpg",
    "image": "redesign/shared/products/crow-roses-decorative-bottle-0.jpg"
+  },
+  "67727000000001": {
+   "id": 67727000000001,
+   "product_id": 15422000000001,
+   "handle": "vintage-christmas-decoupage-ornaments",
+   "title": "Vintage Christmas Decoupage Ornament Set",
+   "variant_title": "",
+   "price": 4800,
+   "available": true,
+   "thumb": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0-t.jpg",
+   "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg"
+  },
+  "67727000000002": {
+   "id": 67727000000002,
+   "product_id": 15422000000002,
+   "handle": "vanilla-holiday-candle",
+   "title": "Vanilla Holiday Candle in Red Gift Box",
+   "variant_title": "",
+   "price": 1700,
+   "available": true,
+   "thumb": "redesign/shared/products/vanilla-holiday-candle-0-t.jpg",
+   "image": "redesign/shared/products/vanilla-holiday-candle-0.jpg"
   }
  }
 };
