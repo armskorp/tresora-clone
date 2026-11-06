@@ -41,7 +41,7 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function unesc(s) { return String(s).replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&"); }
   function abs(u) { return /^https?:/.test(u) ? u : SITE + (u.charAt(0) === "/" ? "" : "/") + u; }
-  function pageUrl(path) { return path === "index.html" ? SITE + "/" : SITE + "/" + path; }
+  function pageUrl(path) { return path === "index.html" ? SITE + "/" : SITE + "/" + path.replace(/(^|\/)index\.html$/, "$1"); }
   function m(re, s) { var x = re.exec(s); return x ? x[1] : null; }
   function ld(obj) { return '<script type="application/ld+json" data-seo>' + JSON.stringify(obj).replace(/</g, "\\u003c") + "</script>"; }
 
@@ -52,6 +52,9 @@
     s = s.replace(/<meta (property|name)="(og|twitter):[^>]*data-seo>\n?/g, "");
     s = s.replace(/<meta name="robots"[^>]*data-seo>\n?/g, "");
     s = s.replace(/<script type="application\/ld\+json" data-seo>[\s\S]*?<\/script>\n?/g, "");
+
+    // footer link to the Journal (blog)
+    if (s.indexOf('href="/blog/"') < 0) s = s.replace('<a href="/about.html">About TRESORA</a>', '<a href="/about.html">About TRESORA</a><a href="/blog/">Journal</a>');
 
     if (TITLES[path]) s = s.replace(/<title>[^<]*<\/title>/, "<title>" + esc(TITLES[path]) + "</title>");
     if (DESCS[path]) s = s.replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="' + esc(DESCS[path]) + '">');
@@ -65,12 +68,13 @@
     var title = unesc(m(/<title>([^<]*)<\/title>/, s) || "TRESORA");
     var desc = unesc(m(/<meta name="description" content="([^"]*)"/, s) || "");
     var isProduct = path.indexOf("products/") === 0;
-    var mainImg = isProduct ? m(/<img src="([^"]+)"[^>]*data-rd-main/, s) : null;
+    var isPost = /^blog\/(?!index\.html$)[^/]+\.html$/.test(path);
+    var mainImg = isProduct ? m(/<img src="([^"]+)"[^>]*data-rd-main/, s) : m(/<meta name="tresora:image" content="([^"]+)"/, s);
     var img = abs(mainImg || DEFAULT_IMG);
 
     head.push('<link rel="canonical" href="' + url + '">');
     head.push('<meta property="og:site_name" content="TRESORA" data-seo>');
-    head.push('<meta property="og:type" content="' + (isProduct ? "product" : "website") + '" data-seo>');
+    head.push('<meta property="og:type" content="' + (isProduct ? "product" : isPost ? "article" : "website") + '" data-seo>');
     head.push('<meta property="og:title" content="' + esc(title) + '" data-seo>');
     head.push('<meta property="og:description" content="' + esc(desc) + '" data-seo>');
     head.push('<meta property="og:url" content="' + url + '" data-seo>');
