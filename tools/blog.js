@@ -50,7 +50,10 @@ posts.forEach(function (p) {
     headline: p.title, description: p.description, image: [SITE + p.image], datePublished: p.date, dateModified: p.updated || p.date,
     author: { "@type": "Organization", name: "TRESORA", url: SITE + "/" }, publisher: { "@type": "Organization", name: "TRESORA",
       logo: { "@type": "ImageObject", url: SITE + "/redesign/shared/img/logo-dark.png" } }, mainEntityOfPage: url }).replace(/</g, "\\u003c") + "</script>";
-  var more = posts.filter(function (q) { return q.slug !== p.slug; }).slice(0, 4).map(function (q) {
+  // "More from the Journal": up to 3 older posts, topped up with the next newer ones — stable once published,
+  // so adding a new post never changes older article pages.
+  var i = posts.indexOf(p), older = posts.slice(i + 1, i + 4), newer = posts.slice(0, i).reverse();
+  var more = older.concat(newer.slice(0, 3 - older.length)).map(function (q) {
     return '<a href="/blog/' + q.slug + '.html">' + esc(q.title) + "</a>"; }).join("");
   var main = '<section class="rd-section rd-pagehead"><nav class="rd-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span class="rd-crumbs__sep">/</span>' +
     '<a href="/blog/">Journal</a><span class="rd-crumbs__sep">/</span><span aria-current="page">' + esc(p.title) + "</span></nav><h1>" + esc(p.title) +
