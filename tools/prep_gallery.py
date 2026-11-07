@@ -207,7 +207,7 @@ def patch_shop(handle, title, full, index):
     html_doc = open(path, encoding="utf-8").read()
     w, h = full
     new = (
-        f'<a class="rd-card__media rd-card__media--full" style="--rd-frame:{w} / {h}" '
+        f'<a class="rd-card__media" '
         f'href="/products/{handle}.html"><img src="/redesign/shared/products/{handle}-{index}.jpg" '
         f'alt="{html.escape(title, quote=True)}" width="{w}" height="{h}" loading="lazy" decoding="async" data-rd-img></a>'
     )
