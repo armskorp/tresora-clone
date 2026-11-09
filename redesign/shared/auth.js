@@ -71,7 +71,7 @@
             if (r.data && r.data.user && r.data.user.identities && r.data.user.identities.length === 0) return say(msg, 'An account with this email already exists. Please sign in.');
             if (r.data.session) return render(r.data.session);
             auth.password.value = ''; ap.setAttribute('data-sent', '1');
-            say(msg, 'Almost there! We sent a confirmation link to your email. Open it to activate your account and get your 10% welcome code.', true);
+            say(msg, 'Almost there! We sent a confirmation link to your email. Open it to activate your account and get your 15% welcome code.', true);
           }, function () { done(); say(msg, 'Something went wrong. Please try again.'); });
       } else if (m === 'signin') {
         sb.auth.signInWithPassword({ email: email, password: pw }).then(function (r) {
@@ -86,7 +86,7 @@
     });
     $('[data-rd-logout]', ap).addEventListener('click', function () { sb.auth.signOut().then(function () { render(null); mode('signin'); say(msg, 'You have been logged out.', true); }); });
     $('[data-rd-copy]', ap).addEventListener('click', function (e) {
-      var b = e.target; try { navigator.clipboard.writeText('WELCOME10').then(function () { b.textContent = 'Copied'; }); } catch (x) {}
+      var b = e.target; try { navigator.clipboard.writeText(((window.TRESORA_CONFIG || {}).WELCOME_CODE) || 'WELCOME15').then(function () { b.textContent = 'Copied'; }); } catch (x) {}
     });
     $('[data-rd-newsopt]', ap).addEventListener('change', function (e) {
       var im = $('[data-rd-inmsg]', ap);

@@ -212,7 +212,7 @@ def footer():
 </footer>'''
 
 WA = '''<!--Start of WhatsApp Button-->
-<style>.tr-wa{position:fixed;right:20px;bottom:24px;z-index:2147483000;width:56px;height:56px;border-radius:50%;background:#1F3B2D;border:1px solid #C9A961;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.22);transition:transform .2s ease}.tr-wa:hover{transform:translateY(-2px)}.tr-wa svg{width:28px;height:28px;fill:#C9A961}@media(max-width:600px){.tr-wa{right:16px;bottom:20px;width:52px;height:52px}}</style>
+<style>.tr-wa{position:fixed;right:20px;bottom:24px;z-index:2147483000;width:56px;height:56px;border-radius:50%;background:#26221e;border:1px solid rgba(220,212,200,.5);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:transform .2s ease,background .2s ease}.tr-wa:hover{transform:translateY(-2px);background:#3a342e}.tr-wa:focus-visible{outline:2px solid #26221e;outline-offset:3px}.tr-wa svg{width:28px;height:28px;fill:#dcd4c8}@media(max-width:600px){.tr-wa{right:16px;bottom:20px;width:52px;height:52px}}</style>
 <a class="tr-wa" href="https://wa.me/13235214972" target="_blank" rel="noopener" aria-label="Chat with TRESORA on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.24-9.43 9.44-9.43 2.52 0 4.89.98 6.67 2.77a9.37 9.37 0 0 1 2.76 6.67c0 5.2-4.23 9.43-9.44 9.43m8.03-17.46A11.27 11.27 0 0 0 12.05.72C5.79.72.7 5.8.7 12.06c0 2 .52 3.95 1.52 5.67L.6 23.28l5.68-1.49a11.3 11.3 0 0 0 5.77 1.47c6.26 0 11.35-5.09 11.35-11.34 0-3.03-1.18-5.88-3.32-8.02"/></svg></a>
 <!--End of WhatsApp Button-->
 '''
@@ -426,7 +426,7 @@ def account_page():
     <p class="rd-eyebrow">Your TRESORA account</p>
     <h1 data-rd-modal-title>Welcome back</h1>
     <div class="rd-modal__tabs" role="tablist" data-only-tabs><button type="button" role="tab" data-rd-tab="signin" aria-selected="true">Sign in</button><button type="button" role="tab" data-rd-tab="signup" aria-selected="false">Create account</button></div>
-    <p class="rd-auth__perk" data-only="signup">Create an account and get 10% off your first order.</p>
+    <p class="rd-auth__perk" data-only="signup">Create an account and get 15% off your first order.</p>
     <form class="rd-auth" data-rd-auth novalidate>
       <label data-only="signup">Name (optional)<input name="name" autocomplete="name"></label>
       <label>Email<input name="email" type="email" autocomplete="email" required></label>
@@ -444,8 +444,8 @@ def account_page():
     <p class="rd-account__who"><span>Signed in as</span> <b data-rd-email></b></p>
     <div class="rd-welcome" data-rd-welcome>
       <p class="rd-eyebrow">Welcome gift</p>
-      <p class="rd-welcome__title">10% off your first order</p>
-      <p class="rd-welcome__code" data-rd-code>WELCOME10</p>
+      <p class="rd-welcome__title">15% off your first order</p>
+      <p class="rd-welcome__code" data-rd-code>WELCOME15</p>
       <p class="rd-welcome__note">Use this code at checkout.</p>
       <button type="button" class="rd-linkbtn" data-rd-copy>Copy code</button>
     </div>
@@ -453,7 +453,7 @@ def account_page():
     <p class="rd-auth__msg" data-rd-inmsg role="status" aria-live="polite"></p>
     <button class="rd-btn rd-btn--secondary" type="button" data-rd-logout>Log out</button>
   </div>
-  <aside class="rd-account__perks"><h2>With an account</h2><ul><li>10% off your first order</li><li>Faster checkout next time</li><li>Early access to new collections</li></ul><a class="rd-textlink" href="{V}shop.html">Continue shopping</a></aside>
+  <aside class="rd-account__perks"><h2>With an account</h2><ul><li>15% off your first order</li><li>Faster checkout next time</li><li>Early access to new collections</li></ul><a class="rd-textlink" href="{V}shop.html">Continue shopping</a></aside>
 </section>'''
     return page("Account · TRESORA", body, "account", active="account", extra_js=auth_scripts())
 
