@@ -66,3 +66,6 @@ for f in sorted(glob.glob("*.html") + glob.glob("products/*.html") + glob.glob("
     n_ga += GA in s
     n_gtm += GTM in s
 print(f"GA4 present in {n_ga} root pages; GTM {GTM} present in {n_gtm} root pages")
+
+import subprocess as _sp, sys as _sy
+_sp.run([_sy.executable, "tools/add_welcome.py"], check=True)

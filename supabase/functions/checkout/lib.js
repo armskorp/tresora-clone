@@ -58,6 +58,7 @@ export function sessionParams(lines, site, currency = catalog.currency || "usd")
   p.set("billing_address_collection", "auto");
   p.set("customer_creation", "always"); // email is always collected by Checkout; also saves a Customer
   p.set("phone_number_collection[enabled]", "true");
+  p.set("allow_promotion_codes", "true"); // customers can enter codes such as WELCOME15 (welcome popup)
   // no payment_method_types -> dynamic/automatic payment methods (cards, Apple Pay, Google Pay, ...) from Dashboard settings
   const summary = [];
   lines.forEach((l, i) => {
