@@ -187,3 +187,8 @@
   .rd-thumbs::-webkit-scrollbar{display:none}
   .rd-thumb{flex:0 0 22%;scroll-snap-align:start}
 }
+/* hero "full" slides (tools/hero_slides.py): the whole photo, uncropped, over a blurred copy of itself */
+.rd-slide--full .rd-slide__bg{display:block;filter:blur(34px) brightness(.55) saturate(1.1);transform:scale(1.15)!important;animation:none!important}
+.rd-slide--full .rd-slide__img{inset:auto;top:92px;left:36%;width:61%;height:calc(100% - 172px);object-fit:contain;object-position:50% 50%;animation:none!important;transform:none;filter:drop-shadow(0 18px 40px rgba(0,0,0,.35))}
+@media (max-aspect-ratio:1/1),(max-width:749px){.rd-slide--full .rd-slide__img{top:78px;left:4%;width:92%;height:calc(100% - 78px - 290px)}}
+@media (min-aspect-ratio:1/1) and (min-width:750px){.rd-slide--full .rd-slide__text{right:auto;max-width:34%}.rd-slide--full .rd-slide__city,.rd-slide--full .rd-slide__city.rd-slide__city--long{font-size:clamp(44px,5vw,96px);line-height:.95}}

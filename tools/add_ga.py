@@ -69,3 +69,4 @@ print(f"GA4 present in {n_ga} root pages; GTM {GTM} present in {n_gtm} root page
 
 import subprocess as _sp, sys as _sy
 _sp.run([_sy.executable, "tools/add_welcome.py"], check=True)
+_sp.run([_sy.executable, "tools/hero_slides.py"], check=True)
