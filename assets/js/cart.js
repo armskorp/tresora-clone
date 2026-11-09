@@ -253,8 +253,60 @@
     sync();
   });
 
-  // success page clears the cart
-  if (document.querySelector('[data-checkout-success]')) Cart.clear();
+  /* ---------- GA4 ecommerce: purchase tracking ----------
+     Before leaving for Stripe we save what is being paid for ("pending order"). Stripe returns the shopper to
+     success.html?session_id=cs_..., where we send ONE GA4 `purchase` event (transaction_id = the Stripe session id,
+     so GA also de-duplicates reloads). Values use the catalog display prices (the server charges the same prices). */
+  var PENDING = 'tresora_pending_order', DONE = 'tresora_tracked_orders';
+  function gaItem(l) {
+    var v = CAT.variants[l.variant_id];
+    return v ? { item_id: String(v.id), item_name: v.title, item_variant: v.variant_title || undefined, item_brand: 'TRESORA', price: v.price / 100, quantity: l.quantity } : null;
+  }
+  function stashPending(ls) {
+    try { localStorage.setItem(PENDING, JSON.stringify({ ts: Date.now(), lines: ls.map(function (l) { return { variant_id: l.variant_id, quantity: l.quantity }; }) })); } catch (e) {}
+  }
+  function gaParams(ls) {
+    var items = ls.map(gaItem).filter(Boolean);
+    if (!items.length || typeof window.gtag !== 'function') return null;
+    var value = items.reduce(function (s, i) { return s + i.price * i.quantity; }, 0);
+    return { currency: CFG.CURRENCY || 'USD', value: Math.round(value * 100) / 100, items: items };
+  }
+  function trackPurchase() {
+    var sid = (location.search.match(/[?&]session_id=([^&#]+)/) || [])[1];
+    if (!sid || /CHECKOUT_SESSION_ID/.test(sid)) return; // no real Stripe return: don't count a purchase
+    sid = decodeURIComponent(sid);
+    var done = [];
+    try { done = JSON.parse(localStorage.getItem(DONE) || '[]'); } catch (e) {}
+    if (done.indexOf(sid) !== -1) return; // page reloaded: already counted
+    var pending = null;
+    try { pending = JSON.parse(localStorage.getItem(PENDING) || 'null'); } catch (e) {}
+    var ls = pending && Date.now() - pending.ts < 3 * 864e5 && Array.isArray(pending.lines) ? pending.lines : lines();
+    ls = ls.filter(function (l) { return l && CAT.variants[l.variant_id]; });
+    var params = gaParams(ls) || { currency: CFG.CURRENCY || 'USD' };
+    params.transaction_id = sid;
+    params.shipping = 0;
+    if (typeof window.gtag === 'function') window.gtag('event', 'purchase', params);
+    try {
+      done.push(sid); localStorage.setItem(DONE, JSON.stringify(done.slice(-20)));
+      localStorage.removeItem(PENDING);
+    } catch (e) {}
+  }
+  // Payment Links (product "Buy now" buttons and per-item links in the cart): remember which item is being paid for
+  if (PL) {
+    var plVariant = {};
+    Object.keys(PL).forEach(function (id) { plVariant[PL[id]] = Number(id); });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+      var id = plVariant[a.getAttribute('href')]; if (!id) return;
+      var form = a.closest('[data-add-form]'), q = form && form.querySelector('input[name="quantity"]');
+      var line = lines().find(function (l) { return l.variant_id === id; });
+      var qty = clamp(q ? q.value : (line ? line.quantity : 1));
+      stashPending([{ variant_id: id, quantity: qty }]); // begin_checkout for these links is sent by the GA snippet in <head>
+    }, true);
+  }
+
+  // success page: count the purchase, then clear the cart
+  if (document.querySelector('[data-checkout-success]')) { trackPurchase(); Cart.clear(); }
 
   /* ---------- checkout ---------- */
   var busy = false;
@@ -282,8 +334,9 @@
           var only = CAT.variants[ls[0].variant_id];
           if (ls[0].quantity > 1) {
             msg('Opening secure Stripe checkout. Please set the quantity to ' + ls[0].quantity + ' on the next page.' + testNote());
+            stashPending(ls);
             setTimeout(function () { location.href = PL[ls[0].variant_id]; }, 1600);
-          } else { location.href = PL[ls[0].variant_id]; }
+          } else { stashPending(ls); location.href = PL[ls[0].variant_id]; }
           return;
         }
         showLinks(ls); return;
@@ -297,7 +350,11 @@
     var items = lines().map(function (l) { return { product_id: CAT.variants[l.variant_id].product_id, variant_id: l.variant_id, quantity: l.quantity, personalization: l.p || {} }; });
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items }) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed'); return d; }); })
-      .then(function (d) { location.href = d.url; })
+      .then(function (d) {
+        var ls1 = lines(); stashPending(ls1);
+        var p = gaParams(ls1); if (p) { p.transport_type = 'beacon'; window.gtag('event', 'begin_checkout', p); }
+        location.href = d.url;
+      })
       .catch(function (err) {
         busy = false; btn.disabled = false; btn.textContent = 'Checkout';
         if (PL && !/characters|greeting|inscription|sold out|Invalid|Unknown|empty/i.test(err.message)) { // backend unreachable: fall back to Payment Links
