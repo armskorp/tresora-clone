@@ -1,0 +1,63 @@
+/* Homepage Santa fly-by. Clipped by .rd-slides overflow; replays when the hero is scrolled back into view. */
+.rd-santa{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  overflow:hidden;
+  pointer-events:none;
+}
+.rd-santa__bob{
+  position:absolute;
+  left:0;
+  top:0;
+  width:min(1680px,116vw);
+  height:auto;
+  opacity:0;
+  will-change:transform;
+}
+.rd-santa__bob video{background:transparent}
+.rd-santa__bob video,
+.rd-santa__bob img{
+  display:block;
+  width:100%;
+  height:auto;
+  filter:drop-shadow(8px 10px 10px rgba(20,10,0,.28));
+}
+.rd-santa--img .rd-santa__vid{display:none}
+.rd-santa.is-play .rd-santa__bob{
+  animation:rd-santa-fly 8.21s linear forwards;
+}
+.rd-santa.is-play .rd-santa__bob video,
+.rd-santa.is-play .rd-santa__bob img{
+  animation:rd-santa-bob .7s ease-in-out infinite;
+}
+@keyframes rd-santa-fly{
+  0%{
+    opacity:1;
+    transform:translate3d(calc(-100% - 24px),62vh,-40px) rotate(-8deg);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(calc(100vw + 24px),calc(-100% - 24px),80px) rotate(-11deg);
+  }
+}
+@keyframes rd-santa-bob{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+@media (max-width:749px){
+  .rd-santa__bob{width:min(1100px,245vw)}
+  @keyframes rd-santa-fly{
+    0%{
+      opacity:1;
+      transform:translate3d(calc(-100% - 24px),68vh,-30px) rotate(-9deg);
+    }
+    100%{
+      opacity:1;
+      transform:translate3d(calc(100vw + 24px),calc(-100% - 24px),60px) rotate(-12deg);
+    }
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .rd-santa{display:none}
+}

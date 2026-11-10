@@ -271,8 +271,9 @@
   var ss = $('[data-rd-slides]');
   if (ss) {
     var slides = $$('[data-rd-slide]', ss), dots = $$('[data-rd-dot]', ss), pauseBtn = $('[data-rd-pause]', ss);
-    var DUR = 5000, cur = 0, timer = null, started = 0, remain = DUR, hoverPaused = false, userPaused = false;
+    var DUR = 5000, cur = 0, timer = null, started = 0, remain = DUR, hoverPaused = false, userPaused = false, santaLocked = false;
     var show = function (n) {
+      if (santaLocked) n = 0;
       n = (n + slides.length) % slides.length;
       slides.forEach(function (sl, i) {
         var on = i === n; sl.classList.toggle('is-active', on); sl.setAttribute('aria-hidden', String(!on));
@@ -285,7 +286,7 @@
     };
     var schedule = function () {
       clearTimeout(timer); timer = null;
-      if (hoverPaused || userPaused || document.hidden) return;
+      if (santaLocked || hoverPaused || userPaused || document.hidden) return;
       started = Date.now(); timer = setTimeout(function () { show(cur + 1); }, remain);
     };
     var pause = function () { if (timer) { remain = Math.max(0, remain - (Date.now() - started)); clearTimeout(timer); timer = null; } ss.classList.add('is-paused'); };
@@ -315,6 +316,21 @@
     });
     ss.addEventListener('pointercancel', function () { sx = null; });
     ss.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') show(cur + 1); if (e.key === 'ArrowLeft') show(cur - 1); });
+    ss.addEventListener('rd-santa-hold', function () {
+      santaLocked = true;
+      pause();
+    });
+    ss.addEventListener('rd-santa-lock', function () {
+      santaLocked = true;
+      if (cur !== 0) show(0);
+      else pause();
+    });
+    ss.addEventListener('rd-santa-unlock', function () {
+      if (!santaLocked) return;
+      santaLocked = false;
+      remain = DUR;
+      resume();
+    });
     show(0);
   }
   apply();
