@@ -15,8 +15,8 @@ SLIDES = [
    "Gothic Portraits handcrafted decorative glass vase with a painted portrait and red roses, on an antique mantel", "Atelier Home"),
   ("Gothic Romance", "gothic-romance-decorative-glass-bottle", "gothic-romance-hero-wide.jpg",
    "Gothic Romance hand-decorated glass bottle with a black rose, on a carved wooden table between candelabra", "Atelier Home"),
-  ("Paris", "paris-gift-box", "paris-gift-box-0.jpg",
-   "The open Paris gift box: pearl beaded evening bag, black lace bow, pearl bow earrings, charm and card", "Inspired by City"),
+  ("Paris", "paris-gift-box", "paris-hero-wide.jpg",
+   "The open Paris gift box: pearl beaded evening bag, black and white silk scarf, black lace bow, pearl bow earrings, doll charm and card", "Inspired by City"),
   ("Crow & Roses", "crow-roses-decorative-bottle", "crow-roses-decorative-bottle-0.jpg",
    "Crow & Roses handcrafted decorative glass bottle with red and black roses, on an antique mantel", "Atelier Home"),
   ("Sargent", "sargent-the-wineglasses-wine-gift-box", "sargent-the-wineglasses-wine-gift-box-0.jpg",
@@ -26,13 +26,14 @@ MOBILE = {  # image -> separate portrait image for phones
   "amalfi-hero-wide.jpg": "amalfi-hero-mobile.jpg",
   "caravaggio-green-hero-wide.jpg": "caravaggio-green-hero-mobile.jpg",
   "gothic-romance-hero-wide.jpg": "gothic-romance-hero-mobile.jpg",
+  "paris-hero-wide.jpg": "paris-hero-mobile.jpg",
 }
 POS = {  # image -> (desktop object-position, mobile object-position)
   "amalfi-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-romance-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "caravaggio-green-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-portraits-decorative-glass-vase-0.jpg": ("50% 74%", "55% 50%"),
-  "paris-gift-box-0.jpg": ("50% 50%", "40% 50%"),
+  "paris-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "crow-roses-decorative-bottle-0.jpg": ("50% 76%", "52% 50%"),
   "sargent-the-wineglasses-wine-gift-box-0.jpg": ("50% 62%", "52% 50%"),
 }
