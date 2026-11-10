@@ -21,6 +21,8 @@ SLIDES = [
    "The open New York gift box: silver cage handbag, 1920s newspaper print silk scarf, compact mirror, rhinestone chain, art deco drop earrings and airplane charm card", "Inspired by City"),
   ("Caravaggio", "caravaggio-bacchus-wine-gift-box", "caravaggio-red-hero-wide.jpg",
    "The open Caravaggio Bacchus wine gift box: red cable-knit throw with satin ribbon, two wine glasses with red bows, wine opener set, reed diffuser and gold-framed Bacchus print", "Inspired by Art"),
+  ("Van Gogh", "van-gogh-almond-blossom-gift-box", "van-gogh-hero-wide.jpg",
+   "The open Van Gogh Almond Blossom gift box: light blue pearl tulle, blue glass reed diffuser, gold-framed mini print, chocolate bar, navy candle in a brass holder and a glass butterfly mug with gold spoon", "Inspired by Art"),
   ("Crow & Roses", "crow-roses-decorative-bottle", "crow-roses-decorative-bottle-0.jpg",
    "Crow & Roses handcrafted decorative glass bottle with red and black roses, on an antique mantel", "Atelier Home"),
   ("Sargent", "sargent-the-wineglasses-wine-gift-box", "sargent-the-wineglasses-wine-gift-box-0.jpg",
@@ -34,6 +36,7 @@ MOBILE = {  # image -> separate portrait image for phones
   "gothic-trio-hero-wide.jpg": "gothic-trio-hero-mobile.jpg",
   "new-york-hero-wide.jpg": "new-york-hero-mobile.jpg",
   "caravaggio-red-hero-wide.jpg": "caravaggio-red-hero-mobile.jpg",
+  "van-gogh-hero-wide.jpg": "van-gogh-hero-mobile.jpg",
 }
 POS = {  # image -> (desktop object-position, mobile object-position)
   "amalfi-hero-wide.jpg": ("50% 50%", "50% 50%"),
@@ -44,6 +47,7 @@ POS = {  # image -> (desktop object-position, mobile object-position)
   "gothic-trio-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "new-york-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "caravaggio-red-hero-wide.jpg": ("50% 50%", "50% 50%"),
+  "van-gogh-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "crow-roses-decorative-bottle-0.jpg": ("50% 76%", "52% 50%"),
   "sargent-the-wineglasses-wine-gift-box-0.jpg": ("50% 62%", "52% 50%"),
 }
