@@ -190,3 +190,5 @@
 /* hero slides (tools/hero_slides.py): full-bleed photos (object-fit: cover), focal point per slide for landscape and portrait screens */
 .rd-slide--cover .rd-slide__img{object-position:var(--pos-d,50% 50%)}
 @media (max-aspect-ratio:1/1){.rd-slide--cover .rd-slide__img{object-position:var(--pos-m,50% 50%)}}
+
+@media (max-aspect-ratio:1/1){.rd-slide::after{background:linear-gradient(180deg,rgba(8,14,24,.2) 0%,rgba(8,14,24,0) 12%,rgba(8,14,24,0) 62%,rgba(8,14,24,.45) 100%)}}
