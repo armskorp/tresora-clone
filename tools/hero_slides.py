@@ -11,10 +11,10 @@ SLIDES = [
    "The open Amalfi gift box: lemon-print scarf, straw mini bag, majolica compact mirror, Vespa charm with pearls, lipstick case and charm necklace", "Inspired by City"),
   ("Caravaggio", "caravaggio-bacchus-wine-gift-box", "caravaggio-green-hero-wide.jpg",
    "The open Caravaggio Bacchus wine gift box: forest green cable-knit throw with satin ribbon, two wine glasses, wine opener set, reed diffuser and framed Bacchus print", "Inspired by Art"),
-  ("Gothic Romance", "gothic-romance-decorative-glass-bottle", "gothic-romance-decorative-glass-bottle-1.jpg",
-   "Gothic Romance hand-decorated glass bottle with a red rose, on a dark stand before red velvet drapes", "Atelier Home"),
   ("Gothic Portraits", "gothic-portraits-decorative-glass-vase", "gothic-portraits-decorative-glass-vase-0.jpg",
    "Gothic Portraits handcrafted decorative glass vase with a painted portrait and red roses, on an antique mantel", "Atelier Home"),
+  ("Gothic Romance", "gothic-romance-decorative-glass-bottle", "gothic-romance-hero-wide.jpg",
+   "Gothic Romance hand-decorated glass bottle with a black rose, on a carved wooden table between candelabra", "Atelier Home"),
   ("Paris", "paris-gift-box", "paris-gift-box-0.jpg",
    "The open Paris gift box: pearl beaded evening bag, black lace bow, pearl bow earrings, charm and card", "Inspired by City"),
   ("Crow & Roses", "crow-roses-decorative-bottle", "crow-roses-decorative-bottle-0.jpg",
@@ -22,9 +22,14 @@ SLIDES = [
   ("Sargent", "sargent-the-wineglasses-wine-gift-box", "sargent-the-wineglasses-wine-gift-box-0.jpg",
    "The open John Sargent The Wineglasses gift box: two stemless wine glasses, cheese board and knives, pearl tulle, candle and framed print", "Inspired by Art"),
 ]
+MOBILE = {  # image -> separate portrait image for phones
+  "amalfi-hero-wide.jpg": "amalfi-hero-mobile.jpg",
+  "caravaggio-green-hero-wide.jpg": "caravaggio-green-hero-mobile.jpg",
+  "gothic-romance-hero-wide.jpg": "gothic-romance-hero-mobile.jpg",
+}
 POS = {  # image -> (desktop object-position, mobile object-position)
   "amalfi-hero-wide.jpg": ("50% 50%", "50% 50%"),
-  "gothic-romance-decorative-glass-bottle-1.jpg": ("50% 62%", "50% 55%"),
+  "gothic-romance-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "caravaggio-green-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-portraits-decorative-glass-vase-0.jpg": ("50% 74%", "55% 50%"),
   "paris-gift-box-0.jpg": ("50% 50%", "40% 50%"),
@@ -43,7 +48,7 @@ for i, (name, h, img, alt, kicker) in enumerate(SLIDES):
     verb = "Shop" if avail else "View"; long = " rd-slide__city--long" if len(name) > 10 else ""
     src = P + img
     figs.append(f'''<figure class="rd-slide{" is-active" if i == 0 else ""} rd-slide--cover" data-rd-slide aria-roledescription="slide" aria-label="{i+1} of {n}: {E(name)}"{"" if i == 0 else ' aria-hidden="true"'}>
-    <img class="rd-slide__img" src="{src}" alt="{E(alt)}" style="--pos-d:{POS[img][0]};--pos-m:{POS[img][1]}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">
+    {('<picture style="display:contents"><source media="(max-aspect-ratio:1/1)" srcset="' + P + MOBILE[img] + '">') if img in MOBILE else ''}<img class="rd-slide__img" src="{src}" alt="{E(alt)}" style="--pos-d:{POS[img][0]};--pos-m:{POS[img][1]}" {"fetchpriority=\"high\"" if i == 0 else 'loading="eager"'} decoding="async">{'</picture>' if img in MOBILE else ''}
     <figcaption class="rd-slide__text"><span class="rd-slide__kicker">{kicker} · {i+1:02d}</span><span class="rd-slide__city{long}">{E(name)}</span>
       <a class="rd-slide__link" href="/products/{h}.html"{tab}>{verb} {E(name)}</a><span class="rd-slide__price">{E(p["title"])} · {price}</span></figcaption></figure>''')
     dots.append(f'<button type="button" class="rd-dot" data-rd-dot="{i}" aria-label="Show {E(name)}"{" aria-current=\"true\"" if i == 0 else ""}><span></span></button>')
