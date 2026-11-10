@@ -9,10 +9,10 @@ P = "/redesign/shared/products/"
 SLIDES = [
   ("Amalfi", "amalfi-gift-box", "amalfi-hero-wide.jpg",
    "The open Amalfi gift box: lemon-print scarf, straw mini bag, majolica compact mirror, Vespa charm with pearls, lipstick case and charm necklace", "Inspired by City"),
+  ("Caravaggio", "caravaggio-bacchus-wine-gift-box", "caravaggio-green-hero-wide.jpg",
+   "The open Caravaggio Bacchus wine gift box: forest green cable-knit throw with satin ribbon, two wine glasses, wine opener set, reed diffuser and framed Bacchus print", "Inspired by Art"),
   ("Gothic Romance", "gothic-romance-decorative-glass-bottle", "gothic-romance-decorative-glass-bottle-1.jpg",
    "Gothic Romance hand-decorated glass bottle with a red rose, on a dark stand before red velvet drapes", "Atelier Home"),
-  ("Caravaggio", "caravaggio-bacchus-wine-gift-box", "caravaggio-bacchus-wine-gift-box-3.jpg",
-   "The open Caravaggio Bacchus wine gift box: red cable-knit throw, two wine glasses, wine opener set, candle, reed diffuser and framed Bacchus print", "Inspired by Art"),
   ("Gothic Portraits", "gothic-portraits-decorative-glass-vase", "gothic-portraits-decorative-glass-vase-0.jpg",
    "Gothic Portraits handcrafted decorative glass vase with a painted portrait and red roses, on an antique mantel", "Atelier Home"),
   ("Paris", "paris-gift-box", "paris-gift-box-0.jpg",
@@ -25,7 +25,7 @@ SLIDES = [
 POS = {  # image -> (desktop object-position, mobile object-position)
   "amalfi-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-romance-decorative-glass-bottle-1.jpg": ("50% 62%", "50% 55%"),
-  "caravaggio-bacchus-wine-gift-box-3.jpg": ("50% 52%", "48% 50%"),
+  "caravaggio-green-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-portraits-decorative-glass-vase-0.jpg": ("50% 74%", "55% 50%"),
   "paris-gift-box-0.jpg": ("50% 50%", "40% 50%"),
   "crow-roses-decorative-bottle-0.jpg": ("50% 76%", "52% 50%"),
