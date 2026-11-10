@@ -7,7 +7,7 @@ E = html.escape
 P = "/redesign/shared/products/"
 # (name, product handle, image, alt, kicker); focal points are in POS below
 SLIDES = [
-  ("Amalfi", "amalfi-gift-box", "amalfi-gift-box-0.jpg",
+  ("Amalfi", "amalfi-gift-box", "amalfi-hero-wide.jpg",
    "The open Amalfi gift box: lemon-print scarf, straw mini bag, majolica compact mirror, Vespa charm with pearls, lipstick case and charm necklace", "Inspired by City"),
   ("Gothic Romance", "gothic-romance-decorative-glass-bottle", "gothic-romance-decorative-glass-bottle-1.jpg",
    "Gothic Romance hand-decorated glass bottle with a red rose, on a dark stand before red velvet drapes", "Atelier Home"),
@@ -23,7 +23,7 @@ SLIDES = [
    "The open John Sargent The Wineglasses gift box: two stemless wine glasses, cheese board and knives, pearl tulle, candle and framed print", "Inspired by Art"),
 ]
 POS = {  # image -> (desktop object-position, mobile object-position)
-  "amalfi-gift-box-0.jpg": ("50% 52%", "52% 50%"),
+  "amalfi-hero-wide.jpg": ("50% 50%", "50% 50%"),
   "gothic-romance-decorative-glass-bottle-1.jpg": ("50% 62%", "50% 55%"),
   "caravaggio-bacchus-wine-gift-box-3.jpg": ("50% 52%", "48% 50%"),
   "gothic-portraits-decorative-glass-vase-0.jpg": ("50% 74%", "55% 50%"),
