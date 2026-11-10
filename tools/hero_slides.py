@@ -60,6 +60,6 @@ s = s.replace('aria-label="Cities and Atelier Home"', 'aria-label="Featured gift
 # preload the first slide image for a fast first paint
 s = re.sub(r'<link rel="preload" as="image" href="[^"]*" data-rd-hero>\n?', "", s)
 s = s.replace("</head>", f'<link rel="preload" as="image" href="{P + SLIDES[0][2]}" data-rd-hero>\n</head>', 1)
-s = re.sub(r'redesign/v4/style\.css\?v=[0-9a-z]+', 'redesign/v4/style.css?v=20261109i', s)  # hero CSS changed
+s = re.sub(r'redesign/v4/style\.css\?v=[0-9a-z]+', 'redesign/v4/style.css?v=20261109j', s)  # hero CSS changed
 if s != o: open(f, "w", encoding="utf-8").write(s)
 print(f"hero: {n} slides -> " + ", ".join(x[0] for x in SLIDES))
