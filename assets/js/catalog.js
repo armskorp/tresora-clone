@@ -193,7 +193,7 @@ window.TRESORA_CATALOG = {
    "title": "Gothic Romance Handcrafted Decorative Glass Bottle",
    "variant_title": "",
    "price": 6500,
-   "available": true,
+   "available": false,
    "thumb": "assets/images/products/image-6_b92e24dc-ba31-4913-aad0-55f046c4ebcb-0c4de7-w200.jpg",
    "image": "assets/images/products/image-6_b92e24dc-ba31-4913-aad0-55f046c4ebcb-0c4de7-w800.jpg"
   },
