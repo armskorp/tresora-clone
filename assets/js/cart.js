@@ -245,6 +245,8 @@
       var s = e.target.closest('[data-step]'); if (!s) return;
       qty.value = clamp(Number(qty.value) + Number(s.getAttribute('data-step')));
     });
+    var bnl = form.querySelector('[data-buy-now-link]');
+    if (bnl) bnl.addEventListener('click', function () { var id = Number(current()); if (CAT.variants[id]) stashPurchase([{ variant_id: id, quantity: clamp(qty && qty.value) }]); });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       qty.value = clamp(qty.value);
@@ -258,13 +260,34 @@
 
   /* ---------- checkout ---------- */
   var busy = false;
+  /* Purchase tracking: remember what is being paid for right before leaving for Stripe, so success.html
+     (assets/js/purchase-tracking.js) can send the GA4 "purchase" / Google Ads conversion with a value.
+     Display prices from the catalog, before any promotion code; no personal data is stored. */
+  var PENDING_KEY = 'tresora_pending_purchase';
+  function stashPurchase(ls) {
+    try {
+      var items = ls.filter(function (l) { return CAT.variants[l.variant_id]; }).map(function (l) {
+        var v = CAT.variants[l.variant_id];
+        return { item_id: String(l.variant_id), item_name: v.title + (v.variant_title ? ' - ' + v.variant_title : ''), price: v.price / 100, quantity: l.quantity };
+      });
+      if (!items.length) return;
+      var value = items.reduce(function (s, i) { return s + i.price * i.quantity; }, 0);
+      localStorage.setItem(PENDING_KEY, JSON.stringify({ value: Math.round(value * 100) / 100, currency: CFG.CURRENCY || 'USD', items: items, ts: Date.now() }));
+    } catch (e) { /* tracking must never block checkout */ }
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a.tc-paylink[data-vid]');
+    if (!a) return;
+    var vid = Number(a.getAttribute('data-vid'));
+    stashPurchase(lines().filter(function (l) { return l.variant_id === vid; }));
+  }, true);
   function testNote() { return PLMODE === 'test' ? ' (Stripe test mode: no real charge. Use card 4242 4242 4242 4242.)' : ''; }
   // interim Payment Links can only pay for one product at a time: list one link per cart line
   function showLinks(ls) {
     var m = $('[data-tc-msg]');
     m.innerHTML = '<span>Each item is paid separately for now:</span>' + ls.map(function (l) {
       var v = CAT.variants[l.variant_id];
-      return PL[l.variant_id] ? '<a class="tc-paylink" href="' + esc(PL[l.variant_id]) + '">Pay for ' + esc(v.title + (v.variant_title ? ' – ' + v.variant_title : '')) + ' × ' + l.quantity + '</a>' : '';
+      return PL[l.variant_id] ? '<a class="tc-paylink" data-vid="' + l.variant_id + '" href="' + esc(PL[l.variant_id]) + '">Pay for ' + esc(v.title + (v.variant_title ? ' – ' + v.variant_title : '')) + ' × ' + l.quantity + '</a>' : '';
     }).join('') + (PLMODE === 'test' ? '<small>Stripe test mode: no real charge. Use card 4242 4242 4242 4242.</small>' : '');
     m.hidden = false;
   }
@@ -279,6 +302,7 @@
       var ls = lines();
       if (PL) {
         if (ls.length === 1 && PL[ls[0].variant_id]) {
+          stashPurchase(ls);
           var only = CAT.variants[ls[0].variant_id];
           if (ls[0].quantity > 1) {
             msg('Opening secure Stripe checkout. Please set the quantity to ' + ls[0].quantity + ' on the next page.' + testNote());
@@ -297,7 +321,7 @@
     var items = lines().map(function (l) { return { product_id: CAT.variants[l.variant_id].product_id, variant_id: l.variant_id, quantity: l.quantity, personalization: l.p || {} }; });
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items }) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed'); return d; }); })
-      .then(function (d) { location.href = d.url; })
+      .then(function (d) { stashPurchase(lines()); location.href = d.url; })
       .catch(function (err) {
         busy = false; btn.disabled = false; btn.textContent = 'Checkout';
         if (PL && !/characters|greeting|inscription|sold out|Invalid|Unknown|empty/i.test(err.message)) { // backend unreachable: fall back to Payment Links

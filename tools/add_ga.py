@@ -3,6 +3,7 @@ import glob, os
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 GA = "G-P2VCZH3M16"
 GTM = "GTM-WPWBTDDN"
+ADS = "AW-18553006418"  # Google Ads tag (purchase conversions fire on success.html via assets/js/purchase-tracking.js)
 OLD = ["G-VKEH4T20Q7"]
 VERIFY = '<meta name="google-site-verification" content="ExiDnCnq1CMsfzDeBvYFI-1i98FBgaIN_-EZRvDj5qI" />'
 # Owner's exact GTM head snippet (container GTM-WPWBTDDN), placed as high in <head> as possible.
@@ -16,7 +17,7 @@ GTM_SNIP = f"""<!-- GTM -->
 """
 SNIP = f"""<!-- GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={GA}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA}');
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA}');gtag('config','{ADS}');
 document.addEventListener('click',function(e){{var a=e.target.closest&&e.target.closest('a[href*="buy.stripe.com"],a[href*="checkout.stripe.com"]');if(a)gtag('event','begin_checkout',{{transport_type:'beacon'}});}},true);</script>
 """
 
