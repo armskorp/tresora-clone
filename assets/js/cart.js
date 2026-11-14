@@ -293,7 +293,7 @@
     m.hidden = false;
   }
   /* Shopify checkout (TRESORA_CONFIG.SHOPIFY_CHECKOUT_DOMAIN): one cart permalink for the whole cart,
-     https://<domain>/cart/VARIANT_ID:QTY,...?note=...&attributes[Source]=tresoragift.com
+     https://<domain>/cart/VARIANT_ID:QTY,...?note=...&utm_source=tresoragift.com&utm_medium=referral&utm_campaign=site_checkout&attributes[source]=tresoragift.com
      Shopify turns it into a checkout with live prices and stock. Personalization goes into the order note. */
   var SHOP = String(CFG.SHOPIFY_CHECKOUT_DOMAIN || '').trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
   var CARD_LABEL = {}; CARDS.forEach(function (c) { CARD_LABEL[c[0]] = c[1]; });
@@ -310,7 +310,10 @@
     var path = ls.map(function (l) { return encodeURIComponent(String(l.variant_id)) + ':' + clamp(l.quantity); }).join(',');
     var q = [], note = shopifyNote(ls);
     if (note) q.push('note=' + encodeURIComponent(note));
-    q.push(encodeURIComponent('attributes[Source]') + '=' + encodeURIComponent('tresoragift.com'));
+    q.push('utm_source=' + encodeURIComponent('tresoragift.com'));
+    q.push('utm_medium=' + encodeURIComponent('referral'));
+    q.push('utm_campaign=' + encodeURIComponent('site_checkout'));
+    q.push(encodeURIComponent('attributes[source]') + '=' + encodeURIComponent('tresoragift.com'));
     return 'https://' + SHOP + '/cart/' + path + '?' + q.join('&');
   }
   Cart.shopifyUrl = function () { return SHOP && lines().length ? shopifyUrl(lines()) : ''; };
