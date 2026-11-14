@@ -647,9 +647,9 @@ for name, t in BG_THEMES.items():
     d = f"bg/{name}"; os.makedirs(d, exist_ok=True); open(f"{d}/theme.css", "w").write(theme_css(name, t))
     build(d, f"TRESORA · Background preview · {name}")
 # the main site: v4 at the root (index, shop, cart, account, products/, Stripe success/cancel pages) in the chosen "taupe" colours
-SITE_THEME = "taupe"
-N, V, STYLE, ROOT_BUILD, THEME = 4, R, R + "redesign/v4/style.css", True, BG_THEMES[SITE_THEME]
-open("theme.css", "w").write(theme_css(SITE_THEME, THEME))
+SITE_THEME = None  # owner Nov 14 2026: back to dark navy v4 background (was "taupe")
+N, V, STYLE, ROOT_BUILD, THEME = 4, R, R + "redesign/v4/style.css", True, BG_THEMES.get(SITE_THEME, {})
+open("theme.css", "w").write(theme_css(SITE_THEME, THEME) if SITE_THEME else "/* no colour override: v4 dark navy (owner request) */\n")
 build(".", "TRESORA · Gifts inspired by cities and art", extra=True)
 THEME = None
 print(f"built {count} pages (redesign/v1..v4 + bg previews + site root)")
