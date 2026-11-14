@@ -9,11 +9,19 @@
                  Each link pays for ONE product (the customer can change the quantity on the Stripe page). Used only when
                  CHECKOUT_URL is empty. Set to "" to turn it off.
 
-   If neither is set, Checkout shows a friendly "payments coming soon" message.
+   SHOPIFY_CHECKOUT_DOMAIN  Shopify store domain (tresora.store). When set, it WINS over CHECKOUT_URL and PAYMENT_LINKS:
+                 the cart's Checkout button sends the WHOLE cart to ONE Shopify checkout through a cart permalink
+                 https://tresora.store/cart/VARIANT_ID:QTY,VARIANT_ID:QTY (catalog variant ids are the Shopify variant ids).
+                 Greeting card / message / lid inscription go into the Shopify order note. Payment, tax and the order
+                 itself are handled by Shopify (same payouts as tresora.store). Set to "" to go back to the Stripe checkout below
+                 (CHECKOUT_URL / PAYMENT_LINKS are kept as the fallback and are not used while this is set).
+
+   If none is set, Checkout shows a friendly "payments coming soon" message.
 
    WELCOME_POPUP  true = show the "15% off" email popup (assets/js/welcome.js) to new visitors; false = hidden
                   (still testable with ?welcome=1). WELCOME_CODE is the Stripe promotion code the popup shows. */
 window.TRESORA_CONFIG = {
+  SHOPIFY_CHECKOUT_DOMAIN: "tresora.store",
   CHECKOUT_URL: "https://bnequlkhwcnuzplsdktp.supabase.co/functions/v1/checkout",
   PAYMENT_LINKS: "live",
   CURRENCY: "USD",

@@ -2,7 +2,8 @@
    - Cart lines are stored in localStorage ("tresora_cart_v1") as [{variant_id, quantity}], so the cart is the same on every page and survives reloads.
    - Product data (titles, images, display prices) comes from window.TRESORA_CATALOG (assets/js/catalog.js).
      Prices here are for display only. The checkout backend looks up the real prices on the server.
-   - Checkout POSTs {items:[{product_id, variant_id, quantity, personalization:{card,message,lid}}]} to TRESORA_CONFIG.CHECKOUT_URL and expects {url} back
+   - Checkout: when TRESORA_CONFIG.SHOPIFY_CHECKOUT_DOMAIN is set, the whole cart goes to ONE Shopify checkout via a cart permalink
+     (see shopifyUrl below). Otherwise (Stripe fallback) checkout POSTs {items:[{product_id, variant_id, quantity, personalization:{card,message,lid}}]} to TRESORA_CONFIG.CHECKOUT_URL and expects {url} back
      (a Stripe Checkout URL). If CHECKOUT_URL is empty, it shows a "payments coming soon" message. */
 (function () {
   'use strict';
@@ -291,8 +292,41 @@
     }).join('') + (PLMODE === 'test' ? '<small>Stripe test mode: no real charge. Use card 4242 4242 4242 4242.</small>' : '');
     m.hidden = false;
   }
+  /* Shopify checkout (TRESORA_CONFIG.SHOPIFY_CHECKOUT_DOMAIN): one cart permalink for the whole cart,
+     https://<domain>/cart/VARIANT_ID:QTY,...?note=...&attributes[Source]=tresoragift.com
+     Shopify turns it into a checkout with live prices and stock. Personalization goes into the order note. */
+  var SHOP = String(CFG.SHOPIFY_CHECKOUT_DOMAIN || '').trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  var CARD_LABEL = {}; CARDS.forEach(function (c) { CARD_LABEL[c[0]] = c[1]; });
+  function shopifyNote(ls) {
+    return ls.map(function (l) {
+      var v = CAT.variants[l.variant_id], p = l.p || {}, bits = [];
+      if (p.card) bits.push('Greeting card: ' + (CARD_LABEL[p.card] || p.card));
+      if (p.message) bits.push('Message: ' + p.message);
+      if (p.lid) bits.push('Lid inscription: ' + p.lid);
+      return bits.length ? v.title + (v.variant_title ? ' (' + v.variant_title + ')' : '') + ' – ' + bits.join('; ') : '';
+    }).filter(Boolean).join('\n');
+  }
+  function shopifyUrl(ls) {
+    var path = ls.map(function (l) { return encodeURIComponent(String(l.variant_id)) + ':' + clamp(l.quantity); }).join(',');
+    var q = [], note = shopifyNote(ls);
+    if (note) q.push('note=' + encodeURIComponent(note));
+    q.push(encodeURIComponent('attributes[Source]') + '=' + encodeURIComponent('tresoragift.com'));
+    return 'https://' + SHOP + '/cart/' + path + '?' + q.join('&');
+  }
+  Cart.shopifyUrl = function () { return SHOP && lines().length ? shopifyUrl(lines()) : ''; };
+  function shopifyCheckout() {
+    var ls = lines(), btn = $('[data-tc-checkout]');
+    busy = true; btn.disabled = true; btn.textContent = 'Redirecting…'; msg('');
+    try {
+      if (typeof window.gtag === 'function') window.gtag('event', 'begin_checkout', { currency: CFG.CURRENCY || 'USD', value: Cart.subtotal() / 100,
+        items: ls.map(function (l) { var v = CAT.variants[l.variant_id]; return { item_id: String(l.variant_id), item_name: v.title + (v.variant_title ? ' - ' + v.variant_title : ''), price: v.price / 100, quantity: l.quantity }; }) });
+    } catch (e) { /* tracking must never block checkout */ }
+    location.href = shopifyUrl(ls);
+    setTimeout(function () { busy = false; btn.disabled = false; btn.textContent = 'Checkout'; }, 4000); // e.g. user comes back with the Back button
+  }
   function checkout() {
     if (busy || !lines().length) return;
+    if (SHOP) return shopifyCheckout();
     var url = (CFG.CHECKOUT_URL || '').trim();
     if (!url) { return fallback(); }
     return combined(url);
