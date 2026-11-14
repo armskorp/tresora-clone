@@ -18,7 +18,7 @@
     [/^Increase quantity of (.+)$/, function (m) { return 'Aumentar cantidad de ' + m[1]; }],
     [/^Dimensions: (.+)" H × (.+)" W × (.+)" D$/, 'Dimensiones: $1" al. × $2" an. × $3" prof.'],
     [/^Preview: a reset link would be emailed to (.+)\.$/, 'Vista previa: se enviaría un enlace para restablecer la contraseña a $1.'],
-    [/^Opening secure Stripe checkout\. Please set the quantity to (\d+) on the next page\.(.*)$/, function (m) { return 'Abriendo el pago seguro de Stripe. En la siguiente página, indica la cantidad ' + m[1] + '.' + (m[2] ? ' ' + t(m[2]) : ''); }],
+    [/^Opening secure checkout\. Please set the quantity to (\d+) on the next page\.(.*)$/, function (m) { return 'Abriendo el pago seguro. En la siguiente página, indica la cantidad ' + m[1] + '.' + (m[2] ? ' ' + t(m[2]) : ''); }],
     [/^Payments are coming soon\. Online checkout isn.t open yet, but your cart is saved on this device\.$/, 'Los pagos llegarán pronto. El pago en línea aún no está abierto, pero tu carrito se guarda en este dispositivo.'],
     [/^Sorry, we couldn.t start checkout \((.*)\)\. Please try again in a moment\.$/, 'Lo sentimos, no pudimos iniciar el pago ($1). Inténtalo de nuevo en un momento.'],
     [/^(.+) · TRESORA$/, function (m) { return t(m[1]) + ' · TRESORA'; }],

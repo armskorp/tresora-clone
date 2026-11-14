@@ -25,7 +25,9 @@ CATS = {
            "handles": ["paris-gift-box", "barcelona-gift-box", "new-york-gift-box", "amalfi-gift-box"]},
   "home": {"name": "Atelier Home", "short": "Atelier Home", "img": SH + "img/cat-home.jpg",
            "blurb": "Handmade objects for a beautiful home.",
-           "handles": ["gothic-romance-decorative-glass-bottle", "rococo-reverie-decorative-glass-bottle"]},
+           "handles": ["gothic-romance-decorative-glass-bottle", "rococo-reverie-decorative-glass-bottle",
+                       "gothic-portraits-decorative-glass-vase", "crow-roses-decorative-bottle",
+                       "vintage-christmas-decoupage-ornaments"]},
 }
 BY_HANDLE = {p["handle"]: p for p in CAT["products"].values()}
 assert sorted(BY_HANDLE) == sorted(h for c in CATS.values() for h in c["handles"]), "every real product in exactly one category"
@@ -86,7 +88,7 @@ ICON = {
  "star": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
  "mail": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
 }
-TRUST = [("lock", "Secure checkout", "Payments processed by Stripe. We never see your card."),
+TRUST = [("lock", "Secure checkout", "Your payment is processed securely. We never see your card."),
          ("truck", "Free US shipping", "On all orders, shipped from Los Angeles."),
          ("gift", "Ready to give", "Arrives beautifully wrapped, with a card."),
          ("return", "Returns & refunds", "Clear policy, see our Refund policy.")]
@@ -164,7 +166,7 @@ def newsletter(title="Quiet updates. New collections. Nothing more.", sub="Join 
 def header(active=""):
     def cls(k): return ' aria-current="page"' if k == active else ""
     nav = "".join(f'<a href="{V}shop.html?cat={k}">{E(c["name"])}</a>' for k, c in CATS.items())
-    return f'''<div class="rd-announce"><span>Complimentary US shipping on every order</span><span class="rd-dot rd-hide-sm"></span><span class="rd-hide-sm">Secure checkout via Stripe</span></div>
+    return f'''<div class="rd-announce"><span>Complimentary US shipping on every order</span><span class="rd-dot rd-hide-sm"></span><span class="rd-hide-sm">Secure checkout</span></div>
 <header class="rd-header" data-rd-header>
   <div class="rd-header__in">
     <button class="rd-icon rd-menu-btn" type="button" data-rd-menu aria-expanded="false" aria-controls="rd-nav" aria-label="Menu">{ICON["menu"]}</button>
@@ -206,7 +208,7 @@ def footer():
   </div>
   <div class="rd-footer__bottom">
     <p>© 2026 TRESORA</p>
-    <p class="rd-pay">{ICON["lock"]} Secure payments by Stripe · Visa · Mastercard · Amex · Apple Pay · Google Pay</p>
+    <p class="rd-pay">{ICON["lock"]} Secure checkout · Visa · Mastercard · Amex · Apple Pay · Google Pay</p>
     <p class="rd-policies"><a href="{V}privacy.html">Privacy policy</a><a href="{V}returns.html">Refund policy</a><a href="{V}terms.html">Terms of service</a><a href="{V}shipping.html">Shipping policy</a></p>
   </div>
 </footer>'''
@@ -230,7 +232,7 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 <!--End of Tawk.to Script-->
 '''
-def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout via Stripe."):
+def page(title, body, kind, active="", extra_js="", desc="Art-inspired and city-inspired gifts. Free US shipping. Secure checkout."):
     tc = THEME["bg"] if THEME else {1: "#0d1726", 2: "#f6efe4", 3: "#ffffff", 4: "#0d1726"}[N]
     return f'''<!doctype html>
 <html lang="en" data-base="{R}" data-rd-root="{V}" class="rd rd-v{N} rd-page--{kind}{" rd-head-editorial" if N in (1, 2) else ""}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -335,7 +337,7 @@ def product_page(h):
     <p class="rd-pdp__glance"><span>{"Inside" if is_set else "The piece"}</span> {E(inside_line(h))} <a href="#inside">{"See all " + str(len(inside)) if is_set else "Details"}</a></p>
     {pills}
     <div class="rd-pdp__buy"><div class="rd-qty"><button type="button" data-rd-step="-1" aria-label="Decrease quantity">−</button><input type="number" inputmode="numeric" min="1" max="10" value="1" data-rd-qty aria-label="Quantity"><button type="button" data-rd-step="1" aria-label="Increase quantity">+</button></div>{btn}</div>
-    <ul class="rd-pdp__assure"><li>{ICON["lock"]} Secure checkout via Stripe</li><li>{ICON["truck"]} Free US shipping from Los Angeles</li><li>{ICON["gift"]} Arrives ready to give</li><li>{ICON["return"]} <a href="{V}returns.html">Returns &amp; refunds policy</a></li></ul>
+    <ul class="rd-pdp__assure"><li>{ICON["lock"]} Secure checkout</li><li>{ICON["truck"]} Free US shipping from Los Angeles</li><li>{ICON["gift"]} Arrives ready to give</li><li>{ICON["return"]} <a href="{V}returns.html">Returns &amp; refunds policy</a></li></ul>
     {inside_html}
     <div class="rd-pdp__desc">{more}</div>
   </div>
@@ -355,7 +357,7 @@ def shop_page():
 def return_page(ok):
     if ok:
         inner = f'''<section class="rd-section rd-pagehead rd-return" data-checkout-success>{crumbs(("Order confirmed", None))}<h1>Thank you</h1>
-  <p>Your order has been placed. A confirmation from Stripe is on its way to your email.</p>
+  <p>Your order has been placed. A confirmation is on its way to your email.</p>
   <p><a class="rd-btn rd-btn--primary" href="{V}shop.html">Continue shopping</a></p></section>'''
         return page("Thank you · TRESORA", inner, "return")
     inner = f'''<section class="rd-section rd-pagehead rd-return">{crumbs(("Checkout cancelled", None))}<h1>Checkout cancelled</h1>
@@ -409,7 +411,7 @@ def cart_page():
     <dl><div><dt>Subtotal</dt><dd data-rd-subtotal>$0.00</dd></div><div><dt>Shipping</dt><dd>Free (US)</dd></div><div><dt>Taxes</dt><dd>At checkout</dd></div></dl>
     <button class="rd-btn rd-btn--primary rd-btn--full" type="button" data-rd-checkout>Checkout</button>
     <p class="rd-summary__msg" data-rd-cartmsg role="status" aria-live="polite"></p>
-    <p class="rd-summary__note">{ICON["lock"]} Payments are processed securely by Stripe.</p>
+    <p class="rd-summary__note">{ICON["lock"]} Payments are processed securely.</p>
     <a class="rd-textlink" href="{V}shop.html">Continue shopping</a>
   </aside>
 </section>'''
@@ -474,7 +476,7 @@ def reset_page():
     return page("Reset password · TRESORA", body, "account", active="account", extra_js=auth_scripts())
 
 SHOT = '<p class="rd-viewall"><a class="rd-btn rd-btn--secondary" href="{V}shop.html">View the full collection</a></p>'
-FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul>'
+FACTS = '<ul class="rd-facts"><li>Complimentary US shipping</li><li>Secure checkout</li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul>'
 def home():
     VP, VP45, FAN, BAG, AMALFI = (SH + "img/hero-vermeer-print.jpg", SH + "img/hero-vermeer-print-45.jpg", SH + "img/hero-barcelona-fan.jpg", SH + "img/hero-paris-bag.jpg", SH + "img/hero-amalfi.jpg")
     VG, KL = SH + "img/cat-art-vangogh.jpg", SH + "img/cat-art-klimt.jpg"
@@ -584,7 +586,7 @@ def home_v4():
 {sec("art", "Art", "Klimt, Vermeer, Van Gogh, Caravaggio, Sargent.", 3)}
 {sec("home", "Atelier Home", "Handmade decorative glass.", 2)}
 </div>
-<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout via Stripe</li><li>Returns &amp; refunds: <a href="{V}returns.html">see policy</a></li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul></section>
+<section class="rd-zsec rd-zsec--info"><ul class="rd-zinfo"><li>Complimentary US shipping</li><li>Secure checkout</li><li>Returns &amp; refunds: <a href="{V}returns.html">see policy</a></li><li><a href="#reviews">5.00 · 2 reviews</a></li></ul></section>
 <section class="rd-zsec" id="reviews"><header class="rd-zhead"><h2>Reviews</h2><p>5.00 · Based on 2 verified reviews</p></header><div class="rd-reviews__list rd-zreviews">{review_items(REVIEWS)}</div></section>
 <section class="rd-zsec rd-zsec--news">{newsletter("Newsletter", "New city and art collections, a few times a year.")}</section>'''
 

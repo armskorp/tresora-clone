@@ -237,7 +237,7 @@
         bn.hidden = !link;
         if (link) {
           bn.querySelector('[data-buy-now-link]').href = link;
-          bn.querySelector('[data-test-note]').textContent = 'Opens secure Stripe checkout for this item.' + testNote();
+          bn.querySelector('[data-test-note]').textContent = 'Opens secure checkout for this item.' + testNote();
         }
       }
     };
@@ -282,14 +282,14 @@
     var vid = Number(a.getAttribute('data-vid'));
     stashPurchase(lines().filter(function (l) { return l.variant_id === vid; }));
   }, true);
-  function testNote() { return PLMODE === 'test' ? ' (Stripe test mode: no real charge. Use card 4242 4242 4242 4242.)' : ''; }
+  function testNote() { return PLMODE === 'test' ? ' (Test mode: no real charge. Use card 4242 4242 4242 4242.)' : ''; }
   // interim Payment Links can only pay for one product at a time: list one link per cart line
   function showLinks(ls) {
     var m = $('[data-tc-msg]');
     m.innerHTML = '<span>Each item is paid separately for now:</span>' + ls.map(function (l) {
       var v = CAT.variants[l.variant_id];
       return PL[l.variant_id] ? '<a class="tc-paylink" data-vid="' + l.variant_id + '" href="' + esc(PL[l.variant_id]) + '">Pay for ' + esc(v.title + (v.variant_title ? ' – ' + v.variant_title : '')) + ' × ' + l.quantity + '</a>' : '';
-    }).join('') + (PLMODE === 'test' ? '<small>Stripe test mode: no real charge. Use card 4242 4242 4242 4242.</small>' : '');
+    }).join('') + (PLMODE === 'test' ? '<small>Test mode: no real charge. Use card 4242 4242 4242 4242.</small>' : '');
     m.hidden = false;
   }
   /* Shopify checkout (TRESORA_CONFIG.SHOPIFY_CHECKOUT_DOMAIN): one cart permalink for the whole cart,
@@ -339,7 +339,7 @@
           stashPurchase(ls);
           var only = CAT.variants[ls[0].variant_id];
           if (ls[0].quantity > 1) {
-            msg('Opening secure Stripe checkout. Please set the quantity to ' + ls[0].quantity + ' on the next page.' + testNote());
+            msg('Opening secure checkout. Please set the quantity to ' + ls[0].quantity + ' on the next page.' + testNote());
             setTimeout(function () { location.href = PL[ls[0].variant_id]; }, 1600);
           } else { location.href = PL[ls[0].variant_id]; }
           return;
