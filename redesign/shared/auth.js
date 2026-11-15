@@ -85,6 +85,8 @@
       }
     });
     $('[data-rd-logout]', ap).addEventListener('click', function () { sb.auth.signOut().then(function () { render(null); mode('signin'); say(msg, 'You have been logged out.', true); }); });
+    var welcomeBox = $('[data-rd-welcome]', ap);
+    if (welcomeBox && (window.TRESORA_CONFIG || {}).WELCOME_POPUP === false) welcomeBox.hidden = true;
     $('[data-rd-copy]', ap).addEventListener('click', function (e) {
       var b = e.target; try { navigator.clipboard.writeText(((window.TRESORA_CONFIG || {}).WELCOME_CODE) || 'WELCOME15').then(function () { b.textContent = 'Copied'; }); } catch (x) {}
     });
