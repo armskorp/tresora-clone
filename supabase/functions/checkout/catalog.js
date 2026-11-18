@@ -219,6 +219,14 @@ export default {
    "available": true,
    "image": "https://tresoragift.com/redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg",
    "variant": "Ornaments + candle"
+  },
+  "71220355629169": {
+   "product_id": 15490352709745,
+   "name": "Amalfi Coast Decorative Glass Bottle — Lemons & Flowers",
+   "unit_amount": 9900,
+   "available": true,
+   "image": "https://tresoragift.com/redesign/shared/products/amalfi-coast-decorative-glass-bottle-lemons-flowers-0.jpg",
+   "variant": ""
   }
  }
 };

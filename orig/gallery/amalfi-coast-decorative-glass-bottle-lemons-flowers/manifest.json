@@ -1,0 +1,32 @@
+{
+  "handle": "amalfi-coast-decorative-glass-bottle-lemons-flowers",
+  "title": "Amalfi Coast Decorative Glass Bottle — Lemons & Flowers",
+  "source_js": "https://tresora.store/products/amalfi-coast-decorative-glass-bottle-lemons-flowers.js",
+  "canonical": "https://tresora.store/products/amalfi-coast-decorative-glass-bottle-lemons-flowers",
+  "max_edge": 1200,
+  "thumb_edge": 240,
+  "require_portrait": false,
+  "initial_index": 0,
+  "images": [
+    {
+      "file": "00-amalfi-bottle-front.png",
+      "alt": "Amalfi Coast decorative bottle with lemons, flowers and coastal artwork",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/amalfi-bottle-front.png?v=1794973743"
+    },
+    {
+      "file": "01-amalfi-bottle-back.png",
+      "alt": "Reverse of Amalfi bottle with blue and yellow Italian tile pattern",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/amalfi-bottle-back.png?v=1794973747"
+    },
+    {
+      "file": "02-amalfi-bottle-lemon-side.png",
+      "alt": "Side view of Amalfi bottle with sculpted lemons and pink blossoms",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/amalfi-bottle-lemon-side.png?v=1794973752"
+    },
+    {
+      "file": "03-amalfi-bottle-floral-side.png",
+      "alt": "Side view of Amalfi bottle with lavender floral details",
+      "source": "https://cdn.shopify.com/s/files/1/0701/9246/3985/files/amalfi-bottle-floral-side.png?v=1794973756"
+    }
+  ]
+}

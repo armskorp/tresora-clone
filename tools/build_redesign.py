@@ -27,7 +27,8 @@ CATS = {
            "blurb": "Handmade objects for a beautiful home.",
            "handles": ["gothic-romance-decorative-glass-bottle", "rococo-reverie-decorative-glass-bottle",
                        "gothic-portraits-decorative-glass-vase", "crow-roses-decorative-bottle",
-                       "vintage-christmas-decoupage-ornaments"]},
+                       "vintage-christmas-decoupage-ornaments",
+                       "amalfi-coast-decorative-glass-bottle-lemons-flowers"]},
 }
 BY_HANDLE = {p["handle"]: p for p in CAT["products"].values()}
 assert sorted(BY_HANDLE) == sorted(h for c in CATS.values() for h in c["handles"]), "every real product in exactly one category"

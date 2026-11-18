@@ -139,6 +139,15 @@ window.TRESORA_CATALOG = {
     68346966737009,
     68346966769777
    ]
+  },
+  "15490352709745": {
+   "id": 15490352709745,
+   "handle": "amalfi-coast-decorative-glass-bottle-lemons-flowers",
+   "title": "Amalfi Coast Decorative Glass Bottle — Lemons & Flowers",
+   "image": "redesign/shared/products/amalfi-coast-decorative-glass-bottle-lemons-flowers-0.jpg",
+   "variants": [
+    71220355629169
+   ]
   }
  },
  "variants": {
@@ -350,6 +359,17 @@ window.TRESORA_CATALOG = {
    "available": true,
    "thumb": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0-t.jpg",
    "image": "redesign/shared/products/vintage-christmas-decoupage-ornaments-0.jpg"
+  },
+  "71220355629169": {
+   "id": 71220355629169,
+   "product_id": 15490352709745,
+   "handle": "amalfi-coast-decorative-glass-bottle-lemons-flowers",
+   "title": "Amalfi Coast Decorative Glass Bottle — Lemons & Flowers",
+   "variant_title": "",
+   "price": 9900,
+   "available": true,
+   "thumb": "redesign/shared/products/amalfi-coast-decorative-glass-bottle-lemons-flowers-0-t.jpg",
+   "image": "redesign/shared/products/amalfi-coast-decorative-glass-bottle-lemons-flowers-0.jpg"
   }
  }
 };
