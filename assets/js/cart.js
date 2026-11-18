@@ -254,6 +254,7 @@
       if (Cart.add(current(), qty.value)) { open(); }
     });
     sync();
+    document.addEventListener('tresora:prices', sync);
   });
 
   // success page clears the cart
@@ -374,5 +375,103 @@
   // keep tabs in sync
   window.addEventListener('storage', function (e) { if (e.key === KEY) { memory = null; render(); } });
   window.addEventListener('pageshow', function () { memory = null; render(); }); // bfcache
+
+  /* ---------- live prices: the Shopify store (tresora.store) is the source of truth ----------
+     Prices baked into catalog.js / the HTML are the fallback. On every page load the current prices are read from
+     the store's public products.json (CORS: *) and swapped into the catalog (cart drawer, cart page, subtotal)
+     and into the price text on the page. Only the price text changes; nothing else on the page is touched.
+     The last result is kept in localStorage so the next page shows it straight away. */
+  (function livePrices() {
+    var SRC = 'https://tresora.store/products.json?limit=250', LKEY = 'tresora-live-prices', MAXAGE = 7 * 864e5;
+    var qa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+    var shown = {}, byHandle = {};
+    Object.keys(CAT.variants).forEach(function (id) {
+      var v = CAT.variants[id]; shown[id] = v.price;
+      (byHandle[v.handle] = byHandle[v.handle] || []).push(id);
+    });
+    var TOK = /\$(\d{1,5})(\.\d\d)?(?!\d)/g;
+    var cents = function (d, f) { return Math.round(parseFloat(d + (f || '')) * 100); };
+    var two = function (c) { return '$' + (c / 100).toFixed(2); };
+    var like = function (tok, c) { return (tok.indexOf('.') > 0 || c % 100) ? two(c) : '$' + (c / 100); }; // keep "$48" vs "$48.00" style
+    var reEsc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+    function texts(root, fn) {
+      var w = document.createTreeWalker(root, 4), n, list = [];
+      while ((n = w.nextNode())) if (!(n.parentNode && n.parentNode.closest && n.parentNode.closest('script,style'))) list.push(n);
+      list.forEach(function (t) { var r = fn(t.nodeValue); if (r !== t.nodeValue) t.nodeValue = r; });
+    }
+    // a price shown next to a product link: find which of the product's variants it was, swap in that variant's new price
+    function byShown(handle, c, np) {
+      var ids = byHandle[handle] || [], hit = ids.filter(function (id) { return shown[id] === c; })[0];
+      if (!hit && ids.length === 1) hit = ids[0];
+      return hit && np.hasOwnProperty(hit) ? np[hit] : null;
+    }
+    function apply(np) {
+      var changed = Object.keys(np).filter(function (id) { return CAT.variants[id] && np[id] !== shown[id]; });
+      if (!changed.length) return;
+      changed.forEach(function (id) { CAT.variants[id].price = np[id]; });
+      var price = function (id) { return np.hasOwnProperty(id) ? np[id] : shown[id]; };
+      // cards and product pages ([data-rd-buy]): option prices, the visible price, "from $x", "Option — $x" lines
+      qa('[data-rd-buy]').forEach(function (box) {
+        var opts = qa('[data-price][value]', box), ids = [];
+        opts.forEach(function (o) { var id = o.value; if (CAT.variants[id]) { ids.push(id); o.setAttribute('data-price', two(price(id))); } });
+        var sel = box.querySelector('[data-rd-variant]'), r = box.querySelector('input[name=variant]:checked'), add = box.querySelector('[data-rd-add]');
+        var cur = sel ? sel.value : r ? r.value : add && add.getAttribute('data-rd-add');
+        if (add && ids.indexOf(add.getAttribute('data-rd-add')) < 0 && CAT.variants[add.getAttribute('data-rd-add')]) ids.push(add.getAttribute('data-rd-add'));
+        if (cur && CAT.variants[cur]) {
+          var pr = box.querySelector('[data-rd-price]'); if (pr && pr.textContent !== two(price(cur))) pr.textContent = two(price(cur));
+          if (box.hasAttribute('data-price') && !box.hasAttribute('value')) box.setAttribute('data-price', String(price(cur)));
+        }
+        if (ids.length > 1) {
+          var min = Math.min.apply(null, ids.map(price));
+          qa('.rd-card__note, .rd-pdp__price small', box).forEach(function (n) {
+            texts(n, function (s) { return /(from|desde)\s*\$/i.test(s) ? s.replace(TOK, function (m) { return like(m, min); }) : s; });
+          });
+        }
+        qa('input[name=variant][data-label]', box).forEach(function (o) {
+          if (changed.indexOf(o.value) < 0) return;
+          var re = new RegExp('(' + reEsc(o.getAttribute('data-label')) + '\\s*[—–-]\\s*)(\\$\\d{1,5}(?:\\.\\d\\d)?)(?!\\d)', 'g');
+          texts(document.querySelector('main') || document.body, function (s) { return s.replace(re, function (m, a, tok) { return a + like(tok, np[o.value]); }); });
+        });
+      });
+      // hero slides etc.: "Title · $49.00" next to a product link
+      qa('.rd-slide__price').forEach(function (el) {
+        var box = el.closest('figcaption, figure') || el.parentNode, a = box && box.querySelector('a[href*="products/"]');
+        var m = a && a.getAttribute('href').match(/products\/([a-z0-9-]+)\.html/); if (!m) return;
+        texts(el, function (s) { return s.replace(TOK, function (t, d, f) { var n = byShown(m[1], cents(d, f), np); return n == null ? t : like(t, n); }); });
+      });
+      // structured data for search engines (Offer price)
+      qa('script[type="application/ld+json"]').forEach(function (sc) {
+        try {
+          var data = JSON.parse(sc.textContent), hit = false;
+          (function walk(o) {
+            if (!o || typeof o !== 'object') return;
+            if (Array.isArray(o)) { o.forEach(walk); return; }
+            if (o['@type'] === 'Offer' && o.url && o.price != null) {
+              var m = String(o.url).match(/products\/([a-z0-9-]+)\.html/), n = m && byShown(m[1], cents(String(o.price)), np);
+              if (n != null && n !== cents(String(o.price))) { o.price = (n / 100).toFixed(2); hit = true; }
+            }
+            Object.keys(o).forEach(function (k) { walk(o[k]); });
+          })(data);
+          if (hit) sc.textContent = JSON.stringify(data);
+        } catch (e) {}
+      });
+      Object.keys(np).forEach(function (id) { if (CAT.variants[id]) shown[id] = np[id]; });
+      render();
+      try { document.dispatchEvent(new CustomEvent('tresora:prices')); } catch (e) {}
+    }
+    function ready(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+    try { var c = JSON.parse(localStorage.getItem(LKEY) || 'null'); if (c && c.v && Date.now() - c.t < MAXAGE) ready(function () { apply(c.v); }); } catch (e) {}
+    if (!window.fetch) return;
+    fetch(SRC, { cache: 'no-store', credentials: 'omit' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var np = {};
+        (d.products || []).forEach(function (p) { (p.variants || []).forEach(function (v) { var c = Math.round(parseFloat(v.price) * 100); if (CAT.variants[String(v.id)] && c > 0) np[String(v.id)] = c; }); });
+        try { localStorage.setItem(LKEY, JSON.stringify({ t: Date.now(), v: np })); } catch (e) {}
+        ready(function () { apply(np); });
+      })
+      .catch(function () { /* store unreachable: the baked prices stay */ });
+  })();
+
   render();
 })();

@@ -232,6 +232,7 @@
     ['add', 'set', 'remove', 'clear'].forEach(function (k) { var f = Cart[k]; Cart[k] = function () { var r = f.apply(Cart, arguments); setTimeout(renderCart, 0); return r; }; });
     window.addEventListener('storage', function () { setTimeout(renderCart, 0); });
     window.addEventListener('pageshow', function () { setTimeout(renderCart, 0); });
+    document.addEventListener('tresora:prices', function () { setTimeout(renderCart, 0); });
     cp.addEventListener('click', function (e) {
       var li = e.target.closest('.rd-line'); if (!li) return;
       var id = Number(li.getAttribute('data-variant')), line = Cart.items().filter(function (l) { return l.variant_id === id; })[0]; if (!line) return;
